@@ -1,0 +1,48 @@
+﻿<Window x:Class="DialogsCreator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DialogsCreator"
+        mc:Ignorable="d"
+        Title="Создатель диалогов" Height="496" Width="840" >
+
+    <Grid Height="496" VerticalAlignment="Top">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="74*"/>
+            <RowDefinition Height="7*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Menu Height="25" VerticalAlignment="Top" Name="top_menu" Grid.ColumnSpan="2">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Создать" Name="CreateFile" Click="CreateFile_Click"></MenuItem>
+                <MenuItem Header="Открыть" Name="OpenFile" Click="OpenFile_Click"></MenuItem>
+                <MenuItem Header="Сохранить" Name="SaveFile" Click="SaveFile_Click"></MenuItem>
+                <MenuItem Header="Сохранить как" Name="SaveAsFile" Click="SaveFile_Click"></MenuItem>
+                <Separator />
+                <MenuItem Header="Выйти" ></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Редактировать" ></MenuItem>
+        </Menu>
+
+        <DataGrid HorizontalAlignment="Right" VerticalAlignment="Top" Name="datagrid"
+            d:ItemsSource="{d:SampleData ItemCount=5}" Height="414" Margin="0,36,0,0" Width="400" Grid.Column="1"/>
+        <GroupBox Header="Создание основного текста диалога" Name="gb_create_base_text" Margin="29,36,74,331">
+            
+        </GroupBox>
+
+        <GroupBox Header="Добавление звука диалога" Name="gb_add_sound" Margin="29,141,74,253">
+
+        </GroupBox>
+
+        <GroupBox Header="Добавление картинки диалога" Name="gb_add_image" Margin="29,227,74,158">
+
+        </GroupBox>
+
+        <GroupBox Header="Добавление ответов на диалог" Name="gb_add_answers" Margin="29,336,74,10"/>
+
+    </Grid>
+</Window>

@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
-        Title="Создатель диалогов" Height="496" Width="840" >
+        Title="Создатель диалогов" Height="688" Width="962" >
 
-    <Grid Height="496" VerticalAlignment="Top">
+    <Grid Height="678" VerticalAlignment="Top">
         <Grid.RowDefinitions>
-            <RowDefinition Height="74*"/>
-            <RowDefinition Height="7*"/>
+            <RowDefinition/>
+            <RowDefinition Height="0*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -28,21 +28,41 @@
             <MenuItem Header="Редактировать" ></MenuItem>
         </Menu>
 
-        <DataGrid HorizontalAlignment="Right" VerticalAlignment="Top" Name="datagrid"
-            d:ItemsSource="{d:SampleData ItemCount=5}" Height="414" Margin="0,36,0,0" Width="400" Grid.Column="1"/>
-        <GroupBox Header="Создание основного текста диалога" Name="gb_create_base_text" Margin="29,36,74,331">
-            
-        </GroupBox>
+        <DataGrid Name="datagrid"
+            d:ItemsSource="{d:SampleData ItemCount=5}" Margin="41,36,40,0" Grid.Column="1" Height="613" VerticalAlignment="Top"/>
 
-        <GroupBox Header="Добавление звука диалога" Name="gb_add_sound" Margin="29,141,74,253">
 
-        </GroupBox>
+        <Expander Header="Создание основного текста диалога" Name="gb_create_base_text" Margin="29,36,74,0" Height="613" VerticalAlignment="Top">
+            <Grid Background="#FFE5E5E5" Height="590" VerticalAlignment="Top">
 
-        <GroupBox Header="Добавление картинки диалога" Name="gb_add_image" Margin="29,227,74,158">
+                <TextBox Name="textbox_name" Margin="10,24,40,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBox Name="textbox_text" Margin="10,63,40,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="79"/>
+                <CheckBox Content="Звук" Name="cb_sound" Click="cb_sound_Click" HorizontalAlignment="Left" Margin="10,147,0,0" VerticalAlignment="Top"/>
+                <CheckBox Content="Картинка" Name="cb_image" Click="cb_image_Click" HorizontalAlignment="Left" Margin="76,147,0,0" VerticalAlignment="Top"/>
+                <CheckBox Content="Ответы" Name="cb_answers" Click="cb_answers_Click" HorizontalAlignment="Left" Margin="170,147,0,0" VerticalAlignment="Top"/>
+                <Button Content="Добавить" HorizontalAlignment="Left" Margin="248,145,0,0" VerticalAlignment="Top" Width="103"/>
 
-        </GroupBox>
 
-        <GroupBox Header="Добавление ответов на диалог" Name="gb_add_answers" Margin="29,336,74,10"/>
+                <Expander Header="Добавление звука диалога" Name="gb_add_sound" Margin="10,174,10,318">
+                    <Grid Background="AliceBlue">
+
+                    </Grid>
+                </Expander>
+                <Expander Header="Добавление картинки диалога" Name="gb_add_image" Margin="10,277,10,215">
+                    <Grid Background="CadetBlue">
+
+                    </Grid>
+                </Expander>
+                <Expander Header="Добавление ответов на диалог" Name="gb_add_answers" Margin="10,380,10,10">
+                    <Grid Background="AliceBlue">
+
+                    </Grid>
+                </Expander>
+
+                <Label Content="Автор" HorizontalAlignment="Left" Margin="8,-2,0,0" VerticalAlignment="Top"/>
+                <Label Content="Описание" HorizontalAlignment="Left" Margin="8,39,0,0" VerticalAlignment="Top"/>
+            </Grid>
+        </Expander>
 
     </Grid>
 </Window>

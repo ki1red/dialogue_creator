@@ -29,7 +29,9 @@ namespace DialogsCreator
             InitializeComponent();
 
             pathFile = Environment.CurrentDirectory;
-            
+            this.gb_add_answers.IsEnabled = false;
+            this.gb_add_image.IsEnabled = false;
+            this.gb_add_sound.IsEnabled = false;
         }
 
         private void CreateTable(string pathToFile)
@@ -89,6 +91,39 @@ namespace DialogsCreator
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.InitialDirectory = pathFile;
             myStream = saveFileDialog.OpenFile();
+        }
+
+        private void DataGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            datagrid.Width = this.Width / 2;
+            datagrid.Height = this.Height;
+        }
+
+        private void cb_sound_Click(object sender, RoutedEventArgs e)
+        {
+            if (cb_sound.IsChecked == true)
+                gb_add_sound.IsEnabled = true;
+            else
+            {
+                gb_add_sound.IsEnabled = false;
+                gb_add_sound.
+            }
+        }
+
+        private void cb_image_Click(object sender, RoutedEventArgs e)
+        {
+            if (cb_image.IsChecked == true)
+                gb_add_image.IsEnabled = true;
+            else
+                gb_add_image.IsEnabled = false;
+        }
+
+        private void cb_answers_Click(object sender, RoutedEventArgs e)
+        {
+            if (cb_answers.IsChecked == true)
+                gb_add_answers.IsEnabled = true;
+            else
+                gb_add_answers.IsEnabled = false;
         }
     }
 }

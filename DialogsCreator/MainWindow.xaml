@@ -45,11 +45,15 @@
 
                 <Expander Header="Добавление звука диалога" Name="gb_add_sound" Margin="10,174,10,318">
                     <Grid Background="AliceBlue">
+                        <Label Content="None" HorizontalAlignment="Left" Margin="126,0,0,0" VerticalAlignment="Center"/>
+                        <Button Content="Импортировать" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
 
                     </Grid>
                 </Expander>
                 <Expander Header="Добавление картинки диалога" Name="gb_add_image" Margin="10,277,10,215">
-                    <Grid Background="CadetBlue">
+                    <Grid Background="AliceBlue">
+                        <Button Content="Импортировать" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                        <Label Content="None" HorizontalAlignment="Left" Margin="120,0,0,0" VerticalAlignment="Center"/>
 
                     </Grid>
                 </Expander>

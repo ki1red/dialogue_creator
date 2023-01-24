@@ -106,7 +106,6 @@ namespace DialogsCreator
             else
             {
                 gb_add_sound.IsEnabled = false;
-                gb_add_sound.
             }
         }
 

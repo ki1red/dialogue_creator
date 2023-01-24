@@ -23,7 +23,7 @@ namespace DialogsCreator
     /// </summary>
     public partial class MainWindow : Window
     {
-        FileManagerDLAG selFile = new FileManagerDLAG();
+        FileManagerDLAG selFile = new FileManagerDLAG(FileManagerDLAG.language.en);
         Roots r;
         public MainWindow(Roots r)
         {

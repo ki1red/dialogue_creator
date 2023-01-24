@@ -10,15 +10,35 @@ namespace DialogsCreator
 {
     internal class FileManagerDLAG
     {
+        public enum language
+        {
+            ru = 0,
+            en = 1,
+            de = 2
+        }
         public string file { get; private set; } = Environment.CurrentDirectory;
+        public string fileL { get; private set; } = Environment.CurrentDirectory;
+        public language lang;
         public string filter { get; private set; } = "Dialog files (*.dlag)|*.dlag";
 
         private void SelectFile(string path)
         {
             file = path;
+
+            string[] pathToFile = path.Split('\\');
+
+            string[] fileLanguage = pathToFile[pathToFile.Length - 1].Split('.');
+
+            fileLanguage[0] = fileLanguage[0] + "_" + lang;
+            fileLanguage[1] = ".dl";
+
+            fileL = "";
+            for (int i = 0; i < pathToFile.Length - 1; i++)
+                fileL += pathToFile[i] + "\\";
+            fileL += fileLanguage[0] + fileLanguage[1];
         }
 
-        public FileManagerDLAG() { }
+        public FileManagerDLAG(language language) { lang = language; }
 
         public void CreateFile()
         {
@@ -30,6 +50,7 @@ namespace DialogsCreator
             {
                 SelectFile(saveFileDialog.FileName);
                 Stream myStream = saveFileDialog.OpenFile();
+                myStream = new FileStream(fileL, FileMode.Create);
             }
             else
                 return;

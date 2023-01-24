@@ -23,12 +23,11 @@ namespace DialogsCreator
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string pathFile;
+        SelectFile selFile;
         public MainWindow()
         {
             InitializeComponent();
 
-            pathFile = Environment.CurrentDirectory;
             this.gb_add_answers.IsEnabled = false;
             this.gb_add_image.IsEnabled = false;
             this.gb_add_sound.IsEnabled = false;
@@ -46,51 +45,21 @@ namespace DialogsCreator
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            string path = pathFile;
+            selFile.open_file();
 
-
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Text files (*.dlag)|*.dlag|All files (*.*)|*.*"; // фильтры файлов
-            openFileDialog.InitialDirectory = @path; // путь по умолчанию для окна
-            if (openFileDialog.ShowDialog() == true)
-            {
-                path = openFileDialog.FileName;
-                pathFile = path;
-            }
-            else
-                return;
-
-            CreateTable(path);
+            CreateTable(selFile.file);
         }
 
         private void CreateFile_Click(object sender, RoutedEventArgs e)
         {
-            string path = pathFile;
+            selFile.create_file();
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Text files (*.dlag)|*.dlag|All files (*.*)|*.*";
-            saveFileDialog.InitialDirectory = @path;
-
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                path = saveFileDialog.FileName;
-                Stream myStream = saveFileDialog.OpenFile();
-
-                pathFile = path;
-            }
-            else
-                return;
-
-            CreateTable(path);
+            CreateTable(selFile.file);
         }
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
-            Stream myStream;
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = pathFile;
-            myStream = saveFileDialog.OpenFile();
+            selFile.save_file();
         }
 
         private void DataGrid_SizeChanged(object sender, SizeChangedEventArgs e)

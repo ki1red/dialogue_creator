@@ -1,0 +1,17 @@
+﻿<Window x:Class="DialogsCreator.SignWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DialogsCreator"
+        mc:Ignorable="d"
+        Title="Вход" Height="192" Width="382" ResizeMode="CanMinimize">
+    <Grid>
+        <StackPanel Margin="10,10,10,93">
+            <RadioButton GroupName="choice" Click="choice_Click">Администратор</RadioButton>
+            <RadioButton GroupName="choice" Click="choice_Click">Сценарист</RadioButton>
+            <RadioButton GroupName="choice" Click="choice_Click">Переводчик</RadioButton>
+        </StackPanel>
+        <Button Name="button_sign" Click="buttin_sign_Click" Content="Войти" HorizontalAlignment="Center" Margin="0,88,0,0" VerticalAlignment="Top" IsEnabled="False" Width="102"/>
+    </Grid>
+</Window>

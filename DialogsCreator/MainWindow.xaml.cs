@@ -24,16 +24,39 @@ namespace DialogsCreator
     public partial class MainWindow : Window
     {
         FileManagerDLAG selFile = new FileManagerDLAG();
-        public MainWindow()
+        Roots r;
+        public MainWindow(Roots r)
         {
             InitializeComponent();
 
+            this.r = r;
+            SetupSetting(r);
+
+            this.TranslatingFile.IsEnabled = false;
             this.SaveFile.IsEnabled = false;
             this.SaveAsFile.IsEnabled = false;
             this.visBindings.IsEnabled = false;
             this.gb_add_answers.IsEnabled = false;
             this.gb_add_image.IsEnabled = false;
             this.gb_add_sound.IsEnabled = false;
+        }
+
+        void SetupSetting(Roots roots)
+        {
+            switch (roots.r)
+            {
+                case Roots.root.scenarist:
+                    this.TranslatingFile.IsEnabled = false;
+                    break;
+                case Roots.root.translator:
+                    this.visBindings.IsEnabled = false;
+                    this.datagrid.IsEnabled = false;
+                    this.visBindings.IsEnabled = false;
+                    this.gb_create_base_text.IsEnabled = false;
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void CreateTable(string pathToFile)
@@ -54,7 +77,11 @@ namespace DialogsCreator
             {
                 this.SaveFile.IsEnabled = true;
                 this.SaveAsFile.IsEnabled = true;
-                this.visBindings.IsEnabled = true;
+
+                if (r.r == Roots.root.translator)
+                    this.TranslatingFile.IsEnabled = true;
+                else if (r.r == Roots.root.scenarist)
+                    this.visBindings.IsEnabled = true;
             }
 
             CreateTable(selFile.file);
@@ -68,7 +95,11 @@ namespace DialogsCreator
             {
                 this.SaveFile.IsEnabled = true;
                 this.SaveAsFile.IsEnabled = true;
-                this.visBindings.IsEnabled = true;
+
+                if (r.r == Roots.root.translator)
+                    this.TranslatingFile.IsEnabled = true;
+                else if (r.r == Roots.root.scenarist)
+                    this.visBindings.IsEnabled = true;
             }
 
             CreateTable(selFile.file);

@@ -8,17 +8,19 @@ using System.Threading.Tasks;
 
 namespace DialogsCreator
 {
-    internal class SelectFile
+    internal class FileManagerDLAG
     {
-        public string file { get; set; } = Environment.CurrentDirectory;
-        public string filter { get; set; } = "Dialog files (*.dlag)|*.dlag";
+        public string file { get; private set; } = Environment.CurrentDirectory;
+        public string filter { get; private set; } = "Dialog files (*.dlag)|*.dlag";
 
-        private void select_file(string path)
+        private void SelectFile(string path)
         {
             file = path;
         }
 
-        public void create_file()
+        public FileManagerDLAG() { }
+
+        public void CreateFile()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = filter;
@@ -26,15 +28,18 @@ namespace DialogsCreator
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                select_file(saveFileDialog.FileName);
+                SelectFile(saveFileDialog.FileName);
                 Stream myStream = saveFileDialog.OpenFile();
             }
             else
                 return;
         }
 
-        public void save_file()
+        public void SaveFile()
         {
+            if (!CheckIsNotEmptyFile())
+                return;
+
             Stream myStream;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -44,34 +49,53 @@ namespace DialogsCreator
             // TODO добавить помещение структуры в файл и сохранение
         }
 
-        public void open_file()
+        public void OpenFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = filter; // фильтры файлов
-            openFileDialog.InitialDirectory = file; // путь по умолчанию для окна
+            openFileDialog.Filter = filter;
+            openFileDialog.InitialDirectory = file;
             if (openFileDialog.ShowDialog() == true)
             {
-                select_file(openFileDialog.FileName);
+                SelectFile(openFileDialog.FileName);
             }
             else
                 return;
         }
 
-        public void save_as_file()
+        public void SaveAsFile()
         {
+            if (!CheckIsNotEmptyFile())
+                return;
+
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = filter;
             saveFileDialog.InitialDirectory = file;
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                select_file(saveFileDialog.FileName);
+                SelectFile(saveFileDialog.FileName);
                 Stream myStream = saveFileDialog.OpenFile();
 
                 // TODO добавить помещение структуры в файл и сохранение
             }
             else
                 return;
+        }
+
+        public bool CheckIsNotEmptyFile()
+        {
+            string[] path = file.Split('\\');
+
+            string dlag = "";
+            for (int i = path[path.Length - 1].Length - 1; i > path[path.Length - 1].Length - 6; i--)
+                dlag += path[path.Length - 1][i];
+            dlag = new string(dlag.Reverse().ToArray());
+
+
+            if (dlag == ".dlag")
+                return true;
+            else
+                return false;
         }
     }
 }

@@ -23,11 +23,13 @@ namespace DialogsCreator
     /// </summary>
     public partial class MainWindow : Window
     {
-        SelectFile selFile;
+        FileManagerDLAG selFile = new FileManagerDLAG();
         public MainWindow()
         {
             InitializeComponent();
 
+            this.SaveFile.IsEnabled = false;
+            this.SaveAsFile.IsEnabled = false;
             this.gb_add_answers.IsEnabled = false;
             this.gb_add_image.IsEnabled = false;
             this.gb_add_sound.IsEnabled = false;
@@ -45,21 +47,33 @@ namespace DialogsCreator
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            selFile.open_file();
+            selFile.OpenFile();
+
+            if (selFile.CheckIsNotEmptyFile())
+            {
+                this.SaveFile.IsEnabled = true;
+                this.SaveAsFile.IsEnabled = true;
+            }
 
             CreateTable(selFile.file);
         }
 
         private void CreateFile_Click(object sender, RoutedEventArgs e)
         {
-            selFile.create_file();
+            selFile.CreateFile();
+
+            if (selFile.CheckIsNotEmptyFile())
+            {
+                this.SaveFile.IsEnabled = true;
+                this.SaveAsFile.IsEnabled = true;
+            }
 
             CreateTable(selFile.file);
         }
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
-            selFile.save_file();
+            selFile.SaveFile();
         }
 
         private void DataGrid_SizeChanged(object sender, SizeChangedEventArgs e)

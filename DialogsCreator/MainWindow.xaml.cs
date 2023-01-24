@@ -30,6 +30,7 @@ namespace DialogsCreator
 
             this.SaveFile.IsEnabled = false;
             this.SaveAsFile.IsEnabled = false;
+            this.visBindings.IsEnabled = false;
             this.gb_add_answers.IsEnabled = false;
             this.gb_add_image.IsEnabled = false;
             this.gb_add_sound.IsEnabled = false;
@@ -53,6 +54,7 @@ namespace DialogsCreator
             {
                 this.SaveFile.IsEnabled = true;
                 this.SaveAsFile.IsEnabled = true;
+                this.visBindings.IsEnabled = true;
             }
 
             CreateTable(selFile.file);
@@ -66,6 +68,7 @@ namespace DialogsCreator
             {
                 this.SaveFile.IsEnabled = true;
                 this.SaveAsFile.IsEnabled = true;
+                this.visBindings.IsEnabled = true;
             }
 
             CreateTable(selFile.file);
@@ -106,6 +109,12 @@ namespace DialogsCreator
                 gb_add_answers.IsEnabled = true;
             else
                 gb_add_answers.IsEnabled = false;
+        }
+
+        private void visBindings_CLick(object sender, RoutedEventArgs e)
+        {
+            VisualBindings v = new VisualBindings(selFile.file);
+            v.ShowDialog();
         }
     }
 }

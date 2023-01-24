@@ -26,6 +26,7 @@
                 <MenuItem Header="Выйти" ></MenuItem>
             </MenuItem>
             <MenuItem Header="Редактировать" ></MenuItem>
+            <MenuItem Header="Визуальное связывание" Name="visBindings" Click="visBindings_CLick"/>
         </Menu>
 
         <DataGrid Name="datagrid"

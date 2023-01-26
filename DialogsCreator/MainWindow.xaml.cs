@@ -14,7 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Text.Json;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
+
 
 namespace DialogsCreator
 {
@@ -23,7 +25,8 @@ namespace DialogsCreator
     /// </summary>
     public partial class MainWindow : Window
     {
-        FileManagerDLAG selFile = new FileManagerDLAG(FileManagerDLAG.language.en);
+        FileManagerDLAG selFile = new FileManagerDLAG(DialogsCreator.Language.ru);
+        WPFtoDFD modelView;
         Roots r;
         public MainWindow(Roots r)
         {
@@ -73,41 +76,48 @@ namespace DialogsCreator
         {
             selFile.OpenFile();
 
-            if (selFile.CheckIsNotEmptyFile())
+            if (selFile.file != null)
             {
                 this.SaveFile.IsEnabled = true;
                 this.SaveAsFile.IsEnabled = true;
 
-                if (r.r == Roots.root.translator)
+                if (r.r == Roots.root.translator || r.r == Roots.root.admin)
                     this.TranslatingFile.IsEnabled = true;
-                else if (r.r == Roots.root.scenarist)
+                if (r.r == Roots.root.scenarist || r.r == Roots.root.admin)
                     this.visBindings.IsEnabled = true;
             }
-
-            CreateTable(selFile.file);
+            modelView = new WPFtoDFD(selFile);
+            modelView.DesirializationDFD();
+            //CreateTable(selFile.file);
         }
 
         private void CreateFile_Click(object sender, RoutedEventArgs e)
         {
             selFile.CreateFile();
 
-            if (selFile.CheckIsNotEmptyFile())
+            if (selFile.file != null)
             {
                 this.SaveFile.IsEnabled = true;
                 this.SaveAsFile.IsEnabled = true;
 
-                if (r.r == Roots.root.translator)
+                if (r.r == Roots.root.translator || r.r == Roots.root.admin)
                     this.TranslatingFile.IsEnabled = true;
-                else if (r.r == Roots.root.scenarist)
+                if (r.r == Roots.root.scenarist || r.r == Roots.root.admin)
                     this.visBindings.IsEnabled = true;
             }
 
-            CreateTable(selFile.file);
+            modelView = new WPFtoDFD(selFile);
+            modelView.DesirializationDFD();
         }
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
-            selFile.SaveFile();
+            modelView.SerializationDFD();
+        }
+
+        private void SaveAsFile_Click(object sender, RoutedEventArgs e)
+        {
+            modelView.SerializationDFD(selFile.path);
         }
 
         private void DataGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -146,6 +156,133 @@ namespace DialogsCreator
         {
             VisualBindings v = new VisualBindings(selFile.file);
             v.ShowDialog();
+        }
+
+        private void button_add_Click(object sender, RoutedEventArgs e)
+        {
+            string check = FieldValidation();
+            if (check != null)
+            {
+                MessageBox.Show(check);
+                return;
+            }
+
+            string author; string question; string pathToSound; string pathToImage; string[] answers;
+
+            author = textbox_name.Text;
+            question = textbox_text.Text;
+
+            if (label_image.Content != null && cb_image.IsChecked == true)
+                pathToImage = label_image.Content as string;
+            else
+                pathToImage = "NULL";
+
+            if (label_sound.Content != null && cb_sound.IsChecked == true)
+                pathToSound = label_sound.Content as string;
+            else
+                pathToSound = "NULL";
+
+            if (cb_answers.IsChecked == true)
+            {
+                answers = new string[combobox_answers.Items.Count];
+                combobox_answers.Items.CopyTo(answers, 0);
+            }
+            else
+                answers = new string[0];
+
+            modelView.AddElementDFDWithoutConnection(author, question, pathToSound, pathToImage, answers);
+        }
+
+        private void button_import_image_Click(object sender, RoutedEventArgs e)
+        {
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "All files (*.*)|*.*";
+            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
+            if (openFileDialog.ShowDialog() == true)
+            {
+                label_image.Content = openFileDialog.FileName;
+            }
+            else
+                return;
+        }
+
+        private void button_import_sound_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "All files (*.*)|*.*";
+            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
+            if (openFileDialog.ShowDialog() == true)
+            {
+                label_sound.Content = openFileDialog.FileName;
+            }
+            else
+                return;
+        }
+
+        private void button_add_answer_Click(object sender, RoutedEventArgs e)
+        {
+            if (textbox_answer.Text.Length == 0)
+            {
+                MessageBox.Show("Не заполнено текстовое поле ответа");
+                return;
+            }
+            else if (CheckedComboBoxAnswers(textbox_answer.Text))
+            {
+                MessageBox.Show("Такой ответ уже существует");
+                return;
+            }
+
+            combobox_answers.Items.Add(textbox_answer.Text);
+        }
+
+        private bool CheckedComboBoxAnswers(string text)
+        {
+            foreach (var item in combobox_answers.Items)
+            {
+                if (text == item as string)
+                    return true;
+            }
+            return false;
+        }
+
+        private string FieldValidation()
+        {
+            if (textbox_name.Text.Length == 0)
+                return "Не указано имя автора";
+
+            if (textbox_text.Text.Length == 0)
+                return "Не указан текст вопроса";
+
+            if (cb_sound.IsChecked == true)
+            {
+                if (label_sound.Content as string == "None")
+                    return "Не указан звуковой файл";
+            }
+            if (cb_image.IsChecked == true)
+            {
+                if (label_image.Content as string == "None")
+                    return "Не указан файл изображения";
+            }
+
+            if (cb_answers.IsChecked == true)
+            {
+                if (combobox_answers.Items.Count == 0)
+                    return "Не указаны ответы к диалогу";
+            }
+
+            return null;
+        }
+
+        private void button_del_answer_Click(object sender, RoutedEventArgs e)
+        {
+            if (combobox_answers.Items.Count == 0 || (combobox_answers.SelectedItem as string).Length <= 0)
+            {
+                MessageBox.Show("Не выбран текст ответа для удаления");
+                return;
+            }
+
+            combobox_answers.Items.Remove(combobox_answers.SelectedItem);
         }
     }
 }

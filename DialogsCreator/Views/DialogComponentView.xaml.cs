@@ -18,30 +18,23 @@ using System.Windows.Shapes;
 
 namespace DialogsCreator.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для DialogComponentView.xaml
-    /// </summary>
-    /// 
-  
     public class LinkDataPackage
     {
-        public DialogComponentView currentDialogComponent { get; private set;}
-        public DialogComponentView linkedDialogComponent { get; private set; }
-        public BindingDialogComponentView currentBindingDialogComponentView { get; private set; }
-        public BindingDialogComponentView linkedBindingDialogComponentView { get; private set; }
-        public KeyValuePair<PathFigure, BezierSegment> linkLineData { get; private set; }
+        public DialogComponentView firstDialogComponent { get; private set;}
+        public DialogComponentView secondeDialogComponent { get; private set; }
+        public BindingDialogComponentView firstBindingDialogComponentView { get; private set; }
+        public BindingDialogComponentView secondeBindingDialogComponentView { get; private set; }
+
         public LinkDataPackage(
-            DialogComponentView currentDialogComponent, 
-            DialogComponentView linkedDialogComponent, 
-            BindingDialogComponentView currentBindingDialogComponentView, 
-            BindingDialogComponentView linkedBindingDialogComponentView, 
-            KeyValuePair<PathFigure, BezierSegment> lineData)
+            DialogComponentView firstDialogComponent, 
+            DialogComponentView secondeDialogComponent, 
+            BindingDialogComponentView firstBindingDialogComponentView, 
+            BindingDialogComponentView secondeBindingDialogComponentView)
         {
-            this.currentDialogComponent = currentDialogComponent;
-            this.linkedDialogComponent = linkedDialogComponent;
-            this.currentBindingDialogComponentView = currentBindingDialogComponentView;
-            this.linkedBindingDialogComponentView = linkedBindingDialogComponentView;
-            this.linkLineData = lineData;
+            this.firstDialogComponent = firstDialogComponent;
+            this.secondeDialogComponent = secondeDialogComponent;
+            this.firstBindingDialogComponentView = firstBindingDialogComponentView;
+            this.secondeBindingDialogComponentView = secondeBindingDialogComponentView;
         }
     }
 
@@ -54,8 +47,10 @@ namespace DialogsCreator.Views
         private Canvas canvas;
         private Point _mousePosition;
         private bool _isMouseDown = false;
-        private List<LinkDataPackage> linkDataPackages = new List<LinkDataPackage>();
+
         private List<BindingDialogComponentView> bindingDialogComponentViews = new List<BindingDialogComponentView>();
+
+        public List<LinkDataPackage> linkDataPackages { get; private set; } = new List<LinkDataPackage>();
 
         public BindingDialogComponentView TopBindingDialogComponentView { get; private set; }
 
@@ -175,20 +170,28 @@ namespace DialogsCreator.Views
 
                 foreach (var linkData in linkDataPackages) 
                 {
-                    var p1 = BindingDialogComponentView.GetPostionBindingPoint(
-                        linkData.currentBindingDialogComponentView);
-                   
-                    var p3 = BindingDialogComponentView.GetPostionBindingPoint(
-                        linkData.linkedBindingDialogComponentView);
+                    if(linkData.firstDialogComponent == this) 
+                    {
+                        linkData.firstBindingDialogComponentView.bindingsLines.First().X1 = 
+                            offset.X + linkData.firstBindingDialogComponentView.bindingsLines.First().X1;
+                        linkData.firstBindingDialogComponentView.bindingsLines.First().Y1 =
+                            linkData.firstBindingDialogComponentView.bindingsLines.First().Y1 + offset.Y;
+                    }
 
-                    var p2 = new Point(
-                        x: (p1.X + p3.X) / 2,
-                        y: (p1.Y + p3.Y) / 2);
+                    else if (linkData.secondeDialogComponent == this) 
+                    {
+                        linkData.firstBindingDialogComponentView.bindingsLines.Last().X2 =
+                            offset.X + linkData.firstBindingDialogComponentView.bindingsLines.Last().X2;
 
-                    linkData.linkLineData.Key.StartPoint = p1;
-                    linkData.linkLineData.Value.Point1 = p1;
-                    linkData.linkLineData.Value.Point2 = p2;
-                    linkData.linkLineData.Value.Point3 = p3;
+                        linkData.firstBindingDialogComponentView.bindingsLines.Last().Y2 =
+                            linkData.firstBindingDialogComponentView.bindingsLines.Last().Y2 + offset.Y;
+                    }
+
+                    else
+                    {
+                        throw new ArgumentException("This Dialog Component not linked but have linkData with another objects this is error in logic");
+                    }
+
                 }
             }
         }

@@ -5,34 +5,38 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
-        Title="VisualBindings" Name="VisualBindings_window" Height="450" Width="800">
-    <Grid Height="440" VerticalAlignment="Top">
-        <Menu Height="25" VerticalAlignment="Top" Name="MenuItem_fileSettings" Grid.ColumnSpan="2">
+        Name="VisualBindings_window" Height="451" Width="800">
+    <Grid Margin="0,0,0,4" Background="Aqua">
+        <Menu Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="MenuItem_fileSettings" Grid.ColumnSpan="2">
             <MenuItem Header="Файл">
-                <MenuItem Header="Создать" Name="MenuItem_createFile" Click="MenuItem_createFile_Click"></MenuItem>
-                <MenuItem Header="Открыть" Name="MenuItem_openFile" Click="MenuItem_openFile_Click"></MenuItem>
-                <MenuItem Header="Сохранить" Name="MenuItem_saveFile" Click="MenuItem_saveFile_Click"></MenuItem>
-                <MenuItem Header="Сохранить как" Name="MenuItem_saveAsFile" Click="MenuItem_saveAsFile_Click"></MenuItem>
+                <MenuItem Header="Создать" Name="MenuItem_createFile"></MenuItem>
+                <MenuItem Header="Открыть" Name="MenuItem_openFile"></MenuItem>
+                <MenuItem Header="Сохранить" Name="MenuItem_saveFile"></MenuItem>
+                <MenuItem Header="Сохранить как" Name="MenuItem_saveAsFile"></MenuItem>
                 <Separator />
-                <MenuItem Header="Экспортировать"></MenuItem>
-                <MenuItem Header="Импортировать"></MenuItem>
+                <MenuItem Header="Экспортировать" Name="MenuItem_exportFile"></MenuItem>
+                <MenuItem Header="Импортировать" Name="MenuItem_importFile"></MenuItem>
+                <Separator />
+                <MenuItem Header="Закрыть" Name="MenuItem_closeFile"></MenuItem>
             </MenuItem>
             <MenuItem Header="Объект" Name="MenuItem_objectSettings">
-                <MenuItem Header="Добавить" Name="MenuItem_addObject" Click="AddObject_Click"></MenuItem>
+                <MenuItem Header="Добавить" Name="MenuItem_addObject"></MenuItem>
                 <MenuItem Header="Редактировать" Name="MenuItem_editObject"></MenuItem>
                 <MenuItem Header="Удалить" Name="MenuItem_deleteObject"></MenuItem>
             </MenuItem>
         </Menu>
-        
+
         <ScrollViewer Margin="0,25,0,0">
-            <Canvas Name="MainCanvas"  Background="#FF7F7676">
+            <Canvas Name="MainCanvas" Background="#FF7F7676">
             </Canvas>
         </ScrollViewer>
-        
-        <Border BorderBrush="Black" IsEnabled="False" BorderThickness="5" Margin="536,25,18,10">
-            
+        <Label Name="Label_informationOfLanguage" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="143" Height="26"/>
+
+        <!--
+        <Border BorderBrush="Black" BorderThickness="5" Margin="536,25,18,10">
+            <StackPanel/>
         </Border>
-        <Label Name="Label_informationOfLanguage" HorizontalAlignment="Left" Margin="10,404,0,0" VerticalAlignment="Top"/>
+        -->
 
 
     </Grid>

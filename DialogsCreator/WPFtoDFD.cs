@@ -24,7 +24,7 @@ namespace DialogsCreator
             this.dialog = new DialogDFD();
             this.id = -1;
         }
-        public void DesirializationDFD()    // TODO сделать обработку если никакой файл не выбран
+        public void DesirializationDFD()
         {
             string text;
             using (StreamReader reader = new StreamReader($"{fileManager.path}{fileManager.file}.{FileManagerDLAG.type}")) // полный путь до файла
@@ -37,7 +37,7 @@ namespace DialogsCreator
                 dialog = new DialogDFD();
                 dialog.language = fileManager.language.ToString();
             }
-
+            fileManager.language = fileManager.ToLanguage(dialog.language);
             id = GetIdLastElement();
         }
         public void SerializationDFD()
@@ -50,7 +50,8 @@ namespace DialogsCreator
         {
             string json = JsonConvert.SerializeObject(dialog);
 
-            fileManager.SaveAsFile(path, json);
+            if (fileManager.SaveAsFile(path, json) == false)
+                return;
         }
         public void AddElementDFDWithoutConnection(string author, string question, string pathToSound, string pathToImage, string[] answers)
         {
@@ -63,8 +64,8 @@ namespace DialogsCreator
 
             SayingElementDFD sayingElement = new SayingElementDFD();
             sayingElement.text = question;
-            sayingElement.nextIdElement = -1;
-            sayingElement.requests = new int[0];
+            sayingElement.nextElement = "NULL";
+            sayingElement.requests = new string[0];
 
             element.question = sayingElement;
 
@@ -75,7 +76,7 @@ namespace DialogsCreator
             
             for (int iAnswers = 0; iAnswers <  sayingElements.Length; iAnswers++)
             {
-                SayingElementDFD item = new SayingElementDFD(answers[iAnswers], -1, new int[0]);
+                SayingElementDFD item = new SayingElementDFD(answers[iAnswers], "NULL", new string[0]);
                 sayingElements[iAnswers] = item;
             }
 

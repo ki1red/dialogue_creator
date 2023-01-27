@@ -31,10 +31,6 @@ namespace DialogsCreator
             InitializeComponent();
 
             this.modelView = modelView;
-            //this.TranslatingFile.IsEnabled = false;
-            //this.SaveFile.IsEnabled = false;
-            //this.SaveAsFile.IsEnabled = false;
-            //this.visBindings.IsEnabled = false;
             this.gb_add_answers.IsEnabled = false;
             this.gb_add_image.IsEnabled = false;
             this.gb_add_sound.IsEnabled = false;

@@ -17,6 +17,7 @@ namespace DialogsCreator
     public class FileManagerDLAG
     {
         public const uint countLanguages = 4;
+        private Dictionary<string, string> titles = new Dictionary<string, string>() { { "open" , "Открыть файл"}, { "create", "Создать файл" }, { "save as", "Сохранить файл как" } };
 
         public string file { get; private set; } = null;
         public string path { get; private set; } = Environment.CurrentDirectory;
@@ -40,38 +41,43 @@ namespace DialogsCreator
 
         public FileManagerDLAG(Language language = Language.none) { this.language = language; }
 
-        public void CreateFile()
+        public bool CreateFile()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = filter;
             saveFileDialog.InitialDirectory = path;
             saveFileDialog.FileName = file;
             saveFileDialog.DefaultExt = type;
+            saveFileDialog.Title = titles["create"];
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                SelectFile(saveFileDialog.FileName);
-                Stream myStream = saveFileDialog.OpenFile();
-                myStream.Close();
+                Stream myStream;
+                if ((myStream = saveFileDialog.OpenFile()) != null)
+                {
+                    myStream.Close();
+                    SelectFile(saveFileDialog.FileName);
+                    return true;
+                }
             }
-            else
-                return;
+            return false;
         }
 
-        public void OpenFile()
+        public bool OpenFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = filter;
             openFileDialog.InitialDirectory = path;
             openFileDialog.FileName = file;
             openFileDialog.DefaultExt = type;
+            openFileDialog.Title = titles["open"];
 
             if (openFileDialog.ShowDialog() == true)
             {
                 SelectFile(openFileDialog.FileName);
+                return true;
             }
-            else
-                return;
+            return false;
         }
 
         public void SaveFile(string data)
@@ -82,7 +88,7 @@ namespace DialogsCreator
             File.WriteAllText($"{path}{file}.{type}", data);
         }
 
-        public void SaveAsFile(string path, string data)
+        public bool SaveAsFile(string path, string data)
         {
             if (file == null)
                 throw new Exception("При сохранении файла обнаружено отсутствие файла");
@@ -91,14 +97,30 @@ namespace DialogsCreator
             saveFileDialog.InitialDirectory = path;
             saveFileDialog.Filter = filter;
             saveFileDialog.DefaultExt = type;
+            saveFileDialog.Title = titles["save as"];
 
             if (saveFileDialog.ShowDialog() == true)
             {
                 SelectFile(saveFileDialog.FileName);
                 File.WriteAllText($"{path}{file}.{type}", data);
+                return true;
             }
-            else
-                return;
+            return false;
+        }
+
+        public Language ToLanguage(string language)
+        {
+            switch (language)
+            {
+                case "ru":
+                    return Language.ru;
+                case "en":
+                    return Language.en;
+                case "de":
+                    return Language.de;
+                default:
+                    return Language.none;
+            }
         }
         /*
         public bool CheckIsNotEmptyFile()

@@ -104,32 +104,32 @@ namespace DialogsCreator
     public class SayingElementDFD
     {
         public string text;
-        public int nextIdElement;
-        public int[] requests;
-        public SayingElementDFD(string text, int nextIdElement, int[] requests)
+        public string nextElement;
+        public string[] requests;
+        public SayingElementDFD(string text, string nextElement, string[] requests)
         {
             this.text = text;
-            this.nextIdElement = nextIdElement;
+            this.nextElement = nextElement;
             this.requests = requests;
         }
         public SayingElementDFD()
         {
             this.text = "NULL";
-            this.nextIdElement = -1;
-            this.requests = new int[0];
+            this.nextElement = "NULL";
+            this.requests = new string[0];
         }
-        public void Add(int element)
+        public void Add(string element)
         {
             Array.Resize(ref requests, requests.Length + 1);
             requests[requests.Length - 1] = element;
         }
-        public void Replace(ref int elementOld, int elementNew)
+        public void Replace(ref string elementOld, string elementNew)
         {
             elementOld = elementNew;
         }
-        public void Delete(int element)
+        public void Delete(string element)
         {
-            int[] tmp = new int[requests.Length - 1];
+            string[] tmp = new string[requests.Length - 1];
             int iTmp = 0;
             foreach (var item in requests)
             {

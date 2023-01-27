@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Создатель диалогов" Height="726" Width="538" >
 
-    <Grid Height="716" VerticalAlignment="Top">
+    <Grid Height="716" VerticalAlignment="Top" RenderTransformOrigin="0.692,0.365">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="0*"/>

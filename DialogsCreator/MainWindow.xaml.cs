@@ -46,7 +46,7 @@ namespace DialogsCreator
 
         void SetupSetting(Roots roots)
         {
-            switch (roots.r)
+            /*switch (roots.r)
             {
                 case Roots.root.scenarist:
                     this.TranslatingFile.IsEnabled = false;
@@ -59,7 +59,7 @@ namespace DialogsCreator
                     break;
                 default:
                     break;
-            }
+            }*/
         }
 
         private void CreateTable(string pathToFile)
@@ -76,7 +76,7 @@ namespace DialogsCreator
         {
             selFile.OpenFile();
 
-            if (selFile.file != null)
+            /*if (selFile.file != null)
             {
                 this.SaveFile.IsEnabled = true;
                 this.SaveAsFile.IsEnabled = true;
@@ -88,12 +88,12 @@ namespace DialogsCreator
             }
             modelView = new WPFtoDFD(selFile);
             modelView.DesirializationDFD();
-            //CreateTable(selFile.file);
+            //CreateTable(selFile.file);*/
         }
 
         private void CreateFile_Click(object sender, RoutedEventArgs e)
         {
-            selFile.CreateFile();
+           /* selFile.CreateFile();
 
             if (selFile.file != null)
             {
@@ -107,7 +107,7 @@ namespace DialogsCreator
             }
 
             modelView = new WPFtoDFD(selFile);
-            modelView.DesirializationDFD();
+            modelView.DesirializationDFD();*/
         }
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)

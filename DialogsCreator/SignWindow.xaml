@@ -7,11 +7,11 @@
         mc:Ignorable="d"
         Title="Вход" Height="192" Width="382" ResizeMode="CanMinimize">
     <Grid>
-        <StackPanel Margin="10,10,10,93">
-            <RadioButton GroupName="choice" Click="choice_Click">Администратор</RadioButton>
-            <RadioButton GroupName="choice" Click="choice_Click">Сценарист</RadioButton>
-            <RadioButton GroupName="choice" Click="choice_Click">Переводчик</RadioButton>
+        <StackPanel Name="stackPanel" Margin="10,10,10,52">
+            <RadioButton Name="admin" GroupName="choice" Click="Choice_Click" FontSize="18">Администратор</RadioButton>
+            <RadioButton Name="scenarist" GroupName="choice" Click="Choice_Click" FontSize="18">Сценарист</RadioButton>
+            <RadioButton Name="translator" GroupName="choice" Click="Choice_Click" FontSize="18">Переводчик</RadioButton>
         </StackPanel>
-        <Button Name="button_sign" Click="buttin_sign_Click" Content="Войти" HorizontalAlignment="Center" Margin="0,88,0,0" VerticalAlignment="Top" IsEnabled="False" Width="102"/>
+        <Button Name="ButtonSign" IsEnabled="False" Click="ButtonSign_Click" Content="Войти" FontSize="18" HorizontalAlignment="Center" Margin="0,0,0,19" Width="102" Height="28" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>

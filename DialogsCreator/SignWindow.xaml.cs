@@ -44,9 +44,9 @@ namespace DialogsCreator
             {
                 case TypeUser.scenarist:
                     this.Hide();
-                    MainWindow mainWindow = new MainWindow(root);
-                    mainWindow.ShowDialog();
-                    mainWindow.Closed += ThisClose(mainWindow, null);
+                    VisualBindings window = new VisualBindings();
+                    window.ShowDialog();
+                    window.Closed += ThisClose(window, null);
                     break;
                 case TypeUser.admin:
                     MessageBox.Show("Окно пока не готово");

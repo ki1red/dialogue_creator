@@ -20,16 +20,30 @@ namespace DialogsCreator
 {
     public partial class VisualBindings : Window
     {
-        // pathToFile - Dialog.dlag
-        // название файла с озвучкой будет Dialog_ru.dl, который будет лежать в той же папке, что и .dlag
-        // при закрытии формы файлы автоматически будут сохраняться, либо сделай кнопку
+        // ===========================================================================================================================
+        // ======================== ПЕРЕМЕННЫЕ ДЛЯ ХРАНЕНИЯ ИНФОРМАЦИИ О DFD В ФАЙЛЕ И СТРУКТУРЕ =====================================
+        // ===========================================================================================================================
+
+        FileManagerDLAG selFile = new FileManagerDLAG();
+        WPFtoDFD modelView;
+
+        // ===========================================================================================================================
+        // ================================ ПЕРЕМЕННЫЕ ИЛЬИ ХЗ ДЛЯ ЧЕГО ==============================================================
+        // ===========================================================================================================================
+
         private bool isDrawingLine;
         private Path linePath;
         private Point startPoint;
         private BindingDialogComponentView startBindingDialogComponentView;
-        public VisualBindings(string pathToFile)
+
+        // ===========================================================================================================================
+        // ================================ КОНСТРУКТОРЫ ФОРМЫ VISUAL BINDINGS =======================================================
+        // ===========================================================================================================================
+        public VisualBindings()
         {
             InitializeComponent();
+
+            InitializeComponentsTopMenu();
 
             MainCanvas.MouseLeftButtonDown += MainCanvas_MouseDown;
             MainCanvas.MouseLeftButtonUp += MainCanvas_MouseUp;
@@ -48,6 +62,18 @@ namespace DialogsCreator
             dialogComponentView.TopBindingDialogComponentView.LinkWith(dialogComponentView2.TopBindingDialogComponentView, MainCanvas);
         }
 
+        // ===========================================================================================================================
+        // ================================ ИНИЦИАЛИЗАЦИИ ГРУПП КОМПОНЕНТОВ ФОРМЫ ====================================================
+        // ===========================================================================================================================
+        public void InitializeComponentsTopMenu()
+        {
+            this.MenuItem_saveFile.IsEnabled = false;
+            this.MenuItem_saveAsFile.IsEnabled = false;
+            this.MenuItem_objectSettings.IsEnabled = false;
+        }
+        // ===========================================================================================================================
+        // ======================================== РАБОТА С MAINCANVAS ==============================================================
+        // ===========================================================================================================================
         private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if(e.Source is BindingDialogComponentView)
@@ -121,6 +147,66 @@ namespace DialogsCreator
                     linePath = null;
                 }
             }
+        }
+
+
+        // ===========================================================================================================================
+        // =================================== РАБОТА С ВЕРХНИМ МЕНЮ =================================================================
+        // ===========================================================================================================================
+        private void MenuItem_openFile_Click(object sender, RoutedEventArgs e)
+        {
+            selFile.OpenFile();
+
+            if (selFile.file != null)
+            {
+                this.MenuItem_saveFile.IsEnabled = true;
+                this.MenuItem_saveAsFile.IsEnabled = true;
+                this.MenuItem_objectSettings.IsEnabled = true;
+
+                //if (r.r == Roots.root.translator || r.r == Roots.root.admin)
+                //    this.TranslatingFile.IsEnabled = true;
+                //if (r.r == Roots.root.scenarist || r.r == Roots.root.admin)
+                //    this.visBindings.IsEnabled = true;
+            }
+            modelView = new WPFtoDFD(selFile);
+            modelView.DesirializationDFD();
+        }
+
+        private void MenuItem_createFile_Click(object sender, RoutedEventArgs e)
+        {
+            selFile.CreateFile();
+
+             if (selFile.file != null)
+             {
+                this.MenuItem_saveFile.IsEnabled = true;
+                this.MenuItem_saveAsFile.IsEnabled = true;
+                this.MenuItem_objectSettings.IsEnabled = true;
+
+                //if (r.r == Roots.root.translator || r.r == Roots.root.admin)
+                //     this.TranslatingFile.IsEnabled = true;
+                // if (r.r == Roots.root.scenarist || r.r == Roots.root.admin)
+                //    this.visBindings.IsEnabled = true;
+            }
+
+             modelView = new WPFtoDFD(selFile);
+             modelView.DesirializationDFD();
+        }
+
+        private void MenuItem_saveFile_Click(object sender, RoutedEventArgs e)
+        {
+            modelView.SerializationDFD();
+        }
+
+        private void MenuItem_saveAsFile_Click(object sender, RoutedEventArgs e)
+        {
+            modelView.SerializationDFD(selFile.path);
+        }
+        private void AddObject_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow window = new MainWindow(ref modelView);
+            window.ShowDialog();
+
+            // TODO Добавлять объект на сцену ТОЛЬКО ЕСЛИ он был создан в окне MainWindow
         }
     }
 }

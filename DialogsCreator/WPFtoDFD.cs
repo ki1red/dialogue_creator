@@ -35,7 +35,7 @@ namespace DialogsCreator
             if (dialog == null)
             {
                 dialog = new DialogDFD();
-                dialog.language = fileManager.lang.ToString();
+                dialog.language = fileManager.language.ToString();
             }
 
             id = GetIdLastElement();

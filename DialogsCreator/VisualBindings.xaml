@@ -5,9 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
-        Title="VisualBindings" Height="450" Width="800">
-    <ScrollViewer>
-        <Canvas Name="MainCanvas"  Background="#FF7F7676">
-        </Canvas>
-    </ScrollViewer>
+        Title="VisualBindings" Name="VisualBindings_window" Height="450" Width="800">
+    <Grid Height="440" VerticalAlignment="Top">
+        <Menu Height="25" VerticalAlignment="Top" Name="MenuItem_fileSettings" Grid.ColumnSpan="2">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Создать" Name="MenuItem_createFile" Click="MenuItem_createFile_Click"></MenuItem>
+                <MenuItem Header="Открыть" Name="MenuItem_openFile" Click="MenuItem_openFile_Click"></MenuItem>
+                <MenuItem Header="Сохранить" Name="MenuItem_saveFile" Click="MenuItem_saveFile_Click"></MenuItem>
+                <MenuItem Header="Сохранить как" Name="MenuItem_saveAsFile" Click="MenuItem_saveAsFile_Click"></MenuItem>
+                <Separator />
+                <MenuItem Header="Экспортировать"></MenuItem>
+                <MenuItem Header="Импортировать"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Объект" Name="MenuItem_objectSettings">
+                <MenuItem Header="Добавить" Name="MenuItem_addObject" Click="AddObject_Click"></MenuItem>
+                <MenuItem Header="Редактировать" Name="MenuItem_editObject"></MenuItem>
+                <MenuItem Header="Удалить" Name="MenuItem_deleteObject"></MenuItem>
+            </MenuItem>
+        </Menu>
+        
+        <ScrollViewer Margin="0,25,0,0">
+            <Canvas Name="MainCanvas"  Background="#FF7F7676">
+            </Canvas>
+        </ScrollViewer>
+        
+        <Border BorderBrush="Black" IsEnabled="False" BorderThickness="5" Margin="536,25,18,10">
+            
+        </Border>
+        <Label Name="Label_informationOfLanguage" HorizontalAlignment="Left" Margin="10,404,0,0" VerticalAlignment="Top"/>
+
+
+    </Grid>
 </Window>

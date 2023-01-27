@@ -9,25 +9,25 @@ namespace DialogsCreator
 {
     public enum Language
     {
-        ru = 0,
-        en = 1,
-        de = 2
+        none = 0,
+        ru = 1,
+        en = 2,
+        de = 3
     }
     public class FileManagerDLAG
     {
-        
+        public const uint countLanguages = 4;
+
         public string file { get; private set; } = null;
         public string path { get; private set; } = Environment.CurrentDirectory;
-        // public string fileL { get; private set; } = Environment.CurrentDirectory;
-        public Language lang;
+        public Language language;
 
         public const string filter = $"Develop files dialogues (*.{type})|*.{type}";
-        //private const string typeL = ".dl";
         public const string type = "dfd";
 
-        private void SelectFile(string path)
+        private void SelectFile(string pathAndFile)
         {
-            string[] pathToFile = path.Split('\\');
+            string[] pathToFile = pathAndFile.Split('\\');
 
             string[] tmpfile = pathToFile[pathToFile.Length - 1].Split('.');
 
@@ -38,7 +38,7 @@ namespace DialogsCreator
                 this.path += pathToFile[i] + "\\"; // путь к файлу без самого файла
         }
 
-        public FileManagerDLAG(Language language) { lang = language; }
+        public FileManagerDLAG(Language language = Language.none) { this.language = language; }
 
         public void CreateFile()
         {
@@ -53,7 +53,6 @@ namespace DialogsCreator
                 SelectFile(saveFileDialog.FileName);
                 Stream myStream = saveFileDialog.OpenFile();
                 myStream.Close();
-                //myStream = new FileStream(fileL, FileMode.Create);
             }
             else
                 return;
@@ -75,25 +74,15 @@ namespace DialogsCreator
                 return;
         }
 
-        public void SaveFile(string dialog)
+        public void SaveFile(string data)
         {
             if (file == null)
                 throw new Exception("При сохранении файла обнаружено отсутствие файла");
 
-            //Stream myStream;
-
-            //SaveFileDialog saveFileDialog = new SaveFileDialog();
-            //saveFileDialog.InitialDirectory = path;
-            //saveFileDialog.FileName = file;
-            //saveFileDialog.DefaultExt = type;
-            //saveFileDialog.ShowDialog();
-            //myStream = saveFileDialog.OpenFile();
-            //myStream.Close();
-            File.WriteAllText($"{path}{file}.{type}", dialog);
-            // TODO добавить помещение структуры в файл и сохранение
+            File.WriteAllText($"{path}{file}.{type}", data);
         }
 
-        public void SaveAsFile(string path, string dialog)
+        public void SaveAsFile(string path, string data)
         {
             if (file == null)
                 throw new Exception("При сохранении файла обнаружено отсутствие файла");
@@ -106,9 +95,7 @@ namespace DialogsCreator
             if (saveFileDialog.ShowDialog() == true)
             {
                 SelectFile(saveFileDialog.FileName);
-                File.WriteAllText($"{path}{file}.{type}", dialog);
-
-                // TODO добавить помещение структуры в файл и сохранение
+                File.WriteAllText($"{path}{file}.{type}", data);
             }
             else
                 return;

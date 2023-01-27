@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
-        Title="Создатель диалогов" Height="726" Width="962" >
+        Title="Создатель диалогов" Height="726" Width="538" >
 
     <Grid Height="716" VerticalAlignment="Top">
         <Grid.RowDefinitions>
@@ -16,24 +16,8 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Menu Height="25" VerticalAlignment="Top" Name="top_menu" Grid.ColumnSpan="2">
-            <MenuItem Header="Файл">
-                <MenuItem Header="Создать" Name="CreateFile" Click="CreateFile_Click"></MenuItem>
-                <MenuItem Header="Открыть" Name="OpenFile" Click="OpenFile_Click"></MenuItem>
-                <MenuItem Header="Сохранить" Name="SaveFile" Click="SaveFile_Click"></MenuItem>
-                <MenuItem Header="Сохранить как" Name="SaveAsFile" Click="SaveAsFile_Click"></MenuItem>
-                <Separator />
-                <MenuItem Header="Выйти" ></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Перевод" Name="TranslatingFile"></MenuItem>
-            <MenuItem Header="Визуальное связывание" Name="visBindings" Click="visBindings_CLick"/>
-        </Menu>
 
-        <DataGrid Name="datagrid"
-            d:ItemsSource="{d:SampleData ItemCount=5}" Margin="41,36,40,0" Grid.Column="1" Height="613" VerticalAlignment="Top"/>
-
-
-        <Expander Header="Создание основного текста диалога" Name="gb_create_base_text" Margin="29,36,74,0" Height="660" VerticalAlignment="Top">
+        <Expander Header="Создание основного текста диалога" Name="gb_create_base_text" Margin="29,36,19,0" Height="660" VerticalAlignment="Top" Grid.ColumnSpan="2">
             <Grid Background="#FFE5E5E5" Height="641" VerticalAlignment="Center">
 
                 <TextBox Name="textbox_name" Margin="10,24,40,0" TextWrapping="Wrap" VerticalAlignment="Top"/>

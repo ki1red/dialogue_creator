@@ -25,106 +25,24 @@ namespace DialogsCreator
     /// </summary>
     public partial class MainWindow : Window
     {
-        FileManagerDLAG selFile = new FileManagerDLAG(DialogsCreator.Language.ru);
         WPFtoDFD modelView;
-        Roots r;
-        public MainWindow(Roots r)
+        public MainWindow(ref WPFtoDFD modelView)
         {
             InitializeComponent();
 
-            this.r = r;
-            SetupSetting(r);
-
-            this.TranslatingFile.IsEnabled = false;
-            this.SaveFile.IsEnabled = false;
-            this.SaveAsFile.IsEnabled = false;
-            this.visBindings.IsEnabled = false;
+            this.modelView = modelView;
+            //this.TranslatingFile.IsEnabled = false;
+            //this.SaveFile.IsEnabled = false;
+            //this.SaveAsFile.IsEnabled = false;
+            //this.visBindings.IsEnabled = false;
             this.gb_add_answers.IsEnabled = false;
             this.gb_add_image.IsEnabled = false;
             this.gb_add_sound.IsEnabled = false;
         }
 
-        void SetupSetting(Roots roots)
-        {
-            /*switch (roots.r)
-            {
-                case Roots.root.scenarist:
-                    this.TranslatingFile.IsEnabled = false;
-                    break;
-                case Roots.root.translator:
-                    this.visBindings.IsEnabled = false;
-                    this.datagrid.IsEnabled = false;
-                    this.visBindings.IsEnabled = false;
-                    this.gb_create_base_text.IsEnabled = false;
-                    break;
-                default:
-                    break;
-            }*/
-        }
-
-        private void CreateTable(string pathToFile)
-        {
-            
-        }
-
-        private void EnableAddingDialogues()
-        {
-
-        }
-
-        private void OpenFile_Click(object sender, RoutedEventArgs e)
-        {
-            selFile.OpenFile();
-
-            /*if (selFile.file != null)
-            {
-                this.SaveFile.IsEnabled = true;
-                this.SaveAsFile.IsEnabled = true;
-
-                if (r.r == Roots.root.translator || r.r == Roots.root.admin)
-                    this.TranslatingFile.IsEnabled = true;
-                if (r.r == Roots.root.scenarist || r.r == Roots.root.admin)
-                    this.visBindings.IsEnabled = true;
-            }
-            modelView = new WPFtoDFD(selFile);
-            modelView.DesirializationDFD();
-            //CreateTable(selFile.file);*/
-        }
-
-        private void CreateFile_Click(object sender, RoutedEventArgs e)
-        {
-           /* selFile.CreateFile();
-
-            if (selFile.file != null)
-            {
-                this.SaveFile.IsEnabled = true;
-                this.SaveAsFile.IsEnabled = true;
-
-                if (r.r == Roots.root.translator || r.r == Roots.root.admin)
-                    this.TranslatingFile.IsEnabled = true;
-                if (r.r == Roots.root.scenarist || r.r == Roots.root.admin)
-                    this.visBindings.IsEnabled = true;
-            }
-
-            modelView = new WPFtoDFD(selFile);
-            modelView.DesirializationDFD();*/
-        }
-
-        private void SaveFile_Click(object sender, RoutedEventArgs e)
-        {
-            modelView.SerializationDFD();
-        }
-
-        private void SaveAsFile_Click(object sender, RoutedEventArgs e)
-        {
-            modelView.SerializationDFD(selFile.path);
-        }
-
-        private void DataGrid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            datagrid.Width = this.Width / 2;
-            datagrid.Height = this.Height;
-        }
+        // ===========================================================================================================================
+        // ============================= РАБОТА С ОСНОВНЫМИ ЭЛЕМЕНТАМИ УПРАВЛЕНИЯ ====================================================
+        // ===========================================================================================================================
 
         private void cb_sound_Click(object sender, RoutedEventArgs e)
         {
@@ -150,12 +68,6 @@ namespace DialogsCreator
                 gb_add_answers.IsEnabled = true;
             else
                 gb_add_answers.IsEnabled = false;
-        }
-
-        private void visBindings_CLick(object sender, RoutedEventArgs e)
-        {
-            VisualBindings v = new VisualBindings(selFile.file);
-            v.ShowDialog();
         }
 
         private void button_add_Click(object sender, RoutedEventArgs e)
@@ -236,6 +148,20 @@ namespace DialogsCreator
             combobox_answers.Items.Add(textbox_answer.Text);
         }
 
+        private void button_del_answer_Click(object sender, RoutedEventArgs e)
+        {
+            if (combobox_answers.Items.Count == 0 || (combobox_answers.SelectedItem as string).Length <= 0)
+            {
+                MessageBox.Show("Не выбран текст ответа для удаления");
+                return;
+            }
+
+            combobox_answers.Items.Remove(combobox_answers.SelectedItem);
+        }
+
+        // ===========================================================================================================================
+        // ======================================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===========================================================
+        // ===========================================================================================================================
         private bool CheckedComboBoxAnswers(string text)
         {
             foreach (var item in combobox_answers.Items)
@@ -272,17 +198,6 @@ namespace DialogsCreator
             }
 
             return null;
-        }
-
-        private void button_del_answer_Click(object sender, RoutedEventArgs e)
-        {
-            if (combobox_answers.Items.Count == 0 || (combobox_answers.SelectedItem as string).Length <= 0)
-            {
-                MessageBox.Show("Не выбран текст ответа для удаления");
-                return;
-            }
-
-            combobox_answers.Items.Remove(combobox_answers.SelectedItem);
         }
     }
 }

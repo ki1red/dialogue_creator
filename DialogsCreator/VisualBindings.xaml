@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
         Title="VisualBindings" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <ScrollViewer>
+        <Canvas Name="MainCanvas"  Background="#FF7F7676">
+        </Canvas>
+    </ScrollViewer>
 </Window>

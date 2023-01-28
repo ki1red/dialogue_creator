@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
-        Name="VisualBindings_window" Height="451" Width="800">
+        Name="VisualBindings_window" Height="451" Width="800" WindowStartupLocation="CenterScreen">
     <Grid Margin="0,0,0,4" Background="Aqua">
         <Menu Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="MenuItem_fileSettings" Grid.ColumnSpan="2">
             <MenuItem Header="Файл">

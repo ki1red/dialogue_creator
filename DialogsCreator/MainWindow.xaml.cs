@@ -32,9 +32,9 @@ namespace DialogsCreator
             InitializeComponent();
 
             this.modelView = modelView;
-            this.gb_add_answers.IsEnabled = false;
-            this.gb_add_image.IsEnabled = false;
-            this.gb_add_sound.IsEnabled = false;
+            this.Border_addAnswers.IsEnabled = false;
+            this.Border_addImage.IsEnabled = false;
+            this.Border_addSound.IsEnabled = false;
 
             CheckBox_sound.Click += CheckBox_sound_Click;
             CheckBox_image.Click += CheckBox_image_Click;
@@ -53,32 +53,32 @@ namespace DialogsCreator
         private void CheckBox_sound_Click(object sender, RoutedEventArgs e)
         {
             if (CheckBox_sound.IsChecked == true)
-                gb_add_sound.IsEnabled = true;
+                Border_addSound.IsEnabled = true;
             else
             {
-                gb_add_sound.IsEnabled = false;
+                Border_addSound.IsEnabled = false;
             }
         }
         private void CheckBox_image_Click(object sender, RoutedEventArgs e)
         {
             if (CheckBox_image.IsChecked == true)
-                gb_add_image.IsEnabled = true;
+                Border_addImage.IsEnabled = true;
             else
-                gb_add_image.IsEnabled = false;
+                Border_addImage.IsEnabled = false;
         }
         private void CheckBox_answers_Click(object sender, RoutedEventArgs e)
         {
             if (CheckBox_answers.IsChecked == true)
-                gb_add_answers.IsEnabled = true;
+                Border_addAnswers.IsEnabled = true;
             else
-                gb_add_answers.IsEnabled = false;
+                Border_addAnswers.IsEnabled = false;
         }
         private void Button_addDialog_Click(object sender, RoutedEventArgs e)
         {
             string check = FieldValidation();
             if (check != null)
             {
-                MessageBox.Show(check);
+                MessageBox.Show(check, "Ошибка");
                 return;
             }
 
@@ -150,16 +150,20 @@ namespace DialogsCreator
             }
 
             ComboBox_answers.Items.Add(TextBox_answer.Text);
+            TextBox_answer.Text = null;
+
+            ComboBox_answers.SelectedIndex = ComboBox_answers.Items.Count-1;
         }
         private void Button_delAnswer_Click(object sender, RoutedEventArgs e)
         {
-            if (ComboBox_answers.Items.Count == 0 || (ComboBox_answers.SelectedItem as string).Length <= 0)
+            if (ComboBox_answers.Items.Count == 0 || ComboBox_answers.SelectedItem == null)
             {
                 MessageBox.Show("Не выбран текст ответа для удаления");
                 return;
             }
 
             ComboBox_answers.Items.Remove(ComboBox_answers.SelectedItem);
+            ComboBox_answers.SelectedIndex = ComboBox_answers.Items.Count - 1;
         }
 
         // ===========================================================================================================================
@@ -185,12 +189,12 @@ namespace DialogsCreator
 
             if (CheckBox_sound.IsChecked == true)
             {
-                if (Label_soundPath.Content as string == "None")
+                if (Label_soundPath.Content as string == null)
                     return "Не указан звуковой файл";
             }
             if (CheckBox_image.IsChecked == true)
             {
-                if (Label_imagePath.Content as string == "None")
+                if (Label_imagePath.Content as string == null)
                     return "Не указан файл изображения";
             }
 

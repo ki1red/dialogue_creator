@@ -48,15 +48,20 @@ namespace DialogsCreator
         // ===========================================================================================================================
         // ================================ КОНСТРУКТОРЫ ФОРМЫ VISUAL BINDINGS =======================================================
         // ===========================================================================================================================
+        public delegate void SelectedViewtHandler(object obj);
+        public event SelectedViewtHandler SelectViewEvent;
+
         public VisualBindings()
         {
             InitializeComponent();
 
+            InitializeSubscribedBaseComponentsWindow();
             InitializeBaseComponentsWindow();
             InitializeComponentsTopMenu();
             InitializeSubscribedClickForMenu();
             InitializeSubscribedMouseForCanvas();
-            
+
+            SelectViewEvent += selectionObject.Select;
 
             DialogComponentView dialogComponentView = new DialogComponentView(MainCanvas);
             MainCanvas.Children.Add(dialogComponentView);
@@ -74,6 +79,11 @@ namespace DialogsCreator
         // ================================ ИНИЦИАЛИЗАЦИИ ГРУПП КОМПОНЕНТОВ ФОРМЫ ====================================================
         // ===========================================================================================================================
 
+        private void InitializeSubscribedBaseComponentsWindow()
+        {
+            this.Closed += SaveFileBeforeClosing(null, null);
+            this.Closing += Close;
+        }
         private void InitializeBaseComponentsWindow()
         {
             this.Title = windowTitle;
@@ -106,10 +116,25 @@ namespace DialogsCreator
             MenuItem_closeFile.Click += UpdateWindowElements;
 
             MenuItem_addObject.Click += MenuItem_addObject_Click;
+            this.MenuItem_deleteObject.Click += MenuItem_deleteObject_Click;
         }
+
+        private void MenuItem_deleteObject_Click(object sender, RoutedEventArgs e)
+        {
+            ElementDFD element;// TODO обращение к объекту SelectionObject и взятие из него выбранного ElementDFD
+            if (selectionObject.selected == TypeObject.element)
+                element = selectionObject.element;
+            else
+                return;
+
+            modelView.dialog.Delete(element);
+            this.MenuItem_deleteObject.IsEnabled = false;
+        }
+
         private void InitializeSubscribedMouseForCanvas()
         {
             MainCanvas.MouseLeftButtonDown += MainCanvas_MouseDown;
+            MainCanvas.MouseLeftButtonUp += MainCanvasLeftMouseUp;
             MainCanvas.MouseRightButtonUp += MainCanvas_MouseUp;
             MainCanvas.MouseMove += MainCanvas_MouseMove;
         }
@@ -191,9 +216,13 @@ namespace DialogsCreator
         }
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            SelectViewEvent(e.Source);
             RemoveUnconnectedLines();
         }
-
+        private void MainCanvasLeftMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            SelectViewEvent(e.Source);
+        }
 
         // ===========================================================================================================================
         // =================================== РАБОТА С ВЕРХНИМ МЕНЮ =================================================================
@@ -201,13 +230,12 @@ namespace DialogsCreator
 
         private void MenuItem_openFile_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileBeforeClosing();
-
+            SaveFileBeforeClosing(null, null);
             selFile.OpenFile();
         }
         private void MenuItem_createFile_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileBeforeClosing();
+            SaveFileBeforeClosing(null, null);
 
             if (selFile.CreateFile() == false)
                 return;
@@ -230,7 +258,7 @@ namespace DialogsCreator
         private void MenuItem_closeFile_Click(object sender, RoutedEventArgs e)
         {
             // TODO Сделать очистку MainCanvas
-
+            SaveFileBeforeClosing(null, null);
             selFile = new FileManagerDLAG(); // НЕ УДАЛЯТЬ, ИНАЧЕ НЕ ОТРАБОТАЕТ UpdateWindowElements
             modelView = null;
 
@@ -288,12 +316,35 @@ namespace DialogsCreator
                 MenuItem_editObject.IsEnabled = false;
             }
         }
-        private void SaveFileBeforeClosing()
+        public EventHandler SaveFileBeforeClosing(object sender, EventArgs e)
         {
             if (selFile.file != null)
             {
                 MessageBoxResult result;
-                result = MessageBox.Show("Сохранить изменения перед закрытием?", "Сохранение", MessageBoxButton.YesNoCancel);
+                result = MessageBox.Show("Сохранить изменения перед закрытием?", "Внимание", MessageBoxButton.YesNoCancel);
+
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+                        MenuItem_saveFile_Click(null, null);
+                        return null;
+                    case MessageBoxResult.No:
+                        return null;
+                    case MessageBoxResult.Cancel:
+                        return null;
+                    default:
+                        return null;
+                }
+            }
+            else
+                return null;
+        }
+        public void Close(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (selFile.file != null)
+            {
+                MessageBoxResult result;
+                result = MessageBox.Show("Сохранить изменения перед закрытием?", "Внимание", MessageBoxButton.YesNoCancel);
 
                 switch (result)
                 {
@@ -303,9 +354,11 @@ namespace DialogsCreator
                     case MessageBoxResult.No:
                         break;
                     case MessageBoxResult.Cancel:
-                        return;
+                        e.Cancel = true;
+                        break;
                     default:
-                        return;
+                        e.Cancel = true;
+                        break;
                 }
             }
         }

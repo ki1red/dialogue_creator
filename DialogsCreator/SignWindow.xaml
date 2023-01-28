@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
-        Title="Вход" Height="192" Width="382" ResizeMode="CanMinimize">
+        Title="Вход" Height="192" Width="382" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
     <Grid>
         <StackPanel Name="stackPanel" Margin="10,10,10,52">
             <RadioButton Name="admin" GroupName="choice" Click="Choice_Click" FontSize="18">Администратор</RadioButton>

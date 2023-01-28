@@ -43,7 +43,19 @@ namespace DialogsCreator
             Canvas.SetTop(dialogComponentView2, 25);
             dialogComponentView.ShowBindigsDialogComponentsView();
             dialogComponentView2.ShowBindigsDialogComponentsView();
+<<<<<<< Updated upstream
           
+=======
+            dialogComponentView.AddOption();
+            dialogComponentView.AddOption();
+            dialogComponentView.AddOption();
+            dialogComponentView.AddOption();
+            foreach(var option in dialogComponentView.Options) 
+            { 
+                option.ShowBindigsDialogComponentsView();
+            }
+       
+>>>>>>> Stashed changes
         }
 
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)

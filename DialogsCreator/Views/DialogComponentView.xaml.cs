@@ -47,7 +47,6 @@ namespace DialogsCreator.Views
         private Canvas canvas;
         private Point _mousePosition;
         private bool _isMouseDown = false;
-
         private List<BindingDialogComponentView> bindingDialogComponentViews = new List<BindingDialogComponentView>();
 
         public List<LinkDataPackage> linkDataPackages { get; private set; } = new List<LinkDataPackage>();
@@ -59,6 +58,8 @@ namespace DialogsCreator.Views
         public BindingDialogComponentView LeftBindingDialogComponentView { get; private set; }
 
         public BindingDialogComponentView RightBindingDialogComponentView { get; private set; }
+
+        public List<OptionDialogComponent> Options { get; private set; } = new List<OptionDialogComponent>();
 
         public DialogComponentView(Canvas drawingCanvas)
         {
@@ -95,6 +96,13 @@ namespace DialogsCreator.Views
                 InitEmptyBindings();
                 HideBindigsDialogComponentsView();
             }
+        }
+        
+        public void AddOption()
+        {
+            var option = new OptionDialogComponent(canvas,this);
+            OptionStackPanel.Children.Add(option);
+            Options.Add(option);
         }
 
         private bool CheckBindingsInit() 
@@ -143,6 +151,7 @@ namespace DialogsCreator.Views
 
         private void DialogComponentView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            
             _isMouseDown = true;
             _mousePosition = e.GetPosition(this);
         }
@@ -192,6 +201,15 @@ namespace DialogsCreator.Views
                         throw new ArgumentException("This Dialog Component not linked but have linkData with another objects this is error in logic");
                     }
 
+                }
+
+                foreach(var option in Options)
+                {
+                    Canvas.SetLeft(option.RightBindingDialogComponentView, offset.X + Canvas.GetLeft(option.RightBindingDialogComponentView));
+                    Canvas.SetTop(option.RightBindingDialogComponentView, offset.Y + Canvas.GetTop(option.RightBindingDialogComponentView));
+
+                    Canvas.SetLeft(option.LeftBindingDialogComponentView, offset.X + Canvas.GetLeft(option.LeftBindingDialogComponentView));
+                    Canvas.SetTop(option.LeftBindingDialogComponentView, offset.Y + Canvas.GetTop(option.LeftBindingDialogComponentView));
                 }
             }
         }

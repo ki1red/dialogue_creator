@@ -21,7 +21,12 @@ namespace DialogsCreator.Views
 
         public DialogComponentView parent { get; private set; }
         public List<Line> bindingsLines = new List<Line>();
+<<<<<<< Updated upstream
         public BindingDialogComponentView(DialogComponentView parent, Canvas canvas,Point pointCreate)
+=======
+        
+        public BindingDialogComponentView(DialogComponentView parent, Canvas canvas, Point pointCreate)
+>>>>>>> Stashed changes
         {
             InitializeComponent();
             this.parent = parent;

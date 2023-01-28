@@ -25,8 +25,9 @@ namespace DialogsCreator
     /// </summary>
     public partial class MainWindow : Window
     {
-        WPFtoDFD modelView;
-        public MainWindow(ref WPFtoDFD modelView)
+        public bool added = false;
+        private WPFtoDFD modelView;
+        public MainWindow(WPFtoDFD modelView)
         {
             InitializeComponent();
 
@@ -99,6 +100,10 @@ namespace DialogsCreator
                 answers = new string[0];
 
             modelView.AddElementDFDWithoutConnection(author, question, pathToSound, pathToImage, answers);
+            modelView.SerializationDFD();
+            added = true;
+
+            this.Close();
         }
 
         private void button_import_image_Click(object sender, RoutedEventArgs e)

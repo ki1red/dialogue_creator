@@ -34,16 +34,17 @@ namespace DialogsCreator
 
         private FileManagerDLAG selFile = new FileManagerDLAG();
         private WPFtoDFD modelView;
+        private SelectionObject selectionObject = new SelectionObject();
+        private InfoPanel infoPanel = new InfoPanel();
 
         // ===========================================================================================================================
         // ================================ ПЕРЕМЕННЫЕ ИЛЬИ ХЗ ДЛЯ ЧЕГО ==============================================================
         // ===========================================================================================================================
 
-        private bool isDrawingLine;
-        private Path linePath;
-        private Point startPoint;
         private BindingDialogComponentView startBindingDialogComponentView;
-
+        private BindingDialogComponentView endBindingDialogComponentView;
+        private Line currentLine;
+        private List<Line> linesCollection = new List<Line>();
         // ===========================================================================================================================
         // ================================ КОНСТРУКТОРЫ ФОРМЫ VISUAL BINDINGS =======================================================
         // ===========================================================================================================================
@@ -67,7 +68,6 @@ namespace DialogsCreator
             Canvas.SetTop(dialogComponentView2, 25);
             dialogComponentView.ShowBindigsDialogComponentsView();
             dialogComponentView2.ShowBindigsDialogComponentsView();
-            dialogComponentView.TopBindingDialogComponentView.LinkWith(dialogComponentView2.TopBindingDialogComponentView, MainCanvas);
         }
 
         // ===========================================================================================================================
@@ -110,7 +110,7 @@ namespace DialogsCreator
         private void InitializeSubscribedMouseForCanvas()
         {
             MainCanvas.MouseLeftButtonDown += MainCanvas_MouseDown;
-            MainCanvas.MouseLeftButtonUp += MainCanvas_MouseUp;
+            MainCanvas.MouseRightButtonUp += MainCanvas_MouseUp;
             MainCanvas.MouseMove += MainCanvas_MouseMove;
         }
 
@@ -118,77 +118,76 @@ namespace DialogsCreator
         // ======================================== РАБОТА С MAINCANVAS ==============================================================
         // ===========================================================================================================================
 
-        private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e) // TODO добавить подписку на событие при нажатии. если нажата ЛКМ , то передавать тип объекта в SelectionObject.Select и InfoPanel.Show
         {
             if(e.Source is BindingDialogComponentView)
             {
-                MessageBox.Show("YOu click");
-                startBindingDialogComponentView = e.Source as BindingDialogComponentView;
-                startPoint = e.GetPosition(MainCanvas);
-                isDrawingLine = true;
-                linePath = new Path();
-                linePath.Stroke = Brushes.Black;
-                linePath.StrokeThickness = 5;
-                linePath.StrokeStartLineCap = PenLineCap.Round;
-                linePath.StrokeEndLineCap = PenLineCap.Round;
+                if (startBindingDialogComponentView == null)
+                {
+                    startBindingDialogComponentView = e.Source as BindingDialogComponentView;
+                    currentLine = new Line();
+                    currentLine.Stroke = new SolidColorBrush(Colors.Black);
+                    currentLine.StrokeStartLineCap = PenLineCap.Round;
+                    currentLine.StrokeEndLineCap = PenLineCap.Round;
+                    currentLine.StrokeThickness = 5;
+                    currentLine.X1 = Canvas.GetLeft(startBindingDialogComponentView) + startBindingDialogComponentView.Width / 2;
+                    currentLine.Y1 = Canvas.GetTop(startBindingDialogComponentView) + startBindingDialogComponentView.Height / 2;
 
-                MainCanvas.Children.Add(linePath);
+                    currentLine.X2 = e.GetPosition(MainCanvas).X;
+                    currentLine.Y2 = e.GetPosition(MainCanvas).Y;
+                    MainCanvas.Children.Add(currentLine);
+                }
+                else
+                {
+                    endBindingDialogComponentView = e.Source as BindingDialogComponentView;
+                    if (startBindingDialogComponentView != endBindingDialogComponentView && CanLink())
+                    {
+                        currentLine.X2 = Canvas.GetLeft(endBindingDialogComponentView) + endBindingDialogComponentView.Width / 2;
+                        currentLine.Y2 = Canvas.GetTop(endBindingDialogComponentView) + endBindingDialogComponentView.Height / 2;
+                        linesCollection.Add(currentLine);
+                        startBindingDialogComponentView.LinkWith(endBindingDialogComponentView, linesCollection);
+                        linesCollection.Clear();
+                        currentLine = null;
+                        startBindingDialogComponentView = null;
+                        endBindingDialogComponentView = null;
+                    }
+                    else if (startBindingDialogComponentView != null)
+                    {
+                        var x = currentLine.X2;
+                        var y = currentLine.Y2;
+
+                        linesCollection.Add(currentLine);
+
+                        currentLine = new Line();
+                        currentLine.Stroke = new SolidColorBrush(Colors.Black);
+                        currentLine.StrokeThickness = 5;
+                        currentLine.StrokeStartLineCap = PenLineCap.Round;
+                        currentLine.StrokeEndLineCap = PenLineCap.Round;
+                        MainCanvas.Children.Add(currentLine);
+
+                        currentLine.X1 = x;
+                        currentLine.Y1 = y;
+                        currentLine.X2 = x;
+                        currentLine.Y2 = y;
+                    }
+                }
+
+
             }
         }
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isDrawingLine)
+            if (currentLine != null)
             {
                 Point currentPoint = e.GetPosition(MainCanvas);
 
-                PathGeometry pathGeometry = new PathGeometry();
-                PathFigure pathFigure = new PathFigure();
-                pathFigure.StartPoint = startPoint;
-
-                BezierSegment bezierSegment = new BezierSegment();
-                bezierSegment.Point1 = startPoint;
-                bezierSegment.Point2 = currentPoint;
-                bezierSegment.Point3 = currentPoint;
-
-                pathFigure.Segments.Add(bezierSegment);
-                pathGeometry.Figures.Add(pathFigure);
-
-                linePath.Data = pathGeometry;
+                currentLine.X2 = currentPoint.X - 3;
+                currentLine.Y2 = currentPoint.Y - 3;
             }
         }
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (isDrawingLine)
-            {
-                isDrawingLine = false;
-                if (e.Source is BindingDialogComponentView)
-                {
-                    var currentMousePosition = e.GetPosition((IInputElement)sender);
-
-
-                    var hitTestResult = VisualTreeHelper.HitTest(MainCanvas, currentMousePosition);
-
-                    if (hitTestResult != null)
-                    {
-                        var hitVisual = hitTestResult.VisualHit;
-
-                        if (hitVisual is BindingDialogComponentView)
-                        {
-                            var otherBindingView = (BindingDialogComponentView)hitVisual;
-
-                            if (startBindingDialogComponentView != null && otherBindingView != startBindingDialogComponentView)
-                            {
-                                startBindingDialogComponentView.LinkWith(otherBindingView, MainCanvas);
-                                MainCanvas.Children.Remove(linePath);
-                                linePath = null;
-                            }
-                        }
-                    }
-
-                    MainCanvas.Children.Remove(linePath);
-                    linePath = null;
-                }
-            }
+            RemoveUnconnectedLines();
         }
 
 
@@ -234,10 +233,17 @@ namespace DialogsCreator
         }
         private void MenuItem_addObject_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow window = new MainWindow(ref modelView);
+            modelView.SerializationDFD();
+
+            MainWindow window = new MainWindow(modelView);
             window.ShowDialog();
 
-            // TODO Добавлять объект на сцену ТОЛЬКО ЕСЛИ он ТОЧНО был создан в окне MainWindow
+            if (window.added == false)
+                return;
+
+            modelView.DesirializationDFD();
+
+            // TODO добавить визуальное отображение
         }
 
         // ===========================================================================================================================
@@ -298,6 +304,23 @@ namespace DialogsCreator
                         return;
                 }
             }
+        }
+        private bool CanLink()
+        {
+            // Проверки для определения, можно ли соединить startBindingDialogComponentView и endBindingDialogComponentView
+            return true;
+        }
+        private void RemoveUnconnectedLines()
+        {
+            foreach (var line in linesCollection)
+            {
+                MainCanvas.Children.Remove(line);
+            }
+            startBindingDialogComponentView = null;
+            endBindingDialogComponentView = null;
+            linesCollection.Clear();
+            MainCanvas.Children.Remove(currentLine);
+            currentLine = null;
         }
     }
 }

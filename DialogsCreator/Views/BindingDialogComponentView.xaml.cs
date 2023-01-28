@@ -20,78 +20,45 @@ namespace DialogsCreator.Views
     {
 
         public DialogComponentView parent { get; private set; }
-        
-        public BindingDialogComponentView(DialogComponentView parent, Canvas canvas,Point pointCreate)
+        public List<Line> bindingsLines = new List<Line>();
+        public BindingDialogComponentView(DialogComponentView parent, Canvas canvas, Point pointCreate)
         {
             InitializeComponent();
             this.parent = parent;
-            
+
             canvas.Children.Add(this);
 
             Canvas.SetLeft(this, pointCreate.X);
-            Canvas.SetTop(this,pointCreate.Y);
+            Canvas.SetTop(this, pointCreate.Y);
         }
 
-        public void LinkWith(BindingDialogComponentView other,Canvas canvas) 
-        {   
+        public void LinkWith(BindingDialogComponentView other, List<Line> lines)
+        {
             if (parent == null)
                 throw new NullReferenceException("Parent is null but you try link BindingDialogComponentView object without parent");
 
-            if(other == null)
+            if (other == null)
                 throw new NullReferenceException("You try link this BindingDialogComponentView with other BindingDialogComponentView but other is null");
-
-            if (canvas == null)
-                throw new NullReferenceException("Canvas is null, imposable draw line without canvas");
 
             if (other.parent == this.parent)
                 throw new ArgumentException("You try link two BindingDialogComponentView with same parent");
 
+            foreach (var linkDataPackage in parent.linkDataPackages)
+            {
+                if ((linkDataPackage.firstBindingDialogComponentView == this && linkDataPackage.secondeBindingDialogComponentView == other) ||
+                    (linkDataPackage.secondeBindingDialogComponentView == this && linkDataPackage.firstBindingDialogComponentView == other)
+                ) throw new ArgumentException("This link already exsist");
 
-            Path path = new Path();
-            PathFigure myPathFigure = new PathFigure();
-            PathGeometry myPathGeometry = new PathGeometry();
+                if ((linkDataPackage.firstDialogComponent == parent && linkDataPackage.secondeDialogComponent == other.parent) ||
+                    (linkDataPackage.secondeDialogComponent == parent && linkDataPackage.firstDialogComponent == other.parent)
+                ) throw new ArgumentException("This dialog components view is already bindings!");
+            }
 
-            Point pointCurrentBindingComponentView = GetPostionBindingPoint(this);
+            this.bindingsLines.AddRange(lines);
+            other.bindingsLines.AddRange(lines);
 
-            Point pointLinkedBindingComponentView = GetPostionBindingPoint(other);
-
-            Point pointControll = new Point (
-                (pointCurrentBindingComponentView.X + pointLinkedBindingComponentView.X) / 2f, 
-                (pointCurrentBindingComponentView.Y + pointLinkedBindingComponentView.Y) / 2f);
-
-            myPathFigure.StartPoint = pointCurrentBindingComponentView;
-
-            var line = new BezierSegment(
-                    pointCurrentBindingComponentView,
-                    pointControll,
-                    pointLinkedBindingComponentView,
-                    true);
-
-            canvas.Children.Add(path);
-            myPathFigure.Segments.Add(line);
-            myPathGeometry.Figures.Add(myPathFigure);
-
-            path.Stroke = Brushes.Black;
-            path.StrokeThickness = 5;
-            path.StrokeStartLineCap = PenLineCap.Round;
-            path.StrokeEndLineCap = PenLineCap.Round;
-            path.Data = myPathGeometry;
-
-            this.parent.Link(new LinkDataPackage(this.parent, other.parent, this, other, new KeyValuePair<PathFigure, BezierSegment>(myPathFigure, line)));
-            other.parent.Link(new LinkDataPackage(other.parent, this.parent, other, this, new KeyValuePair<PathFigure, BezierSegment>(myPathFigure, line)));
-        }
-
-
-
-        public static Point GetPostionBindingPoint(BindingDialogComponentView view)
-        {
-            return new Point(
-            x: (
-                Canvas.GetLeft(view) +
-                (view.Width / 2f)),
-            y: (+
-                Canvas.GetTop(view) +
-                (view.Height / 2f)));
+            this.parent.Link(new LinkDataPackage(this.parent, other.parent, this, other));
+            other.parent.Link(new LinkDataPackage(this.parent, other.parent, this, other));
         }
     }
 }

@@ -21,36 +21,35 @@ namespace DialogsCreator.Views
 
         public DialogComponentView parent { get; private set; }
         public List<Line> bindingsLines = new List<Line>();
-
-        public BindingDialogComponentView(DialogComponentView parent, Canvas canvas,Point pointCreate)
+        public BindingDialogComponentView(DialogComponentView parent, Canvas canvas, Point pointCreate)
         {
             InitializeComponent();
             this.parent = parent;
-            
+
             canvas.Children.Add(this);
 
             Canvas.SetLeft(this, pointCreate.X);
-            Canvas.SetTop(this,pointCreate.Y);
+            Canvas.SetTop(this, pointCreate.Y);
         }
 
-        public void LinkWith(BindingDialogComponentView other, List<Line> lines) 
+        public void LinkWith(BindingDialogComponentView other, List<Line> lines)
         {
             if (parent == null)
                 throw new NullReferenceException("Parent is null but you try link BindingDialogComponentView object without parent");
 
-            if(other == null)
+            if (other == null)
                 throw new NullReferenceException("You try link this BindingDialogComponentView with other BindingDialogComponentView but other is null");
 
             if (other.parent == this.parent)
                 throw new ArgumentException("You try link two BindingDialogComponentView with same parent");
 
-            foreach(var linkDataPackage in parent.linkDataPackages) 
+            foreach (var linkDataPackage in parent.linkDataPackages)
             {
                 if ((linkDataPackage.firstBindingDialogComponentView == this && linkDataPackage.secondeBindingDialogComponentView == other) ||
                     (linkDataPackage.secondeBindingDialogComponentView == this && linkDataPackage.firstBindingDialogComponentView == other)
                 ) throw new ArgumentException("This link already exsist");
 
-                if((linkDataPackage.firstDialogComponent == parent && linkDataPackage.secondeDialogComponent == other.parent) ||
+                if ((linkDataPackage.firstDialogComponent == parent && linkDataPackage.secondeDialogComponent == other.parent) ||
                     (linkDataPackage.secondeDialogComponent == parent && linkDataPackage.firstDialogComponent == other.parent)
                 ) throw new ArgumentException("This dialog components view is already bindings!");
             }

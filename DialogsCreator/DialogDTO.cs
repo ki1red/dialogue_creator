@@ -22,6 +22,7 @@ namespace DialogsCreator
         public RequiredAnswerDTO[] requiredAnswers;
         public int[] nextLineId;
         public string nextDialogPath;
+        public string name;
     }
 
     [Serializable]
@@ -32,19 +33,20 @@ namespace DialogsCreator
         public int[] nextLineId;
         public string nextDialogPath;
         public RequiredAnswerDTO[] requiredAnswers;
+        public string name;
     }
 
     [Serializable]
     public class RequiredAnswerDTO
     {
-        public int questionId;
-        public int answerId;
+        public int dialogLinenId;
+        public int optionId;
     }
 
     [Serializable]
     public class TextPath
     {
-        public string localization;
+        public string localizationType;
         public string path;
     }
 }

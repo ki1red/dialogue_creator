@@ -30,7 +30,7 @@ namespace DialogsCreator.Views
         private DialogComponentView parent;
         private Canvas canvas;
 
-        public OptionDialogComponent(Canvas drawingCanvas,DialogComponentView componentView)
+        public OptionDialogComponent(Canvas drawingCanvas, DialogComponentView componentView)
         {
             InitializeComponent();
             parent = componentView;
@@ -82,11 +82,11 @@ namespace DialogsCreator.Views
             }
         }
 
-        private int GetIndex() 
-        { 
-            for(int i = 0;i < parent.Options.Count(); i++) 
-            { 
-                if(parent.Options[i] == this)
+        private int GetIndex()
+        {
+            for (int i = 0; i < parent.Options.Count(); i++)
+            {
+                if (parent.Options[i] == this)
                     return i;
             }
 
@@ -104,7 +104,7 @@ namespace DialogsCreator.Views
         private Point GetPointRightBindingComponent()
         {
             return new Point(
-                x: Canvas.GetLeft(parent) + this.OptionCanvas.Width  + (bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView,
+                x: Canvas.GetLeft(parent) + this.OptionCanvas.Width + (bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView,
                 y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height)
             );
         }

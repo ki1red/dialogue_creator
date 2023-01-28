@@ -5,118 +5,138 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace DialogsCreator
 {
-    internal class FileManagerDLAG
+    public enum Language
     {
-        public enum language
+        none = 0,
+        ru = 1,
+        en = 2,
+        de = 3
+    }
+    public class FileManagerDLAG
+    {
+        public const uint countLanguages = 4;
+        private Dictionary<string, string> titles = new Dictionary<string, string>() { { "open" , "Открыть файл"}, { "create", "Создать файл" }, { "save as", "Сохранить файл как" } };
+
+        public string file { get; private set; } = null;
+        public string path { get; private set; } = Environment.CurrentDirectory;
+        public Language language;
+
+        public const string filter = $"Develop files dialogues (*.{type})|*.{type}";
+        public const string type = "dfd";
+
+        private void SelectFile(string pathAndFile)
         {
-            ru = 0,
-            en = 1,
-            de = 2
-        }
-        public string file { get; private set; } = Environment.CurrentDirectory;
-        public string fileL { get; private set; } = Environment.CurrentDirectory;
-        public language lang;
-        public string filter { get; private set; } = "Dialog files (*.dlag)|*.dlag";
+            string[] pathToFile = pathAndFile.Split('\\');
 
-        private void SelectFile(string path)
-        {
-            file = path;
+            string[] tmpfile = pathToFile[pathToFile.Length - 1].Split('.');
 
-            string[] pathToFile = path.Split('\\');
+            this.file = tmpfile[0]; // название файла без расширения
 
-            string[] fileLanguage = pathToFile[pathToFile.Length - 1].Split('.');
-
-            fileLanguage[0] = fileLanguage[0] + "_" + lang;
-            fileLanguage[1] = ".dl";
-
-            fileL = "";
+            this.path = "";
             for (int i = 0; i < pathToFile.Length - 1; i++)
-                fileL += pathToFile[i] + "\\";
-            fileL += fileLanguage[0] + fileLanguage[1];
+                this.path += pathToFile[i] + "\\"; // путь к файлу без самого файла
         }
 
-        public FileManagerDLAG(language language) { lang = language; }
+        public FileManagerDLAG(Language language = Language.none) { this.language = language; }
 
-        public void CreateFile()
+        public bool CreateFile()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = filter;
-            saveFileDialog.InitialDirectory = file;
+            saveFileDialog.InitialDirectory = path;
+            saveFileDialog.FileName = file;
+            saveFileDialog.DefaultExt = type;
+            saveFileDialog.Title = titles["create"];
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                SelectFile(saveFileDialog.FileName);
-                Stream myStream = saveFileDialog.OpenFile();
-                myStream = new FileStream(fileL, FileMode.Create);
+                Stream myStream;
+                if ((myStream = saveFileDialog.OpenFile()) != null)
+                {
+                    myStream.Close();
+                    SelectFile(saveFileDialog.FileName);
+                    return true;
+                }
             }
-            else
-                return;
+            return false;
         }
 
-        public void SaveFile()
-        {
-            if (!CheckIsNotEmptyFile())
-                return;
-
-            Stream myStream;
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = file;
-            myStream = saveFileDialog.OpenFile();
-
-            // TODO добавить помещение структуры в файл и сохранение
-        }
-
-        public void OpenFile()
+        public bool OpenFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = filter;
-            openFileDialog.InitialDirectory = file;
+            openFileDialog.InitialDirectory = path;
+            openFileDialog.FileName = file;
+            openFileDialog.DefaultExt = type;
+            openFileDialog.Title = titles["open"];
+
             if (openFileDialog.ShowDialog() == true)
             {
                 SelectFile(openFileDialog.FileName);
+                return true;
             }
-            else
-                return;
+            return false;
         }
 
-        public void SaveAsFile()
+        public void SaveFile(string data)
         {
-            if (!CheckIsNotEmptyFile())
-                return;
+            if (file == null)
+                throw new Exception("При сохранении файла обнаружено отсутствие файла");
+
+            File.WriteAllText($"{path}{file}.{type}", data);
+        }
+
+        public bool SaveAsFile(string path, string data)
+        {
+            if (file == null)
+                throw new Exception("При сохранении файла обнаружено отсутствие файла");
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.InitialDirectory = path;
             saveFileDialog.Filter = filter;
-            saveFileDialog.InitialDirectory = file;
+            saveFileDialog.DefaultExt = type;
+            saveFileDialog.Title = titles["save as"];
 
             if (saveFileDialog.ShowDialog() == true)
             {
                 SelectFile(saveFileDialog.FileName);
-                Stream myStream = saveFileDialog.OpenFile();
-
-                // TODO добавить помещение структуры в файл и сохранение
+                File.WriteAllText($"{path}{file}.{type}", data);
+                return true;
             }
-            else
-                return;
+            return false;
         }
 
+        public Language ToLanguage(string language)
+        {
+            switch (language)
+            {
+                case "ru":
+                    return Language.ru;
+                case "en":
+                    return Language.en;
+                case "de":
+                    return Language.de;
+                default:
+                    return Language.none;
+            }
+        }
+        /*
         public bool CheckIsNotEmptyFile()
         {
             string[] path = file.Split('\\');
 
-            string dlag = "";
-            for (int i = path[path.Length - 1].Length - 1; i > path[path.Length - 1].Length - 6; i--)
-                dlag += path[path.Length - 1][i];
-            dlag = new string(dlag.Reverse().ToArray());
+            string dfd = "";
+            for (int i = path[path.Length - 1].Length - 1; i > path[path.Length - 1].Length - 5; i--)
+                dfd += path[path.Length - 1][i];
+            dfd = new string(dfd.Reverse().ToArray());
 
 
-            if (dlag == ".dlag")
+            if (dfd == $".{type}")
                 return true;
             else
                 return false;
-        }
+        }*/
     }
 }

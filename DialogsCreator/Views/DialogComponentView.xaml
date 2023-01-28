@@ -12,6 +12,8 @@
                 <ContentPresenter  Grid.ColumnSpan="2"/>
             </Grid>
         </Border>
+
+
         <StackPanel Name="OptionStackPanel" Canvas.Top="60" Canvas.Left="10">
         </StackPanel>
     </Canvas>

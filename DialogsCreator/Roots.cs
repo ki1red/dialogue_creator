@@ -6,33 +6,41 @@ using System.Threading.Tasks;
 
 namespace DialogsCreator
 {
-    public class Roots
+    public enum TypeUser
     {
-        public enum root
+        none = 0,
+        admin = 1,
+        scenarist = 2,
+        translator = 3
+    }
+
+    public class Roots 
+    {
+        public TypeUser typeUser { get; private set; }
+        public Roots() { typeUser = TypeUser.none; }
+
+        public bool SetRoot(string root)
         {
-            admin = 0,
-            scenarist = 1,
-            translator = 2
+            this.typeUser = ToTypeUser(root);
+
+            if (typeUser == TypeUser.none)
+                return false;
+            else
+                return true;
         }
 
-        public root r { get; private set; }
-        public Roots() { }
-
-        public void SetRoot(string _root)
+        private TypeUser ToTypeUser(string typeUser)
         {
-            switch (_root)
+            switch (typeUser)
             {
-                case "Администратор":
-                    r = root.admin;
-                    break;
-                case "Сценарист":
-                    r = root.scenarist;
-                    break;
-                case "Переводчик":
-                    r = root.translator;
-                    break;
+                case "admin":
+                    return TypeUser.admin;
+                case "scenarist":
+                    return TypeUser.scenarist;
+                case "translator":
+                    return TypeUser.translator;
                 default:
-                    throw new Exception("Отсутствует такой тип прав");
+                    return TypeUser.none;
             }
         }
     }

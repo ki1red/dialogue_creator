@@ -5,9 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
-        Title="VisualBindings" Height="450" Width="800">
-    <ScrollViewer>
-        <Canvas Name="MainCanvas"  Background="#FF7F7676">
-        </Canvas>
-    </ScrollViewer>
+        Name="VisualBindings_window" Height="451" Width="800" WindowStartupLocation="CenterScreen">
+    <Grid Margin="0,0,0,4" Background="Aqua">
+        <Menu Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="MenuItem_fileSettings" Grid.ColumnSpan="2">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Создать" Name="MenuItem_createFile"></MenuItem>
+                <MenuItem Header="Открыть" Name="MenuItem_openFile"></MenuItem>
+                <MenuItem Header="Сохранить" Name="MenuItem_saveFile"></MenuItem>
+                <MenuItem Header="Сохранить как" Name="MenuItem_saveAsFile"></MenuItem>
+                <Separator />
+                <MenuItem Header="Экспортировать" Name="MenuItem_exportFile"></MenuItem>
+                <MenuItem Header="Импортировать" Name="MenuItem_importFile"></MenuItem>
+                <Separator />
+                <MenuItem Header="Закрыть" Name="MenuItem_closeFile"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Объект" Name="MenuItem_objectSettings">
+                <MenuItem Header="Добавить" Name="MenuItem_addObject"></MenuItem>
+                <MenuItem Header="Редактировать" Name="MenuItem_editObject"></MenuItem>
+                <MenuItem Header="Удалить" Name="MenuItem_deleteObject"></MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <ScrollViewer Margin="0,25,0,0">
+            <Canvas Name="MainCanvas" Background="#FF7F7676">
+            </Canvas>
+        </ScrollViewer>
+        <Label Name="Label_informationOfLanguage" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="143" Height="26"/>
+
+        <!--
+        <Border BorderBrush="Black" BorderThickness="5" Margin="536,25,18,10">
+            <StackPanel/>
+        </Border>
+        -->
+
+
+    </Grid>
 </Window>

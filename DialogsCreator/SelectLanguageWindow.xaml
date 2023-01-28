@@ -1,0 +1,18 @@
+﻿<Window x:Class="DialogsCreator.SelectLanguageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DialogsCreator"
+        mc:Ignorable="d"
+        Title="Выбор языка" Height="169" Width="386" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+    <Grid Margin="0,0,170,133">
+        <StackPanel x:Name="stackPanel" Margin="10,10,-161,-91">
+            <RadioButton x:Name="ru" GroupName="choice" Click="Choice_Click" FontSize="18" Content="Русский"/>
+            <RadioButton x:Name="en" GroupName="choice" Click="Choice_Click" FontSize="18" Content="Английский"/>
+            <RadioButton x:Name="de" GroupName="choice" Click="Choice_Click" FontSize="18" Content="Немецкий"/>
+        </StackPanel>
+        <Button x:Name="Button_selectLanguage" Content="Выбрать" Click="Button_selectLanguage_Click" Margin="142,0,-28,-117" Height="21" VerticalAlignment="Bottom"/>
+
+    </Grid>
+</Window>

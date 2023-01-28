@@ -20,15 +20,15 @@ namespace DialogsCreator.Views
 {
     public class LinkDataPackage
     {
-        public DialogComponentView firstDialogComponent { get; private set;}
+        public DialogComponentView firstDialogComponent { get; private set; }
         public DialogComponentView secondeDialogComponent { get; private set; }
         public BindingDialogComponentView firstBindingDialogComponentView { get; private set; }
         public BindingDialogComponentView secondeBindingDialogComponentView { get; private set; }
 
         public LinkDataPackage(
-            DialogComponentView firstDialogComponent, 
-            DialogComponentView secondeDialogComponent, 
-            BindingDialogComponentView firstBindingDialogComponentView, 
+            DialogComponentView firstDialogComponent,
+            DialogComponentView secondeDialogComponent,
+            BindingDialogComponentView firstBindingDialogComponentView,
             BindingDialogComponentView secondeBindingDialogComponentView)
         {
             this.firstDialogComponent = firstDialogComponent;
@@ -47,6 +47,7 @@ namespace DialogsCreator.Views
         private Canvas canvas;
         private Point _mousePosition;
         private bool _isMouseDown = false;
+
         private List<BindingDialogComponentView> bindingDialogComponentViews = new List<BindingDialogComponentView>();
 
         public List<LinkDataPackage> linkDataPackages { get; private set; } = new List<LinkDataPackage>();
@@ -60,17 +61,22 @@ namespace DialogsCreator.Views
         public BindingDialogComponentView RightBindingDialogComponentView { get; private set; }
 
         public List<OptionDialogComponent> Options { get; private set; } = new List<OptionDialogComponent>();
-
         public DialogComponentView(Canvas drawingCanvas)
         {
             InitializeComponent();
             canvas = drawingCanvas;
         }
-        public void ShowBindigsDialogComponentsView() 
+        public void AddOption()
         {
-            if(CheckBindingsInit() == true) 
+            var option = new OptionDialogComponent(canvas, this);
+            OptionStackPanel.Children.Add(option);
+            Options.Add(option);
+        }
+        public void ShowBindigsDialogComponentsView()
+        {
+            if (CheckBindingsInit() == true)
             {
-                foreach(var view in bindingDialogComponentViews) 
+                foreach (var view in bindingDialogComponentViews)
                 {
                     view.Visibility = Visibility.Visible;
                 }
@@ -82,7 +88,7 @@ namespace DialogsCreator.Views
             }
         }
 
-        public void HideBindigsDialogComponentsView() 
+        public void HideBindigsDialogComponentsView()
         {
             if (CheckBindingsInit() == true)
             {
@@ -97,50 +103,43 @@ namespace DialogsCreator.Views
                 HideBindigsDialogComponentsView();
             }
         }
-        
-        public void AddOption()
+
+        private bool CheckBindingsInit()
         {
-            var option = new OptionDialogComponent(canvas,this);
-            OptionStackPanel.Children.Add(option);
-            Options.Add(option);
+            return
+                 TopBindingDialogComponentView != null &&
+                 BottomBindingDialogComponentView != null &&
+                 LeftBindingDialogComponentView != null &&
+                 RightBindingDialogComponentView != null;
         }
 
-        private bool CheckBindingsInit() 
+        private void InitEmptyBindings()
         {
-           return 
-                TopBindingDialogComponentView != null && 
-                BottomBindingDialogComponentView != null && 
-                LeftBindingDialogComponentView != null && 
-                RightBindingDialogComponentView != null;
-        }
-
-        private void InitEmptyBindings() 
-        {
-            if(TopBindingDialogComponentView == null)
+            if (TopBindingDialogComponentView == null)
             {
                 TopBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointTopBindingComponent());
                 TopBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Yellow);
                 if (bindingDialogComponentViews.Contains(TopBindingDialogComponentView) == false)
                     bindingDialogComponentViews.Add(TopBindingDialogComponentView);
             }
-                
-            if(BottomBindingDialogComponentView == null) 
+
+            if (BottomBindingDialogComponentView == null)
             {
                 BottomBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointBottomBindingComponent());
                 BottomBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Red);
                 if (bindingDialogComponentViews.Contains(BottomBindingDialogComponentView) == false)
                     bindingDialogComponentViews.Add(BottomBindingDialogComponentView);
             }
-           
-            if(LeftBindingDialogComponentView == null)
+
+            if (LeftBindingDialogComponentView == null)
             {
                 LeftBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointLeftBindingComponent());
                 LeftBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Green);
                 if (bindingDialogComponentViews.Contains(LeftBindingDialogComponentView) == false)
                     bindingDialogComponentViews.Add(LeftBindingDialogComponentView);
             }
-            
-            if(RightBindingDialogComponentView == null) 
+
+            if (RightBindingDialogComponentView == null)
             {
                 RightBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointRightBindingComponent());
                 RightBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Blue);
@@ -151,7 +150,6 @@ namespace DialogsCreator.Views
 
         private void DialogComponentView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            
             _isMouseDown = true;
             _mousePosition = e.GetPosition(this);
         }
@@ -167,27 +165,27 @@ namespace DialogsCreator.Views
             {
                 var currentPosition = e.GetPosition(this);
                 var offset = currentPosition - _mousePosition;
-                
+
                 Canvas.SetLeft(this, Canvas.GetLeft(this) + offset.X);
                 Canvas.SetTop(this, Canvas.GetTop(this) + offset.Y);
-              
-                foreach(var binding in bindingDialogComponentViews) 
+
+                foreach (var binding in bindingDialogComponentViews)
                 {
                     Canvas.SetLeft(binding, offset.X + Canvas.GetLeft(binding));
-                    Canvas.SetTop(binding,  offset.Y + Canvas.GetTop(binding));
+                    Canvas.SetTop(binding, offset.Y + Canvas.GetTop(binding));
                 }
 
-                foreach (var linkData in linkDataPackages) 
+                foreach (var linkData in linkDataPackages)
                 {
-                    if(linkData.firstDialogComponent == this) 
+                    if (linkData.firstDialogComponent == this)
                     {
-                        linkData.firstBindingDialogComponentView.bindingsLines.First().X1 = 
+                        linkData.firstBindingDialogComponentView.bindingsLines.First().X1 =
                             offset.X + linkData.firstBindingDialogComponentView.bindingsLines.First().X1;
                         linkData.firstBindingDialogComponentView.bindingsLines.First().Y1 =
                             linkData.firstBindingDialogComponentView.bindingsLines.First().Y1 + offset.Y;
                     }
 
-                    else if (linkData.secondeDialogComponent == this) 
+                    else if (linkData.secondeDialogComponent == this)
                     {
                         linkData.firstBindingDialogComponentView.bindingsLines.Last().X2 =
                             offset.X + linkData.firstBindingDialogComponentView.bindingsLines.Last().X2;
@@ -202,8 +200,7 @@ namespace DialogsCreator.Views
                     }
 
                 }
-
-                foreach(var option in Options)
+                foreach (var option in Options)
                 {
                     Canvas.SetLeft(option.RightBindingDialogComponentView, offset.X + Canvas.GetLeft(option.RightBindingDialogComponentView));
                     Canvas.SetTop(option.RightBindingDialogComponentView, offset.Y + Canvas.GetTop(option.RightBindingDialogComponentView));
@@ -214,11 +211,11 @@ namespace DialogsCreator.Views
             }
         }
 
-        private Point GetPointTopBindingComponent() 
+        private Point GetPointTopBindingComponent()
         {
             return new Point(
-                x:Canvas.GetLeft(this) + (this.DialogComponentCanvas.Width / 2f),
-                y:Canvas.GetTop(this) - ((bindingDialogComponentHeight) + marginBindingDialogCopmonentView)
+                x: Canvas.GetLeft(this) + (this.DialogComponentCanvas.Width / 2f),
+                y: Canvas.GetTop(this) - ((bindingDialogComponentHeight) + marginBindingDialogCopmonentView)
             );
         }
 
@@ -234,7 +231,7 @@ namespace DialogsCreator.Views
         {
             return new Point(
                 x: Canvas.GetLeft(this) - ((bindingDialogComponentWidth) + marginBindingDialogCopmonentView),
-                y: Canvas.GetTop(this) + this.DialogComponentCanvas.Height/2f
+                y: Canvas.GetTop(this) + this.DialogComponentCanvas.Height / 2f
             );
         }
 
@@ -246,7 +243,7 @@ namespace DialogsCreator.Views
             );
         }
 
-        public void Link(LinkDataPackage linkDataPackage) 
+        public void Link(LinkDataPackage linkDataPackage)
         {
             linkDataPackages.Add(linkDataPackage);
         }

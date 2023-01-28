@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,29 +20,45 @@ namespace DialogsCreator
     /// </summary>
     public partial class SignWindow : Window
     {
-        Roots roots { get; set; }
+        Roots root { get; set; } = new Roots();
         public SignWindow()
         {
             InitializeComponent();
-            roots = new Roots();
         }
 
-        private void choice_Click(object sender, RoutedEventArgs e)
+        private void Choice_Click(object sender, RoutedEventArgs e)
         {
-            RadioButton rb = sender as RadioButton;
-            string root = rb.Content.ToString();
-            roots.SetRoot(root);
-            button_sign.IsEnabled = true;
+            // Блокирует / разблокирует кнопку в зависимости от выбранного типа пользователя
+            ButtonSign.IsEnabled = root.SetRoot((sender as RadioButton).Name);
         }
 
-        private void buttin_sign_Click(object sender, RoutedEventArgs e)
+        private void ButtonSign_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
+            RunWindow();
+        }
 
-            MainWindow mainWindow = new MainWindow(roots);
-            mainWindow.ShowDialog();
-            mainWindow.Closed += ThisClose(mainWindow, null);
-            this.Hide();
+        private void RunWindow()
+        {
+
+            switch (root.typeUser)
+            {
+                case TypeUser.scenarist:
+                    this.Hide();
+                    VisualBindings window = new VisualBindings();
+                    window.ShowDialog();
+                    window.Closed += ThisClose(window, null);
+                    break;
+                case TypeUser.admin:
+                    MessageBox.Show("Окно пока не готово");
+                    break;
+                case TypeUser.translator:
+                    MessageBox.Show("Окно пока не готово");
+                    break;
+                default:
+                    MessageBox.Show("Ошибка. Отсутствует окно для данного типа пользователя");
+                    break;
+            }
+            
         }
 
         private EventHandler ThisClose(object sender, EventArgs e)

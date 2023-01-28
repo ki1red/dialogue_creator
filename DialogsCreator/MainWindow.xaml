@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
-        Title="Создатель диалогов" Height="726" Width="538" >
+        Title="Создание объекта" Height="658" Width="538" WindowStartupLocation="CenterScreen">
 
-    <Grid Height="716" VerticalAlignment="Top" RenderTransformOrigin="0.692,0.365">
+    <Grid Height="626" VerticalAlignment="Top" RenderTransformOrigin="0.692,0.365">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="0*"/>
@@ -17,48 +17,47 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Expander Header="Создание основного текста диалога" Name="gb_create_base_text" Margin="29,36,19,0" Height="660" VerticalAlignment="Top" Grid.ColumnSpan="2">
-            <Grid Background="#FFE5E5E5" Height="641" VerticalAlignment="Center">
+        <Border Name="Border_createBaseText" Margin="10,10,10,0" Grid.ColumnSpan="2" Height="177" VerticalAlignment="Top">
+            <Grid Background="#FFE5E5E5" Height="176" VerticalAlignment="Center">
 
-                <TextBox Name="textbox_name" Margin="10,24,40,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                <TextBox Name="textbox_text" Margin="10,63,40,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="79"/>
-                <CheckBox Content="Звук" Name="cb_sound" Click="cb_sound_Click" HorizontalAlignment="Left" Margin="10,147,0,0" VerticalAlignment="Top"/>
-                <CheckBox Content="Картинка" Name="cb_image" Click="cb_image_Click" HorizontalAlignment="Left" Margin="68,147,0,0" VerticalAlignment="Top"/>
-                <CheckBox Content="Ответы" Name="cb_answers" Click="cb_answers_Click" HorizontalAlignment="Left" Margin="144,147,0,0" VerticalAlignment="Top"/>
-                <Button Content="Добавить" Click="button_add_Click" HorizontalAlignment="Left" Margin="263,145,0,0" VerticalAlignment="Top" Width="103"/>
-
-
-                <Expander Header="Добавление звука диалога" Name="gb_add_sound" Margin="10,174,10,397">
-                    <Grid Background="AliceBlue">
-                        <Label Name="label_sound" HorizontalAlignment="Left" Margin="126,0,0,0" VerticalAlignment="Center"/>
-                        <Button Content="Импортировать" Name="button_import_sound" Click="button_import_sound_Click" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
-
-                    </Grid>
-                </Expander>
-                <Expander Header="Добавление картинки диалога" Name="gb_add_image" Margin="10,251,10,321">
-                    <Grid Background="AliceBlue">
-                        <Button Content="Импортировать" Name="button_import_image" Click="button_import_image_Click" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
-                        <Label Name="label_image" HorizontalAlignment="Left" Margin="120,0,0,0" VerticalAlignment="Center"/>
-
-                    </Grid>
-                </Expander>
-                <Expander Header="Добавление ответов на диалог" Name="gb_add_answers" Margin="10,325,10,65">
-                    <Grid Background="AliceBlue">
-
-                        <TextBox TextWrapping="Wrap" Name="textbox_answer" HorizontalAlignment="Center" Width="334" Height="49" VerticalAlignment="Top" Margin="0,36,0,0"/>
-
-                        <ComboBox Name="combobox_answers" Margin="10,133,10,51"/>
-                        <Button Content="Создать" Name="button_add_answer" Click="button_add_answer_Click" Margin="10,90,236,117"/>
-                        <Button Content="Удалить" Name="button_del_answer" Click="button_del_answer_Click" Margin="10,187,236,20"/>
-                        <Label Content="Описание" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="26"/>
-                    </Grid>
-                </Expander>
-
+                <TextBox Name="TextBox_author" Margin="10,24,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                <TextBox Name="TextBox_question" Margin="10,63,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="79"/>
+                <CheckBox Content="Звук" Name="CheckBox_sound" HorizontalAlignment="Left" Margin="10,147,0,0" VerticalAlignment="Top"/>
+                <CheckBox Content="Картинка" Name="CheckBox_image" HorizontalAlignment="Center" Margin="0,147,0,0" VerticalAlignment="Top"/>
+                <CheckBox Content="Ответы" Name="CheckBox_answers" HorizontalAlignment="Right" Margin="0,147,10,0" VerticalAlignment="Top"/>
 
                 <Label Content="Автор" HorizontalAlignment="Left" Margin="8,-2,0,0" VerticalAlignment="Top"/>
-                <Label Content="Описание" HorizontalAlignment="Left" Margin="8,39,0,0" VerticalAlignment="Top"/>
+                <Label Content="Описание вопроса" HorizontalAlignment="Left" Margin="8,39,0,0" VerticalAlignment="Top"/>
             </Grid>
-        </Expander>
+        </Border>
+
+        <Border Name="Border_addSound" Margin="10,192,10,380" Grid.ColumnSpan="2">
+            <Grid Background="#FFE5E5E5">
+                <Label Name="Label_soundPath" Margin="10,0,135,0" VerticalAlignment="Center" Height="34"/>
+                <Button Content="Звук" Name="Button_importSound" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Right" Width="106"/>
+
+            </Grid>
+        </Border>
+        <Border Name="Border_addImage" Margin="10,251,10,321" Grid.ColumnSpan="2">
+            <Grid Background="#FFE5E5E5">
+                <Button Content="Изображение" Name="Button_importImage" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Right" Width="106"/>
+                <Label Name="Label_imagePath" Margin="10,0,131,0" VerticalAlignment="Center" Height="34"/>
+
+            </Grid>
+        </Border>
+        <Border Name="Border_addAnswers" Margin="10,310,10,61" Grid.ColumnSpan="2">
+            <Grid Background="#FFE5E5E5">
+
+                <TextBox TextWrapping="Wrap" Name="TextBox_answer" Margin="10,36,10,126"/>
+
+                <ComboBox Name="ComboBox_answers" Margin="10,162,10,38"/>
+                <Button Content="Создать" Name="Button_addAnswer" HorizontalAlignment="Right" Margin="0,134,10,98" Width="74"/>
+                <Button Content="Удалить" Name="Button_delAnswer" HorizontalAlignment="Right" Margin="0,222,10,10" Width="74"/>
+                <Label Content="Описание ответа" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="26"/>
+            </Grid>
+        </Border>
+
+        <Button Content="Завершить" Name="Button_addDialog" FontSize="16" Margin="10,571,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="45"/>
 
     </Grid>
 </Window>

@@ -16,18 +16,21 @@ namespace DialogsCreator
     }
     public class SelectionObject
     {
-
         public TypeObject selected { get; private set; } = TypeObject.none;
-        
+        public ElementDFD element { get; private set; } = null;
+
         public SelectionObject() { }
 
         public void Select(object obj) // <- передается тип объекта
         {
-            MessageBox.Show("You select obj");
-            //switch (...) // выбирается какой тип объекта выбран в TypeObject
-            //{
-            //
-            //}
+            //MessageBox.Show("You select obj");
+            if ( (obj as ElementDFD) == null)
+            {
+                selected = TypeObject.none;
+                return;
+            }
+            element = (ElementDFD)obj;
+
         }
     }
 }

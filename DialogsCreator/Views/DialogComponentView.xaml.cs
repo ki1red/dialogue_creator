@@ -60,10 +60,17 @@ namespace DialogsCreator.Views
 
         public BindingDialogComponentView RightBindingDialogComponentView { get; private set; }
 
+        public List<OptionDialogComponent> Options { get; private set; } = new List<OptionDialogComponent>();
         public DialogComponentView(Canvas drawingCanvas)
         {
             InitializeComponent();
             canvas = drawingCanvas;
+        }
+        public void AddOption()
+        {
+            var option = new OptionDialogComponent(canvas, this);
+            OptionStackPanel.Children.Add(option);
+            Options.Add(option);
         }
         public void ShowBindigsDialogComponentsView()
         {
@@ -192,6 +199,14 @@ namespace DialogsCreator.Views
                         throw new ArgumentException("This Dialog Component not linked but have linkData with another objects this is error in logic");
                     }
 
+                }
+                foreach (var option in Options)
+                {
+                    Canvas.SetLeft(option.RightBindingDialogComponentView, offset.X + Canvas.GetLeft(option.RightBindingDialogComponentView));
+                    Canvas.SetTop(option.RightBindingDialogComponentView, offset.Y + Canvas.GetTop(option.RightBindingDialogComponentView));
+
+                    Canvas.SetLeft(option.LeftBindingDialogComponentView, offset.X + Canvas.GetLeft(option.LeftBindingDialogComponentView));
+                    Canvas.SetTop(option.LeftBindingDialogComponentView, offset.Y + Canvas.GetTop(option.LeftBindingDialogComponentView));
                 }
             }
         }

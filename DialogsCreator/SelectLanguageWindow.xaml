@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
-        Title="Выбор языка" Height="169" Width="386" ResizeMode="CanMinimize">
+        Title="Выбор языка" Height="169" Width="386" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
     <Grid Margin="0,0,170,133">
         <StackPanel x:Name="stackPanel" Margin="10,10,-161,-91">
             <RadioButton x:Name="ru" GroupName="choice" Click="Choice_Click" FontSize="18" Content="Русский"/>

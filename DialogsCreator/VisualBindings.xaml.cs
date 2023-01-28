@@ -37,35 +37,38 @@ namespace DialogsCreator
         private SelectionObject selectionObject = new SelectionObject();
         private InfoPanel infoPanel = new InfoPanel();
 
-        // ===========================================================================================================================
-        // ================================ ПЕРЕМЕННЫЕ ИЛЬИ ХЗ ДЛЯ ЧЕГО ==============================================================
-        // ===========================================================================================================================
-
         private BindingDialogComponentView startBindingDialogComponentView;
         private BindingDialogComponentView endBindingDialogComponentView;
         private Line currentLine;
         private List<Line> linesCollection = new List<Line>();
-        // ===========================================================================================================================
-        // ================================ КОНСТРУКТОРЫ ФОРМЫ VISUAL BINDINGS =======================================================
-        // ===========================================================================================================================
+
+        public delegate void SelectedViewtHandler(object obj);
+        public event SelectedViewtHandler SelectViewEvent;
+
         public VisualBindings()
         {
             InitializeComponent();
-
             InitializeBaseComponentsWindow();
             InitializeComponentsTopMenu();
             InitializeSubscribedClickForMenu();
             InitializeSubscribedMouseForCanvas();
-            
+
+            SelectViewEvent += selectionObject.Select;
 
             DialogComponentView dialogComponentView = new DialogComponentView(MainCanvas);
+            
             MainCanvas.Children.Add(dialogComponentView);
+          
             Canvas.SetLeft(dialogComponentView, 250);
             Canvas.SetTop(dialogComponentView, 150);
+            
             DialogComponentView dialogComponentView2 = new DialogComponentView(MainCanvas);
+            
             MainCanvas.Children.Add(dialogComponentView2);
+            
             Canvas.SetLeft(dialogComponentView2, 25);
             Canvas.SetTop(dialogComponentView2, 25);
+
             dialogComponentView.ShowBindigsDialogComponentsView();
             dialogComponentView2.ShowBindigsDialogComponentsView();
         }
@@ -110,6 +113,7 @@ namespace DialogsCreator
         private void InitializeSubscribedMouseForCanvas()
         {
             MainCanvas.MouseLeftButtonDown += MainCanvas_MouseDown;
+            MainCanvas.MouseLeftButtonUp += MainCanvasLeftMouseUp;
             MainCanvas.MouseRightButtonUp += MainCanvas_MouseUp;
             MainCanvas.MouseMove += MainCanvas_MouseMove;
         }
@@ -171,10 +175,9 @@ namespace DialogsCreator
                         currentLine.Y2 = y;
                     }
                 }
-
-
             }
         }
+
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (currentLine != null)
@@ -185,11 +188,17 @@ namespace DialogsCreator
                 currentLine.Y2 = currentPoint.Y - 3;
             }
         }
+
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            SelectViewEvent(e.Source);
             RemoveUnconnectedLines();
         }
 
+        private void MainCanvasLeftMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            SelectViewEvent(e.Source);
+        }
 
         // ===========================================================================================================================
         // =================================== РАБОТА С ВЕРХНИМ МЕНЮ =================================================================

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DialogsCreator
 {
@@ -15,12 +16,14 @@ namespace DialogsCreator
     }
     public class SelectionObject
     {
-        public TypeObject selected { get; private set; } = TypeObject.none;
 
+        public TypeObject selected { get; private set; } = TypeObject.none;
+        
         public SelectionObject() { }
 
-        public void Select() // <- передается тип объекта
+        public void Select(object obj) // <- передается тип объекта
         {
+            MessageBox.Show("You select obj");
             //switch (...) // выбирается какой тип объекта выбран в TypeObject
             //{
             //

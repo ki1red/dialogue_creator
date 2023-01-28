@@ -23,7 +23,7 @@ namespace DialogsCreator
 
         public void Select(object obj) // <- передается тип объекта
         {
-            MessageBox.Show("You select obj");
+            //MessageBox.Show("You select obj");
             if ( (obj as ElementDFD) == null)
             {
                 selected = TypeObject.none;

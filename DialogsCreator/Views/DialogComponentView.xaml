@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DialogsCreator.Views"
-             mc:Ignorable="d" Height="57">
+             mc:Ignorable="d">
     <Canvas Name="DialogComponentCanvas" Width="205" Height="55" Background="#FF9A6A6A" MouseLeftButtonDown="DialogComponentView_MouseLeftButtonDown" MouseLeftButtonUp="DialogComponentView_MouseLeftButtonUp" MouseMove="DialogComponentView_MouseMove">
         <Border Margin="0" CornerRadius="16" BorderThickness="3" BorderBrush="Black">
             <Grid Width="200" Height="50">
@@ -14,5 +14,7 @@
         </Border>
 
 
+        <StackPanel Name="OptionStackPanel" Canvas.Top="60" Canvas.Left="10">
+        </StackPanel>
     </Canvas>
 </UserControl>

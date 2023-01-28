@@ -73,6 +73,15 @@ namespace DialogsCreator
             Canvas.SetTop(dialogComponentView2, 25);
             dialogComponentView.ShowBindigsDialogComponentsView();
             dialogComponentView2.ShowBindigsDialogComponentsView();
+
+            dialogComponentView.AddOption();
+            dialogComponentView.AddOption();
+            dialogComponentView.AddOption();
+            dialogComponentView.AddOption();
+            foreach (var option in dialogComponentView.Options)
+            {
+                option.ShowBindigsDialogComponentsView();
+            }
         }
 
         // ===========================================================================================================================

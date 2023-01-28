@@ -120,15 +120,18 @@ namespace DialogsCreator
 
         private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e) // TODO добавить подписку на событие при нажатии. если нажата ЛКМ , то передавать тип объекта в SelectionObject.Select и InfoPanel.Show
         {
-            if(e.Source is BindingDialogComponentView)
+
+            if (e.Source is BindingDialogComponentView)
             {
                 if (startBindingDialogComponentView == null)
                 {
                     startBindingDialogComponentView = e.Source as BindingDialogComponentView;
                     currentLine = new Line();
                     currentLine.Stroke = new SolidColorBrush(Colors.Black);
+
                     currentLine.StrokeStartLineCap = PenLineCap.Round;
                     currentLine.StrokeEndLineCap = PenLineCap.Round;
+
                     currentLine.StrokeThickness = 5;
                     currentLine.X1 = Canvas.GetLeft(startBindingDialogComponentView) + startBindingDialogComponentView.Width / 2;
                     currentLine.Y1 = Canvas.GetTop(startBindingDialogComponentView) + startBindingDialogComponentView.Height / 2;
@@ -144,35 +147,36 @@ namespace DialogsCreator
                     {
                         currentLine.X2 = Canvas.GetLeft(endBindingDialogComponentView) + endBindingDialogComponentView.Width / 2;
                         currentLine.Y2 = Canvas.GetTop(endBindingDialogComponentView) + endBindingDialogComponentView.Height / 2;
+
                         linesCollection.Add(currentLine);
                         startBindingDialogComponentView.LinkWith(endBindingDialogComponentView, linesCollection);
+
                         linesCollection.Clear();
                         currentLine = null;
                         startBindingDialogComponentView = null;
                         endBindingDialogComponentView = null;
                     }
-                    else if (startBindingDialogComponentView != null)
-                    {
-                        var x = currentLine.X2;
-                        var y = currentLine.Y2;
-
-                        linesCollection.Add(currentLine);
-
-                        currentLine = new Line();
-                        currentLine.Stroke = new SolidColorBrush(Colors.Black);
-                        currentLine.StrokeThickness = 5;
-                        currentLine.StrokeStartLineCap = PenLineCap.Round;
-                        currentLine.StrokeEndLineCap = PenLineCap.Round;
-                        MainCanvas.Children.Add(currentLine);
-
-                        currentLine.X1 = x;
-                        currentLine.Y1 = y;
-                        currentLine.X2 = x;
-                        currentLine.Y2 = y;
-                    }
                 }
+            }
 
+            else if (startBindingDialogComponentView != null)
+            {
+                var x = currentLine.X2;
+                var y = currentLine.Y2;
 
+                linesCollection.Add(currentLine);
+
+                currentLine = new Line();
+                currentLine.Stroke = new SolidColorBrush(Colors.Black);
+                currentLine.StrokeThickness = 5;
+                currentLine.StrokeStartLineCap = PenLineCap.Round;
+                currentLine.StrokeEndLineCap = PenLineCap.Round;
+                MainCanvas.Children.Add(currentLine);
+
+                currentLine.X1 = x;
+                currentLine.Y1 = y;
+                currentLine.X2 = x;
+                currentLine.Y2 = y;
             }
         }
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)

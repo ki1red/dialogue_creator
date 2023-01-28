@@ -35,39 +35,45 @@ namespace DialogsCreator
             this.gb_add_answers.IsEnabled = false;
             this.gb_add_image.IsEnabled = false;
             this.gb_add_sound.IsEnabled = false;
+
+            CheckBox_sound.Click += CheckBox_sound_Click;
+            CheckBox_image.Click += CheckBox_image_Click;
+            CheckBox_answers.Click += CheckBox_answers_Click;
+            Button_addDialog.Click += Button_addDialog_Click;
+            Button_importSound.Click += Button_importSound_Click;
+            Button_importImage.Click += Button_importImage_Click;
+            Button_addAnswer.Click += Button_addAnswer_Click;
+            Button_delAnswer.Click += Button_delAnswer_Click;
         }
 
         // ===========================================================================================================================
         // ============================= РАБОТА С ОСНОВНЫМИ ЭЛЕМЕНТАМИ УПРАВЛЕНИЯ ====================================================
         // ===========================================================================================================================
 
-        private void cb_sound_Click(object sender, RoutedEventArgs e)
+        private void CheckBox_sound_Click(object sender, RoutedEventArgs e)
         {
-            if (cb_sound.IsChecked == true)
+            if (CheckBox_sound.IsChecked == true)
                 gb_add_sound.IsEnabled = true;
             else
             {
                 gb_add_sound.IsEnabled = false;
             }
         }
-
-        private void cb_image_Click(object sender, RoutedEventArgs e)
+        private void CheckBox_image_Click(object sender, RoutedEventArgs e)
         {
-            if (cb_image.IsChecked == true)
+            if (CheckBox_image.IsChecked == true)
                 gb_add_image.IsEnabled = true;
             else
                 gb_add_image.IsEnabled = false;
         }
-
-        private void cb_answers_Click(object sender, RoutedEventArgs e)
+        private void CheckBox_answers_Click(object sender, RoutedEventArgs e)
         {
-            if (cb_answers.IsChecked == true)
+            if (CheckBox_answers.IsChecked == true)
                 gb_add_answers.IsEnabled = true;
             else
                 gb_add_answers.IsEnabled = false;
         }
-
-        private void button_add_Click(object sender, RoutedEventArgs e)
+        private void Button_addDialog_Click(object sender, RoutedEventArgs e)
         {
             string check = FieldValidation();
             if (check != null)
@@ -78,23 +84,23 @@ namespace DialogsCreator
 
             string author; string question; string pathToSound; string pathToImage; string[] answers;
 
-            author = textbox_name.Text;
-            question = textbox_text.Text;
+            author = TextBox_author.Text;
+            question = TextBox_question.Text;
 
-            if (label_image.Content != null && cb_image.IsChecked == true)
-                pathToImage = label_image.Content as string;
+            if (Label_imagePath.Content != null && CheckBox_image.IsChecked == true)
+                pathToImage = Label_imagePath.Content as string;
             else
                 pathToImage = "NULL";
 
-            if (label_sound.Content != null && cb_sound.IsChecked == true)
-                pathToSound = label_sound.Content as string;
+            if (Label_soundPath.Content != null && CheckBox_sound.IsChecked == true)
+                pathToSound = Label_soundPath.Content as string;
             else
                 pathToSound = "NULL";
 
-            if (cb_answers.IsChecked == true)
+            if (CheckBox_answers.IsChecked == true)
             {
-                answers = new string[combobox_answers.Items.Count];
-                combobox_answers.Items.CopyTo(answers, 0);
+                answers = new string[ComboBox_answers.Items.Count];
+                ComboBox_answers.Items.CopyTo(answers, 0);
             }
             else
                 answers = new string[0];
@@ -105,8 +111,7 @@ namespace DialogsCreator
 
             this.Close();
         }
-
-        private void button_import_image_Click(object sender, RoutedEventArgs e)
+        private void Button_importImage_Click(object sender, RoutedEventArgs e)
         {
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -114,87 +119,84 @@ namespace DialogsCreator
             openFileDialog.InitialDirectory = Environment.CurrentDirectory;
             if (openFileDialog.ShowDialog() == true)
             {
-                label_image.Content = openFileDialog.FileName;
+                Label_imagePath.Content = openFileDialog.FileName;
             }
             else
                 return;
         }
-
-        private void button_import_sound_Click(object sender, RoutedEventArgs e)
+        private void Button_importSound_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "All files (*.*)|*.*";
             openFileDialog.InitialDirectory = Environment.CurrentDirectory;
             if (openFileDialog.ShowDialog() == true)
             {
-                label_sound.Content = openFileDialog.FileName;
+                Label_soundPath.Content = openFileDialog.FileName;
             }
             else
                 return;
         }
-
-        private void button_add_answer_Click(object sender, RoutedEventArgs e)
+        private void Button_addAnswer_Click(object sender, RoutedEventArgs e)
         {
-            if (textbox_answer.Text.Length == 0)
+            if (TextBox_answer.Text.Length == 0)
             {
                 MessageBox.Show("Не заполнено текстовое поле ответа");
                 return;
             }
-            else if (CheckedComboBoxAnswers(textbox_answer.Text))
+            else if (CheckedComboBoxAnswers(TextBox_answer.Text))
             {
                 MessageBox.Show("Такой ответ уже существует");
                 return;
             }
 
-            combobox_answers.Items.Add(textbox_answer.Text);
+            ComboBox_answers.Items.Add(TextBox_answer.Text);
         }
-
-        private void button_del_answer_Click(object sender, RoutedEventArgs e)
+        private void Button_delAnswer_Click(object sender, RoutedEventArgs e)
         {
-            if (combobox_answers.Items.Count == 0 || (combobox_answers.SelectedItem as string).Length <= 0)
+            if (ComboBox_answers.Items.Count == 0 || (ComboBox_answers.SelectedItem as string).Length <= 0)
             {
                 MessageBox.Show("Не выбран текст ответа для удаления");
                 return;
             }
 
-            combobox_answers.Items.Remove(combobox_answers.SelectedItem);
+            ComboBox_answers.Items.Remove(ComboBox_answers.SelectedItem);
         }
 
         // ===========================================================================================================================
         // ======================================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===========================================================
         // ===========================================================================================================================
+
         private bool CheckedComboBoxAnswers(string text)
         {
-            foreach (var item in combobox_answers.Items)
+            foreach (var item in ComboBox_answers.Items)
             {
                 if (text == item as string)
                     return true;
             }
             return false;
         }
-
         private string FieldValidation()
         {
-            if (textbox_name.Text.Length == 0)
+            if (TextBox_author.Text.Length == 0)
                 return "Не указано имя автора";
 
-            if (textbox_text.Text.Length == 0)
+            if (TextBox_question.Text.Length == 0)
                 return "Не указан текст вопроса";
 
-            if (cb_sound.IsChecked == true)
+            if (CheckBox_sound.IsChecked == true)
             {
-                if (label_sound.Content as string == "None")
+                if (Label_soundPath.Content as string == "None")
                     return "Не указан звуковой файл";
             }
-            if (cb_image.IsChecked == true)
+            if (CheckBox_image.IsChecked == true)
             {
-                if (label_image.Content as string == "None")
+                if (Label_imagePath.Content as string == "None")
                     return "Не указан файл изображения";
             }
 
-            if (cb_answers.IsChecked == true)
+            if (CheckBox_answers.IsChecked == true)
             {
-                if (combobox_answers.Items.Count == 0)
+                if (ComboBox_answers.Items.Count == 0)
                     return "Не указаны ответы к диалогу";
             }
 

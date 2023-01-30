@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="DialogsCreator.Views.ElemetInBindingsWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DialogsCreator.Views"
+             mc:Ignorable="d" Background="#FFADADAD" >
+    <Grid Width="450" Margin="10">
+        <TextBlock Name="ItemElementName" Text="Text Block" VerticalAlignment="Center" FontSize="16" FontFamily="Bahnschrift SemiBold" Margin="0,0,30,0"/>
+        <Button Click="Button_Click" Width="25" Height="25" HorizontalAlignment="Right" VerticalAlignment="Center" >
+            <Button.Background>
+                <ImageBrush ImageSource="/Views/close_FILL0_wght700_GRAD200_opsz48.png"/>
+            </Button.Background>
+        </Button>
+    </Grid>
+</UserControl>

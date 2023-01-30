@@ -18,23 +18,52 @@ namespace DialogsCreator.Views
     /// <summary>
     /// Логика взаимодействия для OptionDialogComponent.xaml
     /// </summary>
+    /// 
+
+    public class LinkDataOptionPackage
+    {
+        public OptionDialogComponent firstOptionComponent { get; private set; }
+        public OptionDialogComponent secondeOptionComponent { get; private set; }
+        public RequiredBindingOptionComponentView firstReqiredBindingDialogComponentView { get; private set; }
+        public RequiredBindingOptionComponentView secondeReqiredBindingDialogComponentView { get; private set; }
+        public List<Line> Lines { get; private set; }
+
+        public LinkDataOptionPackage(
+            OptionDialogComponent firstOptionComponent,
+            OptionDialogComponent secondeOptionComponent,
+            RequiredBindingOptionComponentView firstReqiredBindingDialogComponentView,
+            RequiredBindingOptionComponentView secondeReqiredBindingDialogComponentView,
+            List<Line> lines)
+        {
+            this.firstOptionComponent = firstOptionComponent;
+            this.secondeOptionComponent = secondeOptionComponent;
+            this.firstReqiredBindingDialogComponentView = firstReqiredBindingDialogComponentView;
+            this.secondeReqiredBindingDialogComponentView = secondeReqiredBindingDialogComponentView;
+            Lines = lines;
+        }
+    }
     public partial class OptionDialogComponent : UserControl
     {
-        public BindingDialogComponentView LeftBindingDialogComponentView { get; private set; }
-        public BindingDialogComponentView RightBindingDialogComponentView { get; private set; }
+        public RequiredBindingOptionComponentView LeftBindingDialogComponentView { get; private set; }
+        public RequiredBindingOptionComponentView RightBindingDialogComponentView { get; private set; }
 
         private const int marginBindingDialogCopmonentView = 10;
         private const int bindingDialogComponentWidth = 10;
-        private const int bindingDialogComponentHeight = 10;
 
-        private DialogComponentView parent;
+        public DialogComponentView parent { get; private set; }
         private Canvas canvas;
+
+        public LinkedObject OptionSource { get; set; }
+
+        public List<LinkDataOptionPackage> linkDataOptionPackages { get; private set; } = new List<LinkDataOptionPackage>();
 
         public OptionDialogComponent(Canvas drawingCanvas, DialogComponentView componentView)
         {
             InitializeComponent();
             parent = componentView;
             canvas = drawingCanvas;
+            Random random = new Random();
+            TextBlockComponentName.Text = "Option " + random.NextInt64(0,200);
         }
 
         public void ShowBindigsDialogComponentsView()
@@ -65,19 +94,53 @@ namespace DialogsCreator.Views
             }
         }
 
+        public void LinkWith(LinkDataOptionPackage linkDataOption) 
+        {
+            linkDataOptionPackages.Add(linkDataOption);
+
+            if (linkDataOption.firstOptionComponent == this) 
+            {
+                OptionSource?.Bounds(linkDataOption.secondeOptionComponent.OptionSource);
+            }
+            else if (linkDataOption.secondeOptionComponent == this)
+            {
+                OptionSource?.Bounds(linkDataOption.firstOptionComponent.OptionSource);
+            }    
+            else
+                throw new InvalidOperationException("You link different object but this object is not one from them");
+        }
+
+        public void UnLinkWith(LinkDataOptionPackage linkedPackage) 
+        {
+            foreach (var line in linkedPackage.Lines)
+            {
+                parent.canvas.Children.Remove(line);
+            }
+            if (linkedPackage.firstOptionComponent == this)
+            {
+                OptionSource?.UnBounds(linkedPackage.secondeOptionComponent.OptionSource);
+            }
+            else if (linkedPackage.secondeOptionComponent == this)
+            {
+                OptionSource?.UnBounds(linkedPackage.firstOptionComponent.OptionSource);
+            }
+
+            linkDataOptionPackages.Remove(linkedPackage);
+        }
+
         private void InitEmptyBindings()
         {
 
             if (LeftBindingDialogComponentView == null)
             {
-                LeftBindingDialogComponentView = new BindingDialogComponentView(parent, canvas, GetPointLeftBindingComponent());
+                LeftBindingDialogComponentView = new RequiredBindingOptionComponentView(this, canvas, GetPointLeftBindingComponent());
                 LeftBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Green);
 
             }
 
             if (RightBindingDialogComponentView == null)
             {
-                RightBindingDialogComponentView = new BindingDialogComponentView(parent, canvas, GetPointRightBindingComponent());
+                RightBindingDialogComponentView = new RequiredBindingOptionComponentView(this, canvas, GetPointRightBindingComponent());
                 RightBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Blue);
             }
         }
@@ -96,16 +159,16 @@ namespace DialogsCreator.Views
         private Point GetPointLeftBindingComponent()
         {
             return new Point(
-                x: Canvas.GetLeft(parent) - ((bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView),
-                y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height)
+                x: Canvas.GetLeft(parent) + (bindingDialogComponentWidth / 2f),
+                y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3 
             );
         }
 
         private Point GetPointRightBindingComponent()
         {
             return new Point(
-                x: Canvas.GetLeft(parent) + this.OptionCanvas.Width + (bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView,
-                y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height)
+                x: Canvas.GetLeft(parent) + this.OptionCanvas.Width + (bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView + 25,
+                y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3
             );
         }
 

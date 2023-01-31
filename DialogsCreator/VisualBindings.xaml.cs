@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -43,8 +44,11 @@ namespace DialogsCreator
 
         private BindingDialogComponentView startBindingDialogComponentView;
         private BindingDialogComponentView endBindingDialogComponentView;
+        private RequiredBindingOptionComponentView startReqiredBindingDialogComponentView;
+        private RequiredBindingOptionComponentView endReqiredBindingDialogComponentView;
         private Line currentLine;
         private List<Line> linesCollection = new List<Line>();
+  
         // ===========================================================================================================================
         // ================================ КОНСТРУКТОРЫ ФОРМЫ VISUAL BINDINGS =======================================================
         // ===========================================================================================================================
@@ -67,18 +71,42 @@ namespace DialogsCreator
             MainCanvas.Children.Add(dialogComponentView);
             Canvas.SetLeft(dialogComponentView, 250);
             Canvas.SetTop(dialogComponentView, 150);
+            dialogComponentView.ShowBindigsDialogComponentsView();
+            
             DialogComponentView dialogComponentView2 = new DialogComponentView(MainCanvas);
             MainCanvas.Children.Add(dialogComponentView2);
             Canvas.SetLeft(dialogComponentView2, 25);
             Canvas.SetTop(dialogComponentView2, 25);
-            dialogComponentView.ShowBindigsDialogComponentsView();
             dialogComponentView2.ShowBindigsDialogComponentsView();
+            dialogComponentView2.TextBlockComponentName.Text += " 2";
+            DialogComponentView dialogComponentView3 = new DialogComponentView(MainCanvas);
+            MainCanvas.Children.Add(dialogComponentView3);
+            Canvas.SetLeft(dialogComponentView3, 100);
+            Canvas.SetTop(dialogComponentView3, 100);
+            dialogComponentView3.ShowBindigsDialogComponentsView();
+            dialogComponentView3.TextBlockComponentName.Text += " 3";
 
             dialogComponentView.AddOption();
             dialogComponentView.AddOption();
-            dialogComponentView.AddOption();
-            dialogComponentView.AddOption();
+            dialogComponentView.Source = new TestBindAndUnbinOBJ();
+            dialogComponentView2.Source = new TestBindAndUnbindOBJ2();
+            dialogComponentView2.AddOption();
+            dialogComponentView2.AddOption();
+
+            dialogComponentView3.AddOption();
+            dialogComponentView3.AddOption();
+
             foreach (var option in dialogComponentView.Options)
+            {
+                option.ShowBindigsDialogComponentsView();
+            }
+
+            foreach (var option in dialogComponentView2.Options)
+            {
+                option.ShowBindigsDialogComponentsView();
+            }
+
+            foreach (var option in dialogComponentView3.Options)
             {
                 option.ShowBindigsDialogComponentsView();
             }
@@ -146,6 +174,8 @@ namespace DialogsCreator
             MainCanvas.MouseLeftButtonUp += MainCanvasLeftMouseUp;
             MainCanvas.MouseRightButtonUp += MainCanvas_MouseUp;
             MainCanvas.MouseMove += MainCanvas_MouseMove;
+
+  
         }
 
         // ===========================================================================================================================
@@ -154,8 +184,7 @@ namespace DialogsCreator
 
         private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e) // TODO добавить подписку на событие при нажатии. если нажата ЛКМ , то передавать тип объекта в SelectionObject.Select и InfoPanel.Show
         {
-
-            if (e.Source is BindingDialogComponentView)
+            if (e.Source is BindingDialogComponentView && startReqiredBindingDialogComponentView == null)
             {
                 if (startBindingDialogComponentView == null)
                 {
@@ -193,7 +222,45 @@ namespace DialogsCreator
                 }
             }
 
-            else if (startBindingDialogComponentView != null)
+            else if(e.Source is RequiredBindingOptionComponentView && startBindingDialogComponentView == null) 
+            { 
+                if(startReqiredBindingDialogComponentView == null) 
+                {
+                    startReqiredBindingDialogComponentView = e.Source as RequiredBindingOptionComponentView;
+                    currentLine = new Line();
+                    currentLine.Stroke = new SolidColorBrush(Colors.Black);
+
+                    currentLine.StrokeStartLineCap = PenLineCap.Round;
+                    currentLine.StrokeEndLineCap = PenLineCap.Round;
+
+                    currentLine.StrokeThickness = 5;
+                    currentLine.X1 = Canvas.GetLeft(startReqiredBindingDialogComponentView) + startReqiredBindingDialogComponentView.Width / 2;
+                    currentLine.Y1 = Canvas.GetTop(startReqiredBindingDialogComponentView) + startReqiredBindingDialogComponentView.Height / 2;
+
+                    currentLine.X2 = e.GetPosition(MainCanvas).X;
+                    currentLine.Y2 = e.GetPosition(MainCanvas).Y;
+                    MainCanvas.Children.Add(currentLine);
+                }
+                else 
+                {
+                    endReqiredBindingDialogComponentView = e.Source as RequiredBindingOptionComponentView;
+                    if (startReqiredBindingDialogComponentView != endReqiredBindingDialogComponentView && CanLink())
+                    {
+                        currentLine.X2 = Canvas.GetLeft(endReqiredBindingDialogComponentView) + endReqiredBindingDialogComponentView.Width / 2;
+                        currentLine.Y2 = Canvas.GetTop(endReqiredBindingDialogComponentView) + endReqiredBindingDialogComponentView.Height / 2;
+
+                        linesCollection.Add(currentLine);
+                        startReqiredBindingDialogComponentView.LinkWith(endReqiredBindingDialogComponentView, linesCollection);
+
+                        linesCollection.Clear();
+                        currentLine = null;
+                        startReqiredBindingDialogComponentView = null;
+                        endReqiredBindingDialogComponentView = null;
+                    }
+                }
+            }
+
+            else if ((startBindingDialogComponentView != null || startReqiredBindingDialogComponentView != null) && currentLine != null)
             {
                 var x = currentLine.X2;
                 var y = currentLine.Y2;
@@ -225,9 +292,18 @@ namespace DialogsCreator
         }
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
+
+            if (e.Source is DialogComponentView && currentLine == null)
+            {
+                var component = e.Source as DialogComponentView;
+                var windowInfo = new BindsEditDialogComponentWindow(component);
+                windowInfo.ShowDialog();
+
+            }
             SelectViewEvent(e.Source);
             RemoveUnconnectedLines();
         }
+
         private void MainCanvasLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
             SelectViewEvent(e.Source);
@@ -384,6 +460,8 @@ namespace DialogsCreator
             }
             startBindingDialogComponentView = null;
             endBindingDialogComponentView = null;
+            startReqiredBindingDialogComponentView = null;
+            endReqiredBindingDialogComponentView = null;
             linesCollection.Clear();
             MainCanvas.Children.Remove(currentLine);
             currentLine = null;

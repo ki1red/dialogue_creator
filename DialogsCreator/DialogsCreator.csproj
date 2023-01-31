@@ -8,7 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Views\add_FILL0_wght700_GRAD200_opsz48 %281%29.png" />
+    <None Remove="Views\close_FILL0_wght700_GRAD200_opsz48.png" />
+    <None Remove="Views\Frame 1.png" />
+    <None Remove="Views\remove_FILL0_wght700_GRAD200_opsz48.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Views\add_FILL0_wght700_GRAD200_opsz48 (1).png" />
+    <Resource Include="Views\close_FILL0_wght700_GRAD200_opsz48.png" />
+    <Resource Include="Views\Frame 1.png" />
+    <Resource Include="Views\remove_FILL0_wght700_GRAD200_opsz48.png" />
   </ItemGroup>
 
 </Project>

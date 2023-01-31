@@ -15,13 +15,14 @@ using System.Windows.Shapes;
 
 namespace DialogsCreator.Views
 {
-
-    public partial class BindingDialogComponentView : UserControl
+    /// <summary>
+    /// Логика взаимодействия для RequiredBindingOptionComponentView.xaml
+    /// </summary>
+    public partial class RequiredBindingOptionComponentView : UserControl
     {
+        public OptionDialogComponent parent { get; private set; }
 
-        public DialogComponentView parent { get; private set; }
-  
-        public BindingDialogComponentView(DialogComponentView parent, Canvas canvas, Point pointCreate)
+        public RequiredBindingOptionComponentView(OptionDialogComponent parent, Canvas canvas, Point pointCreate)
         {
             InitializeComponent();
             this.parent = parent;
@@ -32,7 +33,7 @@ namespace DialogsCreator.Views
             Canvas.SetTop(this, pointCreate.Y);
         }
 
-        public void LinkWith(BindingDialogComponentView other, List<Line> lines)
+        public void LinkWith(RequiredBindingOptionComponentView other, List<Line> lines)
         {
             if (parent == null)
                 throw new NullReferenceException("Parent is null but you try link BindingDialogComponentView object without parent");
@@ -43,23 +44,25 @@ namespace DialogsCreator.Views
             if (other.parent == this.parent)
                 throw new ArgumentException("You try link two BindingDialogComponentView with same parent");
 
-            foreach (var linkDataPackage in parent.linkDataPackages)
+            foreach (var linkDataPackage in parent.linkDataOptionPackages)
             {
-                if ((linkDataPackage.firstBindingDialogComponentView == this && linkDataPackage.secondeBindingDialogComponentView == other) ||
-                    (linkDataPackage.secondeBindingDialogComponentView == this && linkDataPackage.firstBindingDialogComponentView == other)
+                if ((linkDataPackage.firstReqiredBindingDialogComponentView == this && linkDataPackage.secondeReqiredBindingDialogComponentView == other) ||
+                    (linkDataPackage.secondeReqiredBindingDialogComponentView == this && linkDataPackage.firstReqiredBindingDialogComponentView == other)
                 ) throw new ArgumentException("This link already exsist");
 
-                if ((linkDataPackage.firstDialogComponent == parent && linkDataPackage.secondeDialogComponent == other.parent) ||
-                    (linkDataPackage.secondeDialogComponent == parent && linkDataPackage.firstDialogComponent == other.parent)
+                if ((linkDataPackage.firstOptionComponent == parent && linkDataPackage.secondeOptionComponent == other.parent) ||
+                    (linkDataPackage.secondeOptionComponent == parent && linkDataPackage.firstOptionComponent == other.parent)
                 ) throw new ArgumentException("This dialog components view is already bindings!");
             }
 
-
             var nlines = new List<Line>();
             nlines.AddRange(lines);
-            var package = new LinkDataDialogPackage(this.parent, other.parent, this, other, nlines);
-            this.parent.Link(package) ;
-            other.parent.Link(package);
+            var package = new LinkDataOptionPackage(this.parent, other.parent, this, other, nlines);
+            this.parent.LinkWith(package);
+            other.parent.LinkWith(package);
         }
+
+
     }
 }
+

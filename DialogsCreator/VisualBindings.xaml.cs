@@ -17,6 +17,7 @@ using System.Windows.Shell;
 using DialogsCreator.Views;
 using static System.Net.WebRequestMethods;
 using Path = System.Windows.Shapes.Path;
+using Point = System.Windows.Point;
 
 namespace DialogsCreator
 {
@@ -41,6 +42,9 @@ namespace DialogsCreator
         // ===========================================================================================================================
         // ================================ ПЕРЕМЕННЫЕ ИЛЬИ ХЗ ДЛЯ ЧЕГО ==============================================================
         // ===========================================================================================================================
+
+        private List<DialogComponentView> elements = null;
+        private Point lastClick = new Point();
 
         private BindingDialogComponentView startBindingDialogComponentView;
         private BindingDialogComponentView endBindingDialogComponentView;
@@ -67,49 +71,6 @@ namespace DialogsCreator
 
             SelectViewEvent += selectionObject.Select;
 
-            DialogComponentView dialogComponentView = new DialogComponentView(MainCanvas);
-            MainCanvas.Children.Add(dialogComponentView);
-            Canvas.SetLeft(dialogComponentView, 250);
-            Canvas.SetTop(dialogComponentView, 150);
-            dialogComponentView.ShowBindigsDialogComponentsView();
-            
-            DialogComponentView dialogComponentView2 = new DialogComponentView(MainCanvas);
-            MainCanvas.Children.Add(dialogComponentView2);
-            Canvas.SetLeft(dialogComponentView2, 25);
-            Canvas.SetTop(dialogComponentView2, 25);
-            dialogComponentView2.ShowBindigsDialogComponentsView();
-            dialogComponentView2.TextBlockComponentName.Text += " 2";
-            DialogComponentView dialogComponentView3 = new DialogComponentView(MainCanvas);
-            MainCanvas.Children.Add(dialogComponentView3);
-            Canvas.SetLeft(dialogComponentView3, 100);
-            Canvas.SetTop(dialogComponentView3, 100);
-            dialogComponentView3.ShowBindigsDialogComponentsView();
-            dialogComponentView3.TextBlockComponentName.Text += " 3";
-
-            dialogComponentView.AddOption();
-            dialogComponentView.AddOption();
-            dialogComponentView.Source = new TestBindAndUnbinOBJ();
-            dialogComponentView2.Source = new TestBindAndUnbindOBJ2();
-            dialogComponentView2.AddOption();
-            dialogComponentView2.AddOption();
-
-            dialogComponentView3.AddOption();
-            dialogComponentView3.AddOption();
-
-            foreach (var option in dialogComponentView.Options)
-            {
-                option.ShowBindigsDialogComponentsView();
-            }
-
-            foreach (var option in dialogComponentView2.Options)
-            {
-                option.ShowBindigsDialogComponentsView();
-            }
-
-            foreach (var option in dialogComponentView3.Options)
-            {
-                option.ShowBindigsDialogComponentsView();
-            }
         }
 
         // ===========================================================================================================================
@@ -155,19 +116,6 @@ namespace DialogsCreator
             MenuItem_addObject.Click += MenuItem_addObject_Click;
             this.MenuItem_deleteObject.Click += MenuItem_deleteObject_Click;
         }
-
-        private void MenuItem_deleteObject_Click(object sender, RoutedEventArgs e)
-        {
-            ElementDFD element;// TODO обращение к объекту SelectionObject и взятие из него выбранного ElementDFD
-            if (selectionObject.selected == TypeObject.element)
-                element = selectionObject.element;
-            else
-                return;
-
-            modelView.dialog.Delete(element);
-            this.MenuItem_deleteObject.IsEnabled = false;
-        }
-
         private void InitializeSubscribedMouseForCanvas()
         {
             MainCanvas.MouseLeftButtonDown += MainCanvas_MouseDown;
@@ -279,6 +227,8 @@ namespace DialogsCreator
                 currentLine.X2 = x;
                 currentLine.Y2 = y;
             }
+
+            lastClick = new Point(e.GetPosition(MainCanvas).X, e.GetPosition(MainCanvas).Y);
         }
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
@@ -303,7 +253,6 @@ namespace DialogsCreator
             SelectViewEvent(e.Source);
             RemoveUnconnectedLines();
         }
-
         private void MainCanvasLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
             SelectViewEvent(e.Source);
@@ -360,7 +309,21 @@ namespace DialogsCreator
 
             modelView.DesirializationDFD();
 
+            modelView.AddCoords(ref modelView.dialog.elements[modelView.dialog.elements.Length - 1], lastClick);
+
             // TODO добавить визуальное отображение
+            InitializingDialogComponentsView();
+        }
+        private void MenuItem_deleteObject_Click(object sender, RoutedEventArgs e)
+        {
+            SayingElementViewDFD element;// TODO обращение к объекту SelectionObject и взятие из него выбранного ElementDFD
+            if (selectionObject.selected == TypeObject.element)
+                element = selectionObject.element;
+            else
+                return;
+
+            modelView.dialog.Delete(modelView.dialog.Search(element.idElement));
+            //this.MenuItem_deleteObject.IsEnabled = false;
         }
 
         // ===========================================================================================================================
@@ -380,6 +343,9 @@ namespace DialogsCreator
                 {
                     modelView = new WPFtoDFD(selFile);
                     modelView.DesirializationDFD();
+
+                    if ((sender as MenuItem).Name == MenuItem_openFile.Name)
+                        InitializingDialogComponentsView();
                 }
 
                 selFile.language = selFile.ToLanguage(modelView.dialog.language);
@@ -397,7 +363,7 @@ namespace DialogsCreator
 
                 MenuItem_objectSettings.IsEnabled = false;
                 MenuItem_addObject.IsEnabled = true;
-                MenuItem_deleteObject.IsEnabled = false;
+                //MenuItem_deleteObject.IsEnabled = false;
                 MenuItem_editObject.IsEnabled = false;
             }
         }
@@ -465,6 +431,33 @@ namespace DialogsCreator
             linesCollection.Clear();
             MainCanvas.Children.Remove(currentLine);
             currentLine = null;
+        }
+        private void InitializingDialogComponentsView()
+        {
+            if (modelView == null || modelView.id == -1)
+                throw new Exception("Не удалось отрисовать View при запуске файла");
+
+            elements = new List<DialogComponentView>();
+            for (int i = 0; i < modelView.id; i++)
+            {
+                ElementDFD el = modelView.dialog.elements[i];
+
+                elements.Add(new DialogComponentView(MainCanvas));
+                MainCanvas.Children.Add(elements[i]);
+                Canvas.SetLeft(elements[i], el.point.X);
+                Canvas.SetTop(elements[i], el.point.Y);
+                elements[i].ShowBindigsDialogComponentsView();
+
+                elements[i].Source = new SayingElementViewDFD(el.idElement, el.question); // инициализация вопроса
+                elements[i].SetName();
+
+                foreach (var answer in el.answers) // инициализация ответов
+                {
+                    elements[i].AddOption(new SayingElementViewDFD(el.idElement, answer));
+                    elements[i].Options[elements[i].Options.Count - 1].ShowBindigsDialogComponentsView();
+                    elements[i].Options[elements[i].Options.Count - 1].SetName();
+                }
+            }
         }
     }
 }

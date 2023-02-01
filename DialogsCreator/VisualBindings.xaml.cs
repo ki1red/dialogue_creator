@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Shell;
+using System.Xml.Linq;
 using DialogsCreator.Views;
 using static System.Net.WebRequestMethods;
 using Path = System.Windows.Shapes.Path;
@@ -123,7 +124,15 @@ namespace DialogsCreator
             MainCanvas.MouseRightButtonUp += MainCanvas_MouseUp;
             MainCanvas.MouseMove += MainCanvas_MouseMove;
 
-  
+            MainCanvas.MouseLeftButtonUp += CheckSelectObject;
+        }
+
+        private void CheckSelectObject(object sender, MouseButtonEventArgs e)
+        {
+            if (selectionObject.selected == TypeObject.element)
+                this.MenuItem_deleteObject.IsEnabled = true;
+            else
+                this.MenuItem_deleteObject.IsEnabled = false;
         }
 
         // ===========================================================================================================================
@@ -299,30 +308,32 @@ namespace DialogsCreator
         }
         private void MenuItem_addObject_Click(object sender, RoutedEventArgs e)
         {
-            modelView.SerializationDFD();
+            //modelView.SerializationDFD();
 
-            MainWindow window = new MainWindow(modelView);
+            MainWindow window = new MainWindow();
             window.ShowDialog();
 
             if (window.added == false)
                 return;
 
-            modelView.DesirializationDFD();
-
+            //modelView.DesirializationDFD();
+            modelView.AddElementDFDWithoutConnection(window.element);
             modelView.AddCoords(ref modelView.dialog.elements[modelView.dialog.elements.Length - 1], lastClick);
 
             // TODO добавить визуальное отображение
-            InitializingDialogComponentsView();
+            AddObjectToView(window.element);
         }
         private void MenuItem_deleteObject_Click(object sender, RoutedEventArgs e)
         {
-            SayingElementViewDFD element;// TODO обращение к объекту SelectionObject и взятие из него выбранного ElementDFD
+            DialogComponentView element;// TODO обращение к объекту SelectionObject и взятие из него выбранного ElementDFD
             if (selectionObject.selected == TypeObject.element)
                 element = selectionObject.element;
             else
                 return;
 
-            modelView.dialog.Delete(modelView.dialog.Search(element.idElement));
+            modelView.dialog.Delete(modelView.dialog.Search((element.Source as SayingElementViewDFD).idElement));
+            // TODO сюда поместить View Delete
+            element.Destroy();
             //this.MenuItem_deleteObject.IsEnabled = false;
         }
 
@@ -363,7 +374,7 @@ namespace DialogsCreator
 
                 MenuItem_objectSettings.IsEnabled = false;
                 MenuItem_addObject.IsEnabled = true;
-                //MenuItem_deleteObject.IsEnabled = false;
+                MenuItem_deleteObject.IsEnabled = true;
                 MenuItem_editObject.IsEnabled = false;
             }
         }
@@ -437,6 +448,7 @@ namespace DialogsCreator
             if (modelView == null || modelView.id == -1)
                 throw new Exception("Не удалось отрисовать View при запуске файла");
 
+            
             elements = new List<DialogComponentView>();
             for (int i = 0; i < modelView.id; i++)
             {
@@ -457,6 +469,27 @@ namespace DialogsCreator
                     elements[i].Options[elements[i].Options.Count - 1].ShowBindigsDialogComponentsView();
                     elements[i].Options[elements[i].Options.Count - 1].SetName();
                 }
+            }
+        }
+        private void AddObjectToView(ElementDFD element)
+        {
+            elements.Add(new DialogComponentView(MainCanvas));
+
+            int pos = elements.Count - 1;
+
+            MainCanvas.Children.Add(elements[pos]);
+            Canvas.SetLeft(elements[pos], element.point.X);
+            Canvas.SetTop(elements[pos], element.point.Y);
+            elements[pos].ShowBindigsDialogComponentsView();
+
+            elements[pos].Source = new SayingElementViewDFD(element.idElement, element.question); // инициализация вопроса
+            elements[pos].SetName();
+
+            foreach (var answer in element.answers) // инициализация ответов
+            {
+                elements[pos].AddOption(new SayingElementViewDFD(element.idElement, answer));
+                elements[pos].Options[elements[pos].Options.Count - 1].ShowBindigsDialogComponentsView();
+                elements[pos].Options[elements[pos].Options.Count - 1].SetName();
             }
         }
     }

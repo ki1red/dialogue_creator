@@ -19,7 +19,7 @@ namespace DialogsCreator
     {
         public TypeObject selected { get; private set; } = TypeObject.none;
         //public ElementDFD element { get; private set; } = null;
-        public SayingElementViewDFD element { get; private set; } = null;
+        public DialogComponentView element { get; private set; } = null;
 
         public SelectionObject() { }
 
@@ -29,7 +29,7 @@ namespace DialogsCreator
             if (obj is DialogComponentView)
             {
                 selected = TypeObject.element;
-                element = (obj as DialogComponentView).Source as SayingElementViewDFD;
+                element = (obj as DialogComponentView);
             }
             //element = (ElementDFD)obj;
 

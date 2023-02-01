@@ -26,12 +26,11 @@ namespace DialogsCreator
     public partial class MainWindow : Window
     {
         public bool added = false;
-        private WPFtoDFD modelView;
-        public MainWindow(WPFtoDFD modelView)
+        public ElementDFD element = null;
+        public MainWindow()
         {
             InitializeComponent();
 
-            this.modelView = modelView;
             this.Border_addAnswers.IsEnabled = false;
             this.Border_addImage.IsEnabled = false;
             this.Border_addSound.IsEnabled = false;
@@ -105,8 +104,14 @@ namespace DialogsCreator
             else
                 answers = new string[0];
 
-            modelView.AddElementDFDWithoutConnection(author, question, pathToSound, pathToImage, answers);
-            modelView.SerializationDFD();
+            //modelView.AddElementDFDWithoutConnection(author, question, pathToSound, pathToImage, answers);
+            SayingElementDFD[] answs = new SayingElementDFD[answers.Length];
+            for (int i = 0; i < answs.Length; i++)
+            {
+                answs[i] = new SayingElementDFD(answers[i], new SayingElementDFD(), new SayingElementDFD[0]);
+            }
+            element = new ElementDFD(0, pathToSound, pathToImage, author, new SayingElementDFD(question, new SayingElementDFD(), new SayingElementDFD[0]), answs, new Point(-1,-1));
+            //modelView.SerializationDFD();
             added = true;
 
             this.Close();

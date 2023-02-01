@@ -66,7 +66,7 @@ namespace DialogsCreator
             InitializeSubscribedMouseForCanvas();
 
             SelectViewEvent += selectionObject.Select;
-            MainCanvas.PreviewKeyDown += Canvas_PreviewKeyDown;
+
             DialogComponentView dialogComponentView = new DialogComponentView(MainCanvas);
             MainCanvas.Children.Add(dialogComponentView);
             Canvas.SetLeft(dialogComponentView, 250);
@@ -93,7 +93,9 @@ namespace DialogsCreator
             dialogComponentView2.AddOption();
             dialogComponentView2.AddOption();
 
-            
+            dialogComponentView3.AddOption();
+            dialogComponentView3.AddOption();
+
             foreach (var option in dialogComponentView.Options)
             {
                 option.ShowBindigsDialogComponentsView();
@@ -310,31 +312,7 @@ namespace DialogsCreator
         // ===========================================================================================================================
         // =================================== РАБОТА С ВЕРХНИМ МЕНЮ =================================================================
         // ===========================================================================================================================
-        private void Canvas_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            TranslateTransform transform = MainCanvas.RenderTransform as TranslateTransform;
-            if (transform == null)
-            {
-                transform = new TranslateTransform();
-                MainCanvas.RenderTransform = transform;
-            }
 
-            switch (e.Key)
-            {
-                case Key.Left:
-                    transform.X -= 10;
-                    break;
-                case Key.Right:
-                    transform.X += 10;
-                    break;
-                case Key.Up:
-                    transform.Y -= 10;
-                    break;
-                case Key.Down:
-                    transform.Y += 10;
-                    break;
-            }
-        }
         private void MenuItem_openFile_Click(object sender, RoutedEventArgs e)
         {
             SaveFileBeforeClosing(null, null);

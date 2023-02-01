@@ -62,8 +62,6 @@ namespace DialogsCreator.Views
             InitializeComponent();
             parent = componentView;
             canvas = drawingCanvas;
-            Random random = new Random();
-            TextBlockComponentName.Text = "Option " + random.NextInt64(0,200);
         }
 
         public void ShowBindigsDialogComponentsView()
@@ -177,6 +175,28 @@ namespace DialogsCreator.Views
             return
                  LeftBindingDialogComponentView != null &&
                  RightBindingDialogComponentView != null;
+        }
+
+        public void SetName()
+        {
+            string fullName = (OptionSource as SayingElementViewDFD).sayingElement.text;
+
+            if (fullName.Length <= 7)
+            {
+                TextBlockComponentName.Text = fullName;
+                return;
+            }
+
+                int i = 0;
+            string shortName = "";
+            foreach (var ch in fullName)
+            {
+                if (i == 7)
+                    break;
+                shortName += ch;
+                i++;
+            }
+            TextBlockComponentName.Text = shortName;
         }
     }
 }

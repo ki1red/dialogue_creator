@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DialogsCreator.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,19 +18,20 @@ namespace DialogsCreator
     public class SelectionObject
     {
         public TypeObject selected { get; private set; } = TypeObject.none;
-        public ElementDFD element { get; private set; } = null;
+        //public ElementDFD element { get; private set; } = null;
+        public SayingElementViewDFD element { get; private set; } = null;
 
         public SelectionObject() { }
 
         public void Select(object obj) // <- передается тип объекта
         {
-            //MessageBox.Show("You select obj");
-            if ( (obj as ElementDFD) == null)
+            
+            if (obj is DialogComponentView)
             {
-                selected = TypeObject.none;
-                return;
+                selected = TypeObject.element;
+                element = (obj as DialogComponentView).Source as SayingElementViewDFD;
             }
-            element = (ElementDFD)obj;
+            //element = (ElementDFD)obj;
 
         }
     }

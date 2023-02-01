@@ -26,18 +26,10 @@
             </MenuItem>
         </Menu>
 
-        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
-            <Canvas Width="10000" Name="MainCanvas" Background="#FF7F7676">
+        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="0,25,0,0">
+            <Canvas Name="MainCanvas" Height="100000" Width="100000" Background="#FF7F7676">
             </Canvas>
         </ScrollViewer>
         <Label Name="Label_informationOfLanguage" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="143" Height="26"/>
-
-        <!--
-        <Border BorderBrush="Black" BorderThickness="5" Margin="536,25,18,10">
-            <StackPanel/>
-        </Border>
-        -->
-
-
     </Grid>
 </Window>

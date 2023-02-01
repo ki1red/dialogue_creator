@@ -85,6 +85,15 @@ namespace DialogsCreator
 
             dialog.Add(element);
         }
+        public void AddElementDFDWithoutConnection(ElementDFD element)
+        {
+            if (id == -1)
+                throw new Exception("Не загружен dfd файл");
+
+            element.idElement = ++id;
+
+            dialog.Add(element);
+        }
         public void AddCoords(ref ElementDFD element, Point point)
         {
             element.point = point;

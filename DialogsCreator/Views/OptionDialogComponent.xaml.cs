@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -197,6 +198,20 @@ namespace DialogsCreator.Views
                 i++;
             }
             TextBlockComponentName.Text = shortName;
+        }
+        public void Destroy() 
+        {
+            var packages = linkDataOptionPackages.ToList();
+
+            foreach (var package in packages)
+            {
+                package.firstOptionComponent.UnLinkWith(package);
+                package.secondeOptionComponent.UnLinkWith(package);
+            }
+
+            canvas.Children.Remove(LeftBindingDialogComponentView);
+            canvas.Children.Remove(RightBindingDialogComponentView);
+            canvas.Children.Remove(this);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO.Packaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -339,21 +340,23 @@ namespace DialogsCreator.Views
             }
             TextBlockComponentName.Text = shortName;
         }
+
         public void Destroy()
         {
-            foreach (var option in Options)
+            var options = Options.ToList();
+
+            foreach (var option in options)
             {
-                foreach (var package in option.linkDataOptionPackages)
-                {
-                    package.firstOptionComponent.UnLinkWith(package);
-                    package.secondeOptionComponent.UnLinkWith(package);
-                }
-
+                option.Destroy();
                 Options.Remove(option);
+            }
 
-                canvas.Children.Remove(option.LeftBindingDialogComponentView);
-                canvas.Children.Remove(option.RightBindingDialogComponentView);
-                canvas.Children.Remove(option);
+            var packages = linkDataPackages.ToList();
+
+            foreach (var package in packages)
+            {
+                package.firstDialogComponent.UnLinkWith(package);
+                package.secondeDialogComponent.UnLinkWith(package);
             }
 
             canvas.Children.Remove(this.LeftBindingDialogComponentView);

@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DialogsCreator.Views"
              mc:Ignorable="d">
-
     <Canvas  Name="DialogComponentCanvas" Width="200" Height="50"  MouseLeftButtonDown="DialogComponentView_MouseLeftButtonDown" MouseLeftButtonUp="DialogComponentView_MouseLeftButtonUp" MouseMove="DialogComponentView_MouseMove" Background="White">
         <Grid Width="200" Height="50">
             <TextBlock Name="TextBlockComponentName" FontSize="20" FontFamily="Bookman Old Style" HorizontalAlignment="Center" VerticalAlignment="Center" Text="The Dialog 1" FontStyle="Italic" FontWeight="Bold"  TextAlignment="Center" Grid.Column="1" />
@@ -14,5 +13,4 @@
         <StackPanel Background="#FFD6D6D6" Name="OptionStackPanel" Width="205" Canvas.Top="60" Canvas.Left="0">
         </StackPanel>
     </Canvas>
-
 </UserControl>

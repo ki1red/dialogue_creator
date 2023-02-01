@@ -26,8 +26,8 @@
             </MenuItem>
         </Menu>
 
-        <ScrollViewer Margin="0,25,0,0">
-            <Canvas Name="MainCanvas" Background="#FF7F7676">
+        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+            <Canvas Width="10000" Name="MainCanvas" Background="#FF7F7676">
             </Canvas>
         </ScrollViewer>
         <Label Name="Label_informationOfLanguage" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="143" Height="26"/>

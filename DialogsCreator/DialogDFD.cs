@@ -1,12 +1,9 @@
-﻿using DialogsCreator.Views;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Point = System.Windows.Point;
 
 namespace DialogsCreator
 {
@@ -48,15 +45,6 @@ namespace DialogsCreator
             Array.Resize(ref elements, elements.Length - 1);
             tmp.CopyTo(elements, 0);
         }
-        public ref ElementDFD Search(int id)
-        {
-            for (int i = 0; i < elements.Length; i++)
-            {
-                if (elements[i].idElement == id)
-                    return ref elements[i];
-            }
-            return ref elements[elements.Length-1];
-        }
     }
 
     [Serializable]
@@ -70,9 +58,7 @@ namespace DialogsCreator
         public SayingElementDFD question;
         public SayingElementDFD[] answers;
 
-        public Point point;
-
-        public ElementDFD(int idElement, string pathToSound, string pathToImage, string author, SayingElementDFD question, SayingElementDFD[] answers, Point point)
+        public ElementDFD(int idElement, string pathToSound, string pathToImage, string author, SayingElementDFD question, SayingElementDFD[] answers)
         {
             this.idElement = idElement;
             this.pathToSound = pathToSound;
@@ -80,7 +66,6 @@ namespace DialogsCreator
             this.author = author;
             this.question = question;
             this.answers = answers;
-            this.point = point;
         }
         public ElementDFD()
         {
@@ -90,7 +75,6 @@ namespace DialogsCreator
             this.author = "NULL";
             this.question = new SayingElementDFD();
             this.answers = new SayingElementDFD[0];
-            this.point = new Point(-1, -1);
         }
         public void Add(SayingElementDFD element)
         {
@@ -114,24 +98,15 @@ namespace DialogsCreator
             Array.Resize(ref answers, answers.Length - 1);
             tmp.CopyTo(answers, 0);
         }
-        public ref SayingElementDFD Search(string text)
-        {
-            for (int i = 0; i < answers.Length; i++)
-            {
-                if (answers[i].text == text)
-                    return ref answers[i];
-            }
-            return ref question;
-        }
     }
 
     [Serializable]
     public class SayingElementDFD
     {
         public string text;
-        public SayingElementDFD nextElement;
-        public SayingElementDFD[] requests;
-        public SayingElementDFD(string text, SayingElementDFD nextElement, SayingElementDFD[] requests)
+        public string nextElement;
+        public string[] requests;
+        public SayingElementDFD(string text, string nextElement, string[] requests)
         {
             this.text = text;
             this.nextElement = nextElement;
@@ -140,10 +115,10 @@ namespace DialogsCreator
         public SayingElementDFD()
         {
             this.text = "NULL";
-            this.nextElement = null;
-            this.requests = new SayingElementDFD[0];
+            this.nextElement = "NULL";
+            this.requests = new string[0];
         }
-        public void Add(SayingElementDFD element)
+        public void Add(string element)
         {
             Array.Resize(ref requests, requests.Length + 1);
             requests[requests.Length - 1] = element;
@@ -152,9 +127,9 @@ namespace DialogsCreator
         {
             elementOld = elementNew;
         }
-        public void Delete(SayingElementDFD element)
+        public void Delete(string element)
         {
-            SayingElementDFD[] tmp = new SayingElementDFD[requests.Length - 1];
+            string[] tmp = new string[requests.Length - 1];
             int iTmp = 0;
             foreach (var item in requests)
             {
@@ -164,40 +139,6 @@ namespace DialogsCreator
             }
             Array.Resize(ref requests, requests.Length - 1);
             tmp.CopyTo(requests, 0);
-        }
-        public ref SayingElementDFD Search(SayingElementDFD request)
-        {
-            for (int i = 0; i < requests.Length; i++)
-                if (requests[i] == request)
-                    return ref requests[i];
-            return ref requests[requests.Length - 1];
-        }
-
-        
-    }
-
-    public class SayingElementViewDFD : LinkedObject
-    {
-        public int idElement;
-        public SayingElementDFD sayingElement;
-        public SayingElementViewDFD(int idElement, SayingElementDFD sayingElement)
-        {
-            this.idElement = idElement;
-            this.sayingElement = sayingElement;
-        }
-
-        public override void Bounds(LinkedObject linkObject)
-        {
-            if (linkObject == null)
-                throw new Exception("Неинициализированный объект во View");
-            sayingElement.Add((linkObject as SayingElementViewDFD).sayingElement);
-        }
-
-        public override void UnBounds(LinkedObject linkObject)
-        {
-            if (linkObject == null)
-                throw new Exception("Неинициализированный объект во View");
-            sayingElement.Delete((linkObject as SayingElementViewDFD).sayingElement);
         }
     }
 }

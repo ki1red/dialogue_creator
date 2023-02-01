@@ -10,7 +10,6 @@ using System.Collections;
 using System.Runtime.Serialization.Json;
 using System.Windows.Shapes;
 using System.Windows.Input;
-using Point = System.Windows.Point;
 
 namespace DialogsCreator
 {
@@ -65,8 +64,8 @@ namespace DialogsCreator
 
             SayingElementDFD sayingElement = new SayingElementDFD();
             sayingElement.text = question;
-            sayingElement.nextElement = null;
-            sayingElement.requests = new SayingElementDFD[0];
+            sayingElement.nextElement = "NULL";
+            sayingElement.requests = new string[0];
 
             element.question = sayingElement;
 
@@ -77,7 +76,7 @@ namespace DialogsCreator
             
             for (int iAnswers = 0; iAnswers <  sayingElements.Length; iAnswers++)
             {
-                SayingElementDFD item = new SayingElementDFD(answers[iAnswers], null, new SayingElementDFD[0]);
+                SayingElementDFD item = new SayingElementDFD(answers[iAnswers], "NULL", new string[0]);
                 sayingElements[iAnswers] = item;
             }
 
@@ -85,10 +84,7 @@ namespace DialogsCreator
 
             dialog.Add(element);
         }
-        public void AddCoords(ref ElementDFD element, Point point)
-        {
-            element.point = point;
-        }
+
         private int GetIdLastElement()
         {
             int maxId = 0;

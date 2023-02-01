@@ -304,5 +304,27 @@ namespace DialogsCreator.Views
                 linkDataPackages.Remove(linkedPackage);
             }  
         }
+        public void Destroy()
+        {
+            foreach (var option in Options)
+            {
+                foreach (var package in option.linkDataOptionPackages)
+                {
+                    package.firstOptionComponent.UnLinkWith(package);
+                    package.secondeOptionComponent.UnLinkWith(package);
+                }
+
+                Options.Remove(option);
+
+                canvas.Children.Remove(option.LeftBindingDialogComponentView);
+                canvas.Children.Remove(option.RightBindingDialogComponentView);
+                canvas.Children.Remove(option);
+            }
+
+            canvas.Children.Remove(this.LeftBindingDialogComponentView);
+            canvas.Children.Remove(this.RightBindingDialogComponentView);
+            canvas.Children.Remove(this.TopBindingDialogComponentView);
+            canvas.Children.Remove(this);
+        }
     }
 }

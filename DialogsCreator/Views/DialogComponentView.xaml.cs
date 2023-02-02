@@ -28,13 +28,13 @@ namespace DialogsCreator.Views
         public BindingDialogComponentView firstBindingDialogComponentView { get; private set; }
         public BindingDialogComponentView secondeBindingDialogComponentView { get; private set; }
         public ElementDFD element { get; private set; }
-        public List<Line> Lines { get; private set; }
+        public List<Line> Lines { get; private set; } 
         public LinkDataDialogPackage(
             DialogComponentView firstDialogComponent,
             DialogComponentView secondeDialogComponent,
             BindingDialogComponentView firstBindingDialogComponentView,
             BindingDialogComponentView secondeBindingDialogComponentView,
-            List<Line> lines)
+            List<Line>lines)
         {
             this.firstDialogComponent = firstDialogComponent;
             this.secondeDialogComponent = secondeDialogComponent;
@@ -77,7 +77,7 @@ namespace DialogsCreator.Views
             OptionStackPanel.Children.Add(option);
             Options.Add(option);
         }
-
+        
         public void AddOption(LinkedObject source)
         {
             var option = new OptionDialogComponent(canvas, this);

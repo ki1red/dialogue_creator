@@ -23,16 +23,16 @@ using Point = System.Windows.Point;
 
 namespace DialogsCreator
 {
+    public class TestListBoxItem
+    {
+        public string Name {get; set;}
+        public TestListBoxItem(string name)
+        {
+            Name = name;
+        }
+    }
     public partial class VisualBindings : Window
     {
-        public class TestListBoxItem
-        {
-            public string Name { get; set; }
-            public TestListBoxItem(string name)
-            {
-                Name = name;
-            }
-        }
         // ===========================================================================================================================
         // ============================= ПЕРЕМЕННЫЕ ДЛЯ ВИЗУАЛЬНОГО ОТОБРАЖЕНИЯ В ОКНЕ ===============================================
         // ===========================================================================================================================
@@ -46,13 +46,10 @@ namespace DialogsCreator
 
         private FileManager manager = new FileManager();
         private WPFtoDFD modelView;
-        private bool isEdit = false;
 
         // ===========================================================================================================================
         // ======================== ПЕРЕМЕННЫЕ ДЛЯ ВЗАИМОДЕЙСТВИЯ МЕЖДУ CANVAS И ОСТАЛЬНЫМ ===========================================
         // ===========================================================================================================================
-
-        //private List<DialogComponentView> elements = null;
         //!!
         public ObservableCollection<DialogComponentView> elements = null;
         public ObservableCollection<TestListBoxItem> ItemsTextBox { get; set; }
@@ -78,7 +75,7 @@ namespace DialogsCreator
         private delegate void SelectedViewtHandler(object obj); // TODO private ?
         private event SelectedViewtHandler SelectViewEvent; // TODO private ?
 
-        internal VisualBindings()
+        public VisualBindings()
         {
             InitializeComponent();
             InitializeComponentsDFD();
@@ -89,7 +86,7 @@ namespace DialogsCreator
             InitializeSubscribedMouseForCanvas();
 
             SelectViewEvent += selectionObject.Select;
-
+            // ItemsTextBox = new ObservableCollection<TestListBoxItem>();
             elements = new ObservableCollection<DialogComponentView>();
             ListBoxView.ItemsSource = elements;
         }
@@ -98,17 +95,17 @@ namespace DialogsCreator
         // ================================ ИНИЦИАЛИЗАЦИИ ГРУПП КОМПОНЕНТОВ ФОРМЫ ====================================================
         // ===========================================================================================================================
 
-        internal void InitializeSubscribedBaseComponentsWindow()
+        private void InitializeSubscribedBaseComponentsWindow()
         {
             //this.Closed += SaveAndClose(null, null); TODO нахуй пошёл
             this.Closing += Close;
         }
-        internal void InitializeBaseComponentsWindow()
+        private void InitializeBaseComponentsWindow()
         {
             this.Title = windowTitle;
             this.Label_informationOfLanguage.Content = null;
         }
-        internal void InitializeComponentsTopMenu()
+        private void InitializeComponentsTopMenu()
         {
             this.MenuItem_saveFile.IsEnabled = false;
             this.MenuItem_saveAsFile.IsEnabled = false;
@@ -120,7 +117,7 @@ namespace DialogsCreator
             this.MenuItem_editObject.IsEnabled = false;
             this.MenuItem_deleteObject.IsEnabled = false;
         }
-        internal void InitializeSubscribedClickForMenu()
+        private void InitializeSubscribedClickForMenu()
         {
             this.MenuItem_createFile.Click += MenuItem_createFile_Click;
             this.MenuItem_openFile.Click += MenuItem_openFile_Click;
@@ -137,7 +134,7 @@ namespace DialogsCreator
             this.MenuItem_addObject.Click += MenuItem_addObject_Click;
             this.MenuItem_deleteObject.Click += MenuItem_deleteObject_Click;
         }
-        internal void InitializeSubscribedMouseForCanvas()
+        private void InitializeSubscribedMouseForCanvas()
         {
             MainCanvas.MouseLeftButtonDown += MainCanvas_MouseDown;
             MainCanvas.MouseLeftButtonUp += MainCanvasLeftMouseUp;
@@ -146,7 +143,7 @@ namespace DialogsCreator
 
             MainCanvas.MouseLeftButtonUp += CheckSelectObject;
         }
-        internal void InitializeComponentsDFD()
+        private void InitializeComponentsDFD()
         {
             modelView = new WPFtoDFD(manager);
         }
@@ -155,7 +152,7 @@ namespace DialogsCreator
         // ======================================== РАБОТА С MAINCANVAS ==============================================================
         // ===========================================================================================================================
 
-        internal void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.Source is BindingDialogComponentView && startReqiredBindingDialogComponentView == null)
             {
@@ -255,6 +252,7 @@ namespace DialogsCreator
 
             lastClick = new Point(e.GetPosition(MainCanvas).X, e.GetPosition(MainCanvas).Y);
         }
+
         internal void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (currentLine != null)
@@ -265,7 +263,8 @@ namespace DialogsCreator
                 currentLine.Y2 = currentPoint.Y - 3;
             }
         }
-        internal void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+
+        private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
 
             if (e.Source is DialogComponentView && currentLine == null)
@@ -278,7 +277,7 @@ namespace DialogsCreator
             SelectViewEvent(e.Source);
             RemoveUnconnectedLines();
         }
-        internal void MainCanvasLeftMouseUp(object sender, MouseButtonEventArgs e)
+        private void MainCanvasLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
             SelectViewEvent(e.Source);
         }
@@ -287,7 +286,7 @@ namespace DialogsCreator
         // =================================== РАБОТА С ВЕРХНИМ МЕНЮ =================================================================
         // ===========================================================================================================================
 
-        internal void MenuItem_openFile_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_openFile_Click(object sender, RoutedEventArgs e)
         {
             if (SaveAndClose())
             {
@@ -296,7 +295,7 @@ namespace DialogsCreator
                 // TODO нужна переочистка канваса
             }
         }
-        internal void MenuItem_createFile_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_createFile_Click(object sender, RoutedEventArgs e)
         {
             if (SaveAndClose())
             {
@@ -316,11 +315,11 @@ namespace DialogsCreator
         {
             modelView.SerializationDFD();
         }
-        internal void MenuItem_saveAsFile_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_saveAsFile_Click(object sender, RoutedEventArgs e)
         {
             modelView.SerializationDFD(manager.path);
         }
-        internal void MenuItem_closeFile_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_closeFile_Click(object sender, RoutedEventArgs e)
         {
             // TODO Сделать очистку MainCanvas
             SaveAndClose();
@@ -343,8 +342,6 @@ namespace DialogsCreator
 
             // TODO добавить визуальное отображение
             AddObjectToView(window.element);
-
-            isEdit = true;
         }
         private void MenuItem_deleteObject_Click(object sender, RoutedEventArgs e)
         {
@@ -354,13 +351,10 @@ namespace DialogsCreator
             else
                 return;
 
-            //modelView.dialog.Delete(modelView.dialog.Search((element.Source as SayingElementViewDFD).idElement));
+            modelView.dialog.Delete(modelView.dialog.Search((element.Source as SayingElementViewDFD).idElement));
             // TODO сюда поместить View Delete
             element.Destroy();
-            modelView.DeleteId((element.Source as SayingElementViewDFD).idElement);
-
-            isEdit = true;
-            this.MenuItem_deleteObject.IsEnabled = false;
+            //this.MenuItem_deleteObject.IsEnabled = false;
         }
 
         // ===========================================================================================================================
@@ -382,9 +376,14 @@ namespace DialogsCreator
 
                 if ((sender as MenuItem).Name == MenuItem_createFile.Name || (sender as MenuItem).Name == MenuItem_openFile.Name)
                 {
+                    //modelView = new WPFtoDFD(manager); // TODO точно нужно?
                     modelView.DesirializationDFD();
+
                     InitializingDialogComponentsView();
+
                 }
+
+                //manager.language = manager.ToLanguage(modelView.dialog.language); // TODO точно нужно?
                 this.Title = $"{windowTitle} Открыт файл {manager.file}.{FileManager.type}";
                 this.Label_informationOfLanguage.Content = $"{languageTitle}: {manager.language}";
             }
@@ -403,9 +402,9 @@ namespace DialogsCreator
                 this.MenuItem_editObject.IsEnabled = false;
             }
         }
-        internal bool SaveAndClose()
+        public bool SaveAndClose()
         {
-            if ((manager.isOpen && !manager.isSave) || isEdit)
+            if (manager.isOpen && !manager.isSave)
             {
                 MessageBoxResult result;
                 result = MessageBox.Show("Сохранить изменения перед закрытием?", "Внимание", MessageBoxButton.YesNoCancel);
@@ -414,13 +413,9 @@ namespace DialogsCreator
                 {
                     case MessageBoxResult.Yes:
                         MenuItem_saveFile_Click(null, null); // TODO а можно другой метод ?
-                        isEdit = false;
                         manager.CloseFile();
-                        ClearCanvas();
                         return true;
                     case MessageBoxResult.No:
-                        ClearCanvas();
-                        isEdit = false;
                         manager.CloseFile();
                         return true;
                     case MessageBoxResult.Cancel:
@@ -432,12 +427,10 @@ namespace DialogsCreator
             else
             {
                 manager.CloseFile();
-                ClearCanvas();
-                isEdit = false;
                 return true;
             }
         }
-        internal void Close(object sender, System.ComponentModel.CancelEventArgs e)
+        public void Close(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (manager.isOpen && !manager.isSave)
             {
@@ -462,12 +455,12 @@ namespace DialogsCreator
                 }
             }
         }
-        internal bool CanLink()
+        private bool CanLink()
         {
             // Проверки для определения, можно ли соединить startBindingDialogComponentView и endBindingDialogComponentView
             return true;
         }
-        internal void RemoveUnconnectedLines()
+        private void RemoveUnconnectedLines()
         {
             foreach (var line in linesCollection)
             {
@@ -487,9 +480,17 @@ namespace DialogsCreator
                 throw new Exception("Не удалось отрисовать View при запуске файла");
 
             // TODO удаление старых компонентов канваса
-            ClearCanvas();
+            if (elements != null)
+            {
 
-            //elements = new List<DialogComponentView>();
+                var objInScene = elements.ToList();
+                foreach (var obj in objInScene)
+                {
+                    obj.Destroy();
+                    elements.Remove(obj);
+                }
+            }
+
             for (int i = 0; i < modelView.id; i++)
             {
                 ElementDFD el = modelView.dialog.elements[i];
@@ -502,6 +503,8 @@ namespace DialogsCreator
 
                 elements[i].Source = new SayingElementViewDFD(el.idElement, el.question); // инициализация вопроса
                 elements[i].SetName();
+
+                //ItemsTextBox.Add(new TestListBoxItem(el.question.text));
 
                 foreach (var answer in el.answers) // инициализация ответов
                 {
@@ -532,30 +535,17 @@ namespace DialogsCreator
                 elements[pos].Options[elements[pos].Options.Count - 1].SetName();
             }
         }
-        internal void CheckSelectObject(object sender, MouseButtonEventArgs e) // TODO убедиться в корректности работы
+        private void CheckSelectObject(object sender, MouseButtonEventArgs e) // TODO убедиться в корректности работы
         {
             if (selectionObject.selected == TypeObject.element)
             {
                 this.MenuItem_addObject.IsEnabled = false;
                 this.MenuItem_deleteObject.IsEnabled = true;
-                this.MenuItem_editObject.IsEnabled = true;
             }
             else
             {
                 this.MenuItem_addObject.IsEnabled = true;
                 this.MenuItem_deleteObject.IsEnabled = false;
-                this.MenuItem_editObject.IsEnabled = false;
-            }
-        }
-        internal void ClearCanvas()
-        {
-            if (elements != null || elements.Count == 0)
-            {
-                foreach (var obj in elements)
-                {
-                    obj.Destroy();
-                }
-                elements.Clear();
             }
         }
     }

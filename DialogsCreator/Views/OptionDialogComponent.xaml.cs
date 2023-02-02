@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,6 @@ namespace DialogsCreator.Views
         public RequiredBindingOptionComponentView firstReqiredBindingDialogComponentView { get; private set; }
         public RequiredBindingOptionComponentView secondeReqiredBindingDialogComponentView { get; private set; }
         public List<Line> Lines { get; private set; }
-
         public LinkDataOptionPackage(
             OptionDialogComponent firstOptionComponent,
             OptionDialogComponent secondeOptionComponent,
@@ -46,26 +46,18 @@ namespace DialogsCreator.Views
     {
         public RequiredBindingOptionComponentView LeftBindingDialogComponentView { get; private set; }
         public RequiredBindingOptionComponentView RightBindingDialogComponentView { get; private set; }
-
         private const int marginBindingDialogCopmonentView = 10;
         private const int bindingDialogComponentWidth = 10;
-
         public DialogComponentView parent { get; private set; }
         private Canvas canvas;
-
         public LinkedObject OptionSource { get; set; }
-
         public List<LinkDataOptionPackage> linkDataOptionPackages { get; private set; } = new List<LinkDataOptionPackage>();
-
         public OptionDialogComponent(Canvas drawingCanvas, DialogComponentView componentView)
         {
             InitializeComponent();
             parent = componentView;
             canvas = drawingCanvas;
-            Random random = new Random();
-            TextBlockComponentName.Text = "Option " + random.NextInt64(0,200);
         }
-
         public void ShowBindigsDialogComponentsView()
         {
             if (CheckBindingsInit() == true)
@@ -79,7 +71,6 @@ namespace DialogsCreator.Views
                 ShowBindigsDialogComponentsView();
             }
         }
-
         public void HideBindigsDialogComponentsView()
         {
             if (CheckBindingsInit() == true)
@@ -93,7 +84,6 @@ namespace DialogsCreator.Views
                 HideBindigsDialogComponentsView();
             }
         }
-
         public void LinkWith(LinkDataOptionPackage linkDataOption) 
         {
             linkDataOptionPackages.Add(linkDataOption);
@@ -109,7 +99,6 @@ namespace DialogsCreator.Views
             else
                 throw new InvalidOperationException("You link different object but this object is not one from them");
         }
-
         public void UnLinkWith(LinkDataOptionPackage linkedPackage) 
         {
             foreach (var line in linkedPackage.Lines)
@@ -127,7 +116,6 @@ namespace DialogsCreator.Views
 
             linkDataOptionPackages.Remove(linkedPackage);
         }
-
         private void InitEmptyBindings()
         {
 
@@ -144,7 +132,6 @@ namespace DialogsCreator.Views
                 RightBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Blue);
             }
         }
-
         private int GetIndex()
         {
             for (int i = 0; i < parent.Options.Count(); i++)
@@ -155,7 +142,6 @@ namespace DialogsCreator.Views
 
             throw new ArgumentException("Option don't find in parent");
         }
-
         private Point GetPointLeftBindingComponent()
         {
             return new Point(
@@ -163,7 +149,6 @@ namespace DialogsCreator.Views
                 y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3 
             );
         }
-
         private Point GetPointRightBindingComponent()
         {
             return new Point(
@@ -171,12 +156,46 @@ namespace DialogsCreator.Views
                 y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3
             );
         }
-
         private bool CheckBindingsInit()
         {
             return
                  LeftBindingDialogComponentView != null &&
                  RightBindingDialogComponentView != null;
+        }
+        public void SetName()
+        {
+            string fullName = (OptionSource as SayingElementViewDFD).elementOld.text;
+
+            if (fullName.Length <= 7)
+            {
+                TextBlockComponentName.Text = fullName;
+                return;
+            }
+
+                int i = 0;
+            string shortName = "";
+            foreach (var ch in fullName)
+            {
+                if (i == 7)
+                    break;
+                shortName += ch;
+                i++;
+            }
+            TextBlockComponentName.Text = shortName;
+        }
+        public void Destroy() 
+        {
+            var packages = linkDataOptionPackages.ToList();
+
+            foreach (var package in packages)
+            {
+                package.firstOptionComponent.UnLinkWith(package);
+                package.secondeOptionComponent.UnLinkWith(package);
+            }
+
+            canvas.Children.Remove(LeftBindingDialogComponentView);
+            canvas.Children.Remove(RightBindingDialogComponentView);
+            canvas.Children.Remove(this);
         }
     }
 }

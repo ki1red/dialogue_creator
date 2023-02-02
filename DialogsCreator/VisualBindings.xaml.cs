@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,32 +22,34 @@ using Point = System.Windows.Point;
 
 namespace DialogsCreator
 {
-
-    public class ItemListBoxDataElemet 
-    {
-        public string Name { get; set; }
-        public List<string> Options { get; set; }
-
-        public ItemListBoxDataElemet(string name, List<string> options)
-        {
-            Name = name;
-            Options = options;
-        }
-    }
-
     public partial class VisualBindings : Window
     {
+        // ===========================================================================================================================
+        // ============================= ПЕРЕМЕННЫЕ ДЛЯ ВИЗУАЛЬНОГО ОТОБРАЖЕНИЯ В ОКНЕ ===============================================
+        // ===========================================================================================================================
+
         private const string windowTitle = "Создатель диалогов.";
         private const string languageTitle = "Язык файла";
 
-        private FileManagerDLAG selFile = new FileManagerDLAG();
+        // ===========================================================================================================================
+        // ======================== ПЕРЕМЕННЫЕ ДЛЯ ХРАНЕНИЯ ИНФОРМАЦИИ О DFD В ФАЙЛЕ И СТРУКТУРЕ =====================================
+        // ===========================================================================================================================
+
+        private FileManager manager = new FileManager();
         private WPFtoDFD modelView;
-        private SelectionObject selectionObject = new SelectionObject();
-        private InfoPanel infoPanel = new InfoPanel();
+
+        // ===========================================================================================================================
+        // ======================== ПЕРЕМЕННЫЕ ДЛЯ ВЗАИМОДЕЙСТВИЯ МЕЖДУ CANVAS И ОСТАЛЬНЫМ ===========================================
+        // ===========================================================================================================================
 
         private List<DialogComponentView> elements = null;
-        public ObservableCollection<ItemListBoxDataElemet> ElemetsData { get; set; }
         private Point lastClick = new Point();
+        private SelectionObject selectionObject = new SelectionObject();
+        private InfoPanel infoPanel = new InfoPanel(); // TODO сделать блять наконец
+
+        // ===========================================================================================================================
+        // ================================ ПЕРЕМЕННЫЕ ИЛЬИ ХЗ ДЛЯ ЧЕГО ==============================================================
+        // ===========================================================================================================================
 
         private BindingDialogComponentView startBindingDialogComponentView;
         private BindingDialogComponentView endBindingDialogComponentView;
@@ -57,13 +58,16 @@ namespace DialogsCreator
         private Line currentLine;
         private List<Line> linesCollection = new List<Line>();
   
-        public delegate void SelectedViewtHandler(object obj);
-        public event SelectedViewtHandler SelectViewEvent;
+        // ===========================================================================================================================
+        // ================================ КОНСТРУКТОРЫ ФОРМЫ VISUAL BINDINGS =======================================================
+        // ===========================================================================================================================
+        private delegate void SelectedViewtHandler(object obj); // TODO private ?
+        private event SelectedViewtHandler SelectViewEvent; // TODO private ?
 
         public VisualBindings()
         {
             InitializeComponent();
-
+            InitializeComponentsDFD();
             InitializeSubscribedBaseComponentsWindow();
             InitializeBaseComponentsWindow();
             InitializeComponentsTopMenu();
@@ -71,15 +75,15 @@ namespace DialogsCreator
             InitializeSubscribedMouseForCanvas();
 
             SelectViewEvent += selectionObject.Select;
-     
-            ElemetsData = new ObservableCollection<ItemListBoxDataElemet>() { new ItemListBoxDataElemet("test", new List<string>() { "testOp" }) };
-            ListBoxView.ItemsSource = ElemetsData;
         }
 
+        // ===========================================================================================================================
+        // ================================ ИНИЦИАЛИЗАЦИИ ГРУПП КОМПОНЕНТОВ ФОРМЫ ====================================================
+        // ===========================================================================================================================
 
         private void InitializeSubscribedBaseComponentsWindow()
         {
-            this.Closed += SaveFileBeforeClosing(null, null);
+            //this.Closed += SaveAndClose(null, null); TODO нахуй пошёл
             this.Closing += Close;
         }
         private void InitializeBaseComponentsWindow()
@@ -101,19 +105,19 @@ namespace DialogsCreator
         }
         private void InitializeSubscribedClickForMenu()
         {
-            MenuItem_createFile.Click += MenuItem_createFile_Click;
-            MenuItem_openFile.Click += MenuItem_openFile_Click;
-            MenuItem_saveFile.Click += MenuItem_saveFile_Click;
-            MenuItem_saveAsFile.Click += MenuItem_saveAsFile_Click;
-            MenuItem_closeFile.Click += MenuItem_closeFile_Click;
+            this.MenuItem_createFile.Click += MenuItem_createFile_Click;
+            this.MenuItem_openFile.Click += MenuItem_openFile_Click;
+            this.MenuItem_saveFile.Click += MenuItem_saveFile_Click;
+            this.MenuItem_saveAsFile.Click += MenuItem_saveAsFile_Click;
+            this.MenuItem_closeFile.Click += MenuItem_closeFile_Click;
 
-            MenuItem_createFile.Click += UpdateWindowElements;
-            MenuItem_openFile.Click += UpdateWindowElements;
-            MenuItem_saveFile.Click += UpdateWindowElements;
-            MenuItem_saveAsFile.Click += UpdateWindowElements;
-            MenuItem_closeFile.Click += UpdateWindowElements;
+            this.MenuItem_createFile.Click += UpdateWindowElements;
+            this.MenuItem_openFile.Click += UpdateWindowElements;
+            this.MenuItem_saveFile.Click += UpdateWindowElements;
+            this.MenuItem_saveAsFile.Click += UpdateWindowElements;
+            this.MenuItem_closeFile.Click += UpdateWindowElements;
 
-            MenuItem_addObject.Click += MenuItem_addObject_Click;
+            this.MenuItem_addObject.Click += MenuItem_addObject_Click;
             this.MenuItem_deleteObject.Click += MenuItem_deleteObject_Click;
         }
         private void InitializeSubscribedMouseForCanvas()
@@ -125,16 +129,16 @@ namespace DialogsCreator
 
             MainCanvas.MouseLeftButtonUp += CheckSelectObject;
         }
-
-        private void CheckSelectObject(object sender, MouseButtonEventArgs e)
+        private void InitializeComponentsDFD()
         {
-            if (selectionObject.selected == TypeObject.element)
-                this.MenuItem_deleteObject.IsEnabled = true;
-            else
-                this.MenuItem_deleteObject.IsEnabled = false;
+            modelView = new WPFtoDFD(manager);
         }
 
-        private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e) // TODO добавить подписку на событие при нажатии. если нажата ЛКМ , то передавать тип объекта в SelectionObject.Select и InfoPanel.Show
+        // ===========================================================================================================================
+        // ======================================== РАБОТА С MAINCANVAS ==============================================================
+        // ===========================================================================================================================
+
+        private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.Source is BindingDialogComponentView && startReqiredBindingDialogComponentView == null)
             {
@@ -262,24 +266,34 @@ namespace DialogsCreator
             SelectViewEvent(e.Source);
         }
 
+        // ===========================================================================================================================
+        // =================================== РАБОТА С ВЕРХНИМ МЕНЮ =================================================================
+        // ===========================================================================================================================
+
         private void MenuItem_openFile_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileBeforeClosing(null, null);
-            selFile.OpenFile();
+            if (SaveAndClose())
+            {
+                if (!manager.OpenFile())
+                    return;
+                // TODO нужна переочистка канваса
+            }
         }
         private void MenuItem_createFile_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileBeforeClosing(null, null);
-
-            if (selFile.CreateFile() == false)
-                return;
-
-            SelectLanguageWindow window = new SelectLanguageWindow(); // требование указать язык файла
-            do
+            if (SaveAndClose())
             {
-                window.ShowDialog();
-                selFile.language = window.language;
-            } while (selFile.language == DialogsCreator.Language.none);
+                if (!manager.CreateFile())
+                    return;
+
+                SelectLanguageWindow window = new SelectLanguageWindow(); // требование указать язык файла
+                do
+                {
+                    window.ShowDialog();
+                    manager.language = window.language;
+                } while (manager.language == DialogsCreator.Language.none);
+                // TODO нужна переочистка канваса
+            }
         }
         private void MenuItem_saveFile_Click(object sender, RoutedEventArgs e)
         {
@@ -287,14 +301,13 @@ namespace DialogsCreator
         }
         private void MenuItem_saveAsFile_Click(object sender, RoutedEventArgs e)
         {
-            modelView.SerializationDFD(selFile.path);
+            modelView.SerializationDFD(manager.path);
         }
         private void MenuItem_closeFile_Click(object sender, RoutedEventArgs e)
         {
             // TODO Сделать очистку MainCanvas
-            SaveFileBeforeClosing(null, null);
-            selFile = new FileManagerDLAG(); // НЕ УДАЛЯТЬ, ИНАЧЕ НЕ ОТРАБОТАЕТ UpdateWindowElements
-            modelView = null;
+            SaveAndClose();
+            
 
         }
         private void MenuItem_addObject_Click(object sender, RoutedEventArgs e)
@@ -308,8 +321,8 @@ namespace DialogsCreator
                 return;
 
             //modelView.DesirializationDFD();
-            modelView.AddElementDFDWithoutConnection(window.element);
-            modelView.AddCoords(ref modelView.dialog.elements[modelView.dialog.elements.Length - 1], lastClick);
+            modelView.AddEmptyElement(window.element);
+            modelView.ReplaceCoords(ref modelView.dialog.elements[modelView.dialog.elements.Length - 1], lastClick);
 
             // TODO добавить визуальное отображение
             AddObjectToView(window.element);
@@ -328,46 +341,54 @@ namespace DialogsCreator
             //this.MenuItem_deleteObject.IsEnabled = false;
         }
 
+        // ===========================================================================================================================
+        // =================================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ================================================================
+        // ===========================================================================================================================
+
         private void UpdateWindowElements(object sender, EventArgs e)
         {
-            if (selFile.file != null)
+            if (manager.isOpen)
             {
                 this.MenuItem_saveFile.IsEnabled = true;
                 this.MenuItem_saveAsFile.IsEnabled = true;
+                this.MenuItem_closeFile.IsEnabled = true;
+
                 this.MenuItem_objectSettings.IsEnabled = true;
-                MenuItem_closeFile.IsEnabled = true;
+                this.MenuItem_addObject.IsEnabled = false;
+                this.MenuItem_deleteObject.IsEnabled = false;
+                this.MenuItem_editObject.IsEnabled = false;
 
                 if ((sender as MenuItem).Name == MenuItem_createFile.Name || (sender as MenuItem).Name == MenuItem_openFile.Name)
                 {
-                    modelView = new WPFtoDFD(selFile);
+                    //modelView = new WPFtoDFD(manager); // TODO точно нужно?
                     modelView.DesirializationDFD();
 
-                    if ((sender as MenuItem).Name == MenuItem_openFile.Name)
-                        InitializingDialogComponentsView();
+                    InitializingDialogComponentsView();
+
                 }
 
-                selFile.language = selFile.ToLanguage(modelView.dialog.language);
-                this.Title = $"{windowTitle} Открыт файл {selFile.file}.{FileManagerDLAG.type}";
-                this.Label_informationOfLanguage.Content = $"{languageTitle}: {selFile.language}";
+                //manager.language = manager.ToLanguage(modelView.dialog.language); // TODO точно нужно?
+                this.Title = $"{windowTitle} Открыт файл {manager.file}.{FileManager.type}";
+                this.Label_informationOfLanguage.Content = $"{languageTitle}: {manager.language}";
             }
             else
             {
                 this.Title = windowTitle;
                 this.Label_informationOfLanguage.Content = null;
 
-                MenuItem_saveAsFile.IsEnabled = false;
-                MenuItem_saveFile.IsEnabled = false;
-                MenuItem_closeFile.IsEnabled = false;
+                this.MenuItem_saveAsFile.IsEnabled = false;
+                this.MenuItem_saveFile.IsEnabled = false;
+                this.MenuItem_closeFile.IsEnabled = false;
 
-                MenuItem_objectSettings.IsEnabled = false;
-                MenuItem_addObject.IsEnabled = true;
-                MenuItem_deleteObject.IsEnabled = true;
-                MenuItem_editObject.IsEnabled = false;
+                this.MenuItem_objectSettings.IsEnabled = false;
+                this.MenuItem_addObject.IsEnabled = false;
+                this.MenuItem_deleteObject.IsEnabled = false;
+                this.MenuItem_editObject.IsEnabled = false;
             }
         }
-        public EventHandler SaveFileBeforeClosing(object sender, EventArgs e)
+        public bool SaveAndClose()
         {
-            if (selFile.file != null)
+            if (manager.isOpen && !manager.isSave)
             {
                 MessageBoxResult result;
                 result = MessageBox.Show("Сохранить изменения перед закрытием?", "Внимание", MessageBoxButton.YesNoCancel);
@@ -375,22 +396,27 @@ namespace DialogsCreator
                 switch (result)
                 {
                     case MessageBoxResult.Yes:
-                        MenuItem_saveFile_Click(null, null);
-                        return null;
+                        MenuItem_saveFile_Click(null, null); // TODO а можно другой метод ?
+                        manager.CloseFile();
+                        return true;
                     case MessageBoxResult.No:
-                        return null;
+                        manager.CloseFile();
+                        return true;
                     case MessageBoxResult.Cancel:
-                        return null;
+                        return false;
                     default:
-                        return null;
+                        return false; // TODO это при крестике? тогда false
                 }
             }
             else
-                return null;
+            {
+                manager.CloseFile();
+                return true;
+            }
         }
         public void Close(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (selFile.file != null)
+            if (manager.isOpen && !manager.isSave)
             {
                 MessageBoxResult result;
                 result = MessageBox.Show("Сохранить изменения перед закрытием?", "Внимание", MessageBoxButton.YesNoCancel);
@@ -399,14 +425,16 @@ namespace DialogsCreator
                 {
                     case MessageBoxResult.Yes:
                         MenuItem_saveFile_Click(null, null);
+                        manager.CloseFile();
                         break;
                     case MessageBoxResult.No:
+                        manager.CloseFile();
                         break;
                     case MessageBoxResult.Cancel:
-                        e.Cancel = true;
+                        e.Cancel = true; // не закрываем окно
                         break;
                     default:
-                        e.Cancel = true;
+                        e.Cancel = true; // не закрываем окно
                         break;
                 }
             }
@@ -432,12 +460,17 @@ namespace DialogsCreator
         }
         private void InitializingDialogComponentsView()
         {
-            if (modelView == null || modelView.id == -1)
+            if (!manager.isOpen || modelView.id == -1) // TODO удалено || modelView == null ||
                 throw new Exception("Не удалось отрисовать View при запуске файла");
 
-            
+            // TODO удаление старых компонентов канваса
+            if (elements != null)
+            foreach (var obj in elements)
+            {
+                obj.Destroy();
+            }
+
             elements = new List<DialogComponentView>();
-            
             for (int i = 0; i < modelView.id; i++)
             {
                 ElementDFD el = modelView.dialog.elements[i];
@@ -457,7 +490,6 @@ namespace DialogsCreator
                     elements[i].Options[elements[i].Options.Count - 1].ShowBindigsDialogComponentsView();
                     elements[i].Options[elements[i].Options.Count - 1].SetName();
                 }
-                ElemetsData.Add(new ItemListBoxDataElemet(el.question.text, el.answers.Select(a => a.text).ToList()));
             }
         }
         private void AddObjectToView(ElementDFD element)
@@ -480,7 +512,19 @@ namespace DialogsCreator
                 elements[pos].Options[elements[pos].Options.Count - 1].ShowBindigsDialogComponentsView();
                 elements[pos].Options[elements[pos].Options.Count - 1].SetName();
             }
-            ElemetsData.Add(new ItemListBoxDataElemet(element.question.text, element.answers.Select(a => a.text).ToList()));
+        }
+        private void CheckSelectObject(object sender, MouseButtonEventArgs e) // TODO убедиться в корректности работы
+        {
+            if (selectionObject.selected == TypeObject.element)
+            {
+                this.MenuItem_addObject.IsEnabled = false;
+                this.MenuItem_deleteObject.IsEnabled = true;
+            }
+            else
+            {
+                this.MenuItem_addObject.IsEnabled = true;
+                this.MenuItem_deleteObject.IsEnabled = false;
+            }
         }
     }
 }

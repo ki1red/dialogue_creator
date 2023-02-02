@@ -63,11 +63,14 @@ namespace DialogsCreator.Views
         public ObservableCollection<OptionDialogComponent> Options { get; private set; } = new ObservableCollection<OptionDialogComponent>();
         // TODO сделать понмиание номера элемента при связях
         public LinkedObject Source { get; set; }
+        public bool isMove { get; set; }
         public DialogComponentView(Canvas drawingCanvas)
         {
             InitializeComponent();
             canvas = drawingCanvas;
             this._TextBlockComponentName = TextBlockComponentName;
+
+            isMove = false;
         }
         public void AddOption()
         {
@@ -183,6 +186,9 @@ namespace DialogsCreator.Views
 
                 Canvas.SetLeft(this, Canvas.GetLeft(this) + offset.X);
                 Canvas.SetTop(this, Canvas.GetTop(this) + offset.Y);
+
+                // TODO изменено положение какого-то объекта
+                isMove = true;
 
                 foreach (var binding in bindingDialogComponentViews)
                 {
@@ -321,6 +327,13 @@ namespace DialogsCreator.Views
                 i++;
             }
             TextBlockComponentName.Text = shortName;
+        }
+        public void UpdateNameDialog()
+        {
+            this.SetName();
+
+            for (int i = 0; i < this.Options.Count; i++)
+                this.Options[i].SetName();
         }
         public void Destroy()
         {

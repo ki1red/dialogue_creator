@@ -306,10 +306,12 @@ namespace DialogsCreator
         }
         private void MenuItem_saveFile_Click(object sender, RoutedEventArgs e)
         {
+            UpdatePointsViews();
             modelView.SerializationDFD();
         }
         internal void MenuItem_saveAsFile_Click(object sender, RoutedEventArgs e)
         {
+            UpdatePointsViews();
             modelView.SerializationDFD(manager.path);
         }
         internal void MenuItem_closeFile_Click(object sender, RoutedEventArgs e)
@@ -369,6 +371,7 @@ namespace DialogsCreator
                 return;
 
             // TODO обновление ViewElement delement ^ (этот элемент не ссылка, а копия, так что ищи его в списке)
+            delement.UpdateNameDialog();
 
             isEdit = true;
             this.MenuItem_editObject.IsEnabled = false;
@@ -416,6 +419,9 @@ namespace DialogsCreator
         }
         internal bool SaveAndClose()
         {
+            if (CheckedMoved())
+                isEdit = true;
+
             if ((manager.isOpen && !manager.isSave) || isEdit)
             {
                 MessageBoxResult result;
@@ -424,6 +430,7 @@ namespace DialogsCreator
                 switch (result)
                 {
                     case MessageBoxResult.Yes:
+                        UpdatePointsViews();
                         MenuItem_saveFile_Click(null, null); // TODO а можно другой метод ?
                         isEdit = false;
                         manager.CloseFile();
@@ -450,6 +457,9 @@ namespace DialogsCreator
         }
         internal void Close(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (CheckedMoved())
+                isEdit = true;
+
             if ((manager.isOpen && !manager.isSave) || isEdit)
             {
                 MessageBoxResult result;
@@ -458,6 +468,7 @@ namespace DialogsCreator
                 switch (result)
                 {
                     case MessageBoxResult.Yes:
+                        UpdatePointsViews();
                         MenuItem_saveFile_Click(null, null);
                         manager.CloseFile();
                         break;
@@ -581,6 +592,26 @@ namespace DialogsCreator
                 ScrollViewer.ScrollToHorizontalOffset(Canvas.GetLeft(item) - 150);
                 ScrollViewer.ScrollToVerticalOffset(Canvas.GetTop(item) - 150);
             }
+        }
+        private void UpdatePointsViews()
+        {
+            for (int i = 0; i < modelView.dialog.elements.Length; i++)
+            {
+                ref ElementDFD element = ref modelView.dialog.elements[i];
+                double y = Canvas.GetTop(elements[i]);
+                double x = Canvas.GetLeft(elements[i]);
+                Point point = new Point(x, y);
+                modelView.ReplaceCoords(ref element, point);
+            }
+        }
+        private bool CheckedMoved()
+        {
+            foreach (var view in elements)
+            {
+                if (view.isMove)
+                    return true;
+            }
+            return false;
         }
     }
 }

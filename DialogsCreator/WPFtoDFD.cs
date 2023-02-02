@@ -82,6 +82,81 @@ namespace DialogsCreator
 
             sayingViewElement.UpdateElement(); // TODO возможно, лучше вынести
         }
+        public bool DeleteId(int id)
+        {
+            if (id > this.id)
+                return false;
+
+            ref ElementDFD delElement = ref this.dialog.elements[id];
+
+            for (int i = 0; i <= this.id; i++)
+            {
+                if (i == id)
+                    continue;
+
+                ref ElementDFD element = ref this.dialog.elements[i];
+
+                if (element.idElement > id)
+                    element.idElement = element.idElement - 1; // уменьшение id
+
+                ref SayingElementDFD question = ref element.question;
+
+                for (int j = 0; j < question.requests.Length; j++) // если в вопросе есть связь с удаляемым элементом
+                {
+                    ref SayingElementDFD request = ref question.requests[j];
+                    if (request == delElement.question) // если есть связь с вопросом удаляемого элемента
+                        request = null;
+                    for (int g = 0; g < delElement.answers.Length; g++) // если есть связь с ответом удаляемого элемента
+                    {
+                        if (request == delElement.answers[g])
+                            request = null;
+                    }
+                }
+                ref SayingElementDFD nextElement = ref question.nextElement;
+                if (nextElement == delElement.question) // если есть связь с вопросом удаляемого элемента
+                    nextElement = null;
+                for (int g = 0; g < delElement.answers.Length; g++) // если есть связь с ответом удаляемого элемента
+                {
+                    if (nextElement == delElement.answers[g])
+                        nextElement = null;
+                }
+
+
+
+
+                for (int j = 0; j < element.answers.Length; j++) // если в ответах есть связь с удаляемым элементом
+                {
+                    ref SayingElementDFD answer = ref element.answers[j];
+
+                    for (int g = 0; g < answer.requests.Length; g++)
+                    {
+                        ref SayingElementDFD request = ref answer.requests[g];
+
+                        if (request == delElement.question) // если есть связь с вопросом удаляемого элемента
+                            request = null;
+
+                        for (int h = 0; h < delElement.answers.Length; h++) // смотрим конкретный вопрос
+                        {
+                            if (request == delElement.answers[h]) // если есть связь с вопросом удаляемого элемента
+                                request = null;
+                        }
+                    }
+
+                    nextElement = ref answer.nextElement;
+                    if (nextElement == delElement.question) // если есть связь с вопросом удаляемого элемента
+                        nextElement = null;
+                    for (int g = 0; g < delElement.answers.Length; g++) // если есть связь с ответом удаляемого элемента
+                    {
+                        if (nextElement == delElement.answers[g])
+                            nextElement = null;
+                    }
+                }
+                
+            }
+
+            this.dialog.Delete(delElement);
+            return true;
+        }
         private int GetIdLastElement()
         {
             int maxId = 0;

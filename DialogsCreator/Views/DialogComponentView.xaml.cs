@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO.Packaging;
 using System.Linq;
@@ -27,13 +28,13 @@ namespace DialogsCreator.Views
         public BindingDialogComponentView firstBindingDialogComponentView { get; private set; }
         public BindingDialogComponentView secondeBindingDialogComponentView { get; private set; }
         public ElementDFD element { get; private set; }
-        public List<Line> Lines { get; private set; } 
+        public List<Line> Lines { get; private set; }
         public LinkDataDialogPackage(
             DialogComponentView firstDialogComponent,
             DialogComponentView secondeDialogComponent,
             BindingDialogComponentView firstBindingDialogComponentView,
             BindingDialogComponentView secondeBindingDialogComponentView,
-            List<Line>lines)
+            List<Line> lines)
         {
             this.firstDialogComponent = firstDialogComponent;
             this.secondeDialogComponent = secondeDialogComponent;
@@ -58,13 +59,15 @@ namespace DialogsCreator.Views
         public BindingDialogComponentView TopBindingDialogComponentView { get; private set; }
         public BindingDialogComponentView LeftBindingDialogComponentView { get; private set; }
         public BindingDialogComponentView RightBindingDialogComponentView { get; private set; }
-        public List<OptionDialogComponent> Options { get; private set; } = new List<OptionDialogComponent>();
+        public TextBlock _TextBlockComponentName { get; set; }
+        public ObservableCollection<OptionDialogComponent> Options { get; private set; } = new ObservableCollection<OptionDialogComponent>();
         // TODO сделать понмиание номера элемента при связях
         public LinkedObject Source { get; set; }
         public DialogComponentView(Canvas drawingCanvas)
         {
             InitializeComponent();
             canvas = drawingCanvas;
+            this._TextBlockComponentName = TextBlockComponentName;
         }
         public void AddOption()
         {
@@ -74,6 +77,7 @@ namespace DialogsCreator.Views
             OptionStackPanel.Children.Add(option);
             Options.Add(option);
         }
+
         public void AddOption(LinkedObject source)
         {
             var option = new OptionDialogComponent(canvas, this);
@@ -83,6 +87,7 @@ namespace DialogsCreator.Views
             OptionStackPanel.Children.Add(option);
             Options.Add(option);
         }
+
         public void RemoveOption(OptionDialogComponent option)
         {
             foreach (var package in option.linkDataOptionPackages)
@@ -93,6 +98,7 @@ namespace DialogsCreator.Views
             OptionStackPanel.Children.Remove(option);
             Options.Remove(option);
         }
+
         public void ShowBindigsDialogComponentsView()
         {
             if (CheckBindingsInit() == true)

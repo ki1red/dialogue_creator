@@ -8,7 +8,7 @@
         Name="VisualBindings_window" Height="451" Width="800" WindowStartupLocation="CenterScreen">
     
     <Grid Margin="0,0,0,4" Background="Aqua">
-        <Menu Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="MenuItem_fileSettings" Grid.ColumnSpan="2">
+        <Menu Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="MenuItem_fileSettings" Grid.ColumnSpan="2" Foreground="#FF13A9F7" Background="#FF252424">
             <MenuItem Header="Файл">
                 <MenuItem Header="Создать" Name="MenuItem_createFile"></MenuItem>
                 <MenuItem Header="Открыть" Name="MenuItem_openFile"></MenuItem>
@@ -28,7 +28,7 @@
         </Menu>
 
         <ScrollViewer Name ="ScrollViewer"  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="0,25,0,0">
-            <Canvas Name="MainCanvas" Height="100000" Width="100000" Background="#FF7F7676">
+            <Canvas Name="MainCanvas" Height="100000" Width="100000" Background="#FF1B1A1A">
 
             </Canvas>
         </ScrollViewer>

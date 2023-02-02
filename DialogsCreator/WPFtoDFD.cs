@@ -41,7 +41,8 @@ namespace DialogsCreator
                 dialog = new DialogDFD();
                 dialog.language = manager.language.ToString();
             }
-            manager.language = manager.ToLanguage(dialog.language); // TODO нахуй надо?
+            else
+                manager.language = manager.ToLanguage(dialog.language); // TODO нахуй надо?
             id = GetIdLastElement();
         }
         public void SerializationDFD(string path = null)
@@ -57,6 +58,7 @@ namespace DialogsCreator
                 if (manager.SaveAsFile(path, json) == false)
                     return;
         }
+        // Добавление объекта без связей
         public void AddEmptyElement(ElementDFD element)
         {
             if (id == -1)
@@ -66,10 +68,12 @@ namespace DialogsCreator
 
             dialog.Add(element);
         }
-        public void ReplaceCoords(ref ElementDFD element, Point point)
+        // Установка координат объекту View
+        public void ReplaceCoords(ref ElementDFD element, Point pointNew)
         {
-            element.point = point; // TODO тестить
+            element.point = pointNew; // TODO тестить
         }
+        // Обновление связей объекта
         public void UpdateLinkeds(ref SayingElementViewDFD sayingViewElement)
         {
             ref ElementDFD element = ref dialog.Search(sayingViewElement.idElement); // TODO тестить
@@ -88,6 +92,5 @@ namespace DialogsCreator
             }
             return maxId;
         }
-        
     }
 }

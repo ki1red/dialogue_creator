@@ -28,6 +28,7 @@ namespace DialogsCreator.Views
         public RequiredBindingOptionComponentView firstReqiredBindingDialogComponentView { get; private set; }
         public RequiredBindingOptionComponentView secondeReqiredBindingDialogComponentView { get; private set; }
         public List<Line> Lines { get; private set; }
+
         public LinkDataOptionPackage(
             OptionDialogComponent firstOptionComponent,
             OptionDialogComponent secondeOptionComponent,
@@ -52,12 +53,15 @@ namespace DialogsCreator.Views
         private Canvas canvas;
         public LinkedObject OptionSource { get; set; }
         public List<LinkDataOptionPackage> linkDataOptionPackages { get; private set; } = new List<LinkDataOptionPackage>();
+        public string _textNameOption { get => TextBlockComponentName.Text; }
+
         public OptionDialogComponent(Canvas drawingCanvas, DialogComponentView componentView)
         {
             InitializeComponent();
             parent = componentView;
             canvas = drawingCanvas;
         }
+
         public void ShowBindigsDialogComponentsView()
         {
             if (CheckBindingsInit() == true)

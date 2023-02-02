@@ -47,6 +47,7 @@ namespace DialogsCreator
         }
         public void SerializationDFD(string path = null)
         {
+            
             if (!manager.isOpen)
                 throw new Exception("File is close");
 

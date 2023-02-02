@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,14 @@ using Point = System.Windows.Point;
 
 namespace DialogsCreator
 {
+    public class TestListBoxItem
+    {
+        public string Name {get; set;}
+        public TestListBoxItem(string name)
+        {
+            Name = name;
+        }
+    }
     public partial class VisualBindings : Window
     {
         // ===========================================================================================================================
@@ -41,8 +50,10 @@ namespace DialogsCreator
         // ===========================================================================================================================
         // ======================== ПЕРЕМЕННЫЕ ДЛЯ ВЗАИМОДЕЙСТВИЯ МЕЖДУ CANVAS И ОСТАЛЬНЫМ ===========================================
         // ===========================================================================================================================
-
-        private List<DialogComponentView> elements = null;
+        //!!
+        public ObservableCollection<DialogComponentView> elements = null;
+        public ObservableCollection<TestListBoxItem> ItemsTextBox { get; set; }
+        //!!
         private Point lastClick = new Point();
         private SelectionObject selectionObject = new SelectionObject();
         private InfoPanel infoPanel = new InfoPanel(); // TODO сделать блять наконец
@@ -75,6 +86,9 @@ namespace DialogsCreator
             InitializeSubscribedMouseForCanvas();
 
             SelectViewEvent += selectionObject.Select;
+            // ItemsTextBox = new ObservableCollection<TestListBoxItem>();
+            elements = new ObservableCollection<DialogComponentView>();
+            ListBoxView.ItemsSource = elements;
         }
 
         // ===========================================================================================================================
@@ -238,7 +252,8 @@ namespace DialogsCreator
 
             lastClick = new Point(e.GetPosition(MainCanvas).X, e.GetPosition(MainCanvas).Y);
         }
-        private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
+
+        internal void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (currentLine != null)
             {
@@ -248,6 +263,7 @@ namespace DialogsCreator
                 currentLine.Y2 = currentPoint.Y - 3;
             }
         }
+
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
 
@@ -465,12 +481,16 @@ namespace DialogsCreator
 
             // TODO удаление старых компонентов канваса
             if (elements != null)
-            foreach (var obj in elements)
             {
-                obj.Destroy();
+
+                var objInScene = elements.ToList();
+                foreach (var obj in objInScene)
+                {
+                    obj.Destroy();
+                    elements.Remove(obj);
+                }
             }
 
-            elements = new List<DialogComponentView>();
             for (int i = 0; i < modelView.id; i++)
             {
                 ElementDFD el = modelView.dialog.elements[i];
@@ -483,6 +503,8 @@ namespace DialogsCreator
 
                 elements[i].Source = new SayingElementViewDFD(el.idElement, el.question); // инициализация вопроса
                 elements[i].SetName();
+
+                //ItemsTextBox.Add(new TestListBoxItem(el.question.text));
 
                 foreach (var answer in el.answers) // инициализация ответов
                 {

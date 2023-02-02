@@ -31,6 +31,8 @@ namespace DialogsCreator
                 selected = TypeObject.element;
                 element = (obj as DialogComponentView);
             }
+            else
+                selected = TypeObject.none;
             //element = (ElementDFD)obj;
 
         }

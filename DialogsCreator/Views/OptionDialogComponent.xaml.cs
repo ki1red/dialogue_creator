@@ -47,16 +47,13 @@ namespace DialogsCreator.Views
     {
         public RequiredBindingOptionComponentView LeftBindingDialogComponentView { get; private set; }
         public RequiredBindingOptionComponentView RightBindingDialogComponentView { get; private set; }
-
         private const int marginBindingDialogCopmonentView = 10;
         private const int bindingDialogComponentWidth = 10;
-
         public DialogComponentView parent { get; private set; }
         private Canvas canvas;
-
         public LinkedObject OptionSource { get; set; }
-
         public List<LinkDataOptionPackage> linkDataOptionPackages { get; private set; } = new List<LinkDataOptionPackage>();
+        public string _textNameOption { get => TextBlockComponentName.Text; }
 
         public OptionDialogComponent(Canvas drawingCanvas, DialogComponentView componentView)
         {
@@ -78,7 +75,6 @@ namespace DialogsCreator.Views
                 ShowBindigsDialogComponentsView();
             }
         }
-
         public void HideBindigsDialogComponentsView()
         {
             if (CheckBindingsInit() == true)
@@ -92,24 +88,22 @@ namespace DialogsCreator.Views
                 HideBindigsDialogComponentsView();
             }
         }
-
-        public void LinkWith(LinkDataOptionPackage linkDataOption) 
+        public void LinkWith(LinkDataOptionPackage linkDataOption)
         {
             linkDataOptionPackages.Add(linkDataOption);
 
-            if (linkDataOption.firstOptionComponent == this) 
+            if (linkDataOption.firstOptionComponent == this)
             {
                 OptionSource?.Bounds(linkDataOption.secondeOptionComponent.OptionSource);
             }
             else if (linkDataOption.secondeOptionComponent == this)
             {
                 OptionSource?.Bounds(linkDataOption.firstOptionComponent.OptionSource);
-            }    
+            }
             else
                 throw new InvalidOperationException("You link different object but this object is not one from them");
         }
-
-        public void UnLinkWith(LinkDataOptionPackage linkedPackage) 
+        public void UnLinkWith(LinkDataOptionPackage linkedPackage)
         {
             foreach (var line in linkedPackage.Lines)
             {
@@ -126,7 +120,6 @@ namespace DialogsCreator.Views
 
             linkDataOptionPackages.Remove(linkedPackage);
         }
-
         private void InitEmptyBindings()
         {
 
@@ -143,7 +136,6 @@ namespace DialogsCreator.Views
                 RightBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Blue);
             }
         }
-
         private int GetIndex()
         {
             for (int i = 0; i < parent.Options.Count(); i++)
@@ -154,15 +146,13 @@ namespace DialogsCreator.Views
 
             throw new ArgumentException("Option don't find in parent");
         }
-
         private Point GetPointLeftBindingComponent()
         {
             return new Point(
                 x: Canvas.GetLeft(parent) + (bindingDialogComponentWidth / 2f),
-                y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3 
+                y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3
             );
         }
-
         private Point GetPointRightBindingComponent()
         {
             return new Point(
@@ -170,7 +160,6 @@ namespace DialogsCreator.Views
                 y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3
             );
         }
-
         private bool CheckBindingsInit()
         {
             return
@@ -180,7 +169,7 @@ namespace DialogsCreator.Views
 
         public void SetName()
         {
-            string fullName = (OptionSource as SayingElementViewDFD).sayingElement.text;
+            string fullName = (OptionSource as SayingElementViewDFD).elementOld.text;
 
             if (fullName.Length <= 7)
             {
@@ -188,7 +177,7 @@ namespace DialogsCreator.Views
                 return;
             }
 
-                int i = 0;
+            int i = 0;
             string shortName = "";
             foreach (var ch in fullName)
             {
@@ -199,7 +188,7 @@ namespace DialogsCreator.Views
             }
             TextBlockComponentName.Text = shortName;
         }
-        public void Destroy() 
+        public void Destroy()
         {
             var packages = linkDataOptionPackages.ToList();
 

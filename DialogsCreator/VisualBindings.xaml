@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
         Name="VisualBindings_window" Height="451" Width="800" WindowStartupLocation="CenterScreen">
+    
     <Grid Margin="0,0,0,4" Background="Aqua">
         <Menu Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="MenuItem_fileSettings" Grid.ColumnSpan="2">
             <MenuItem Header="Файл">
@@ -26,18 +27,30 @@
             </MenuItem>
         </Menu>
 
-        <ScrollViewer Margin="0,25,0,0">
-            <Canvas Name="MainCanvas" Background="#FF7F7676">
+        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="0,25,0,0">
+            <Canvas Name="MainCanvas" Height="100000" Width="100000" Background="#FF7F7676">
+
             </Canvas>
         </ScrollViewer>
+        <ListBox Name="ListBoxView" ItemsSource="{Binding Path=elements}" Width="250" Margin="0,25,15,15" IsSynchronizedWithCurrentItem="True" Background="#FF191818" BorderBrush="#FF131313" Foreground="#FF13A9F7" HorizontalAlignment="Right">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding _TextBlockComponentName.Text}" />
+                        <ListBox ItemsSource="{Binding Path=Options}" BorderBrush ="#FF191818" Background="#FF191818" Margin="15,0,0,0" Foreground="#FF13A9F7">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding _textNameOption}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Label Name="Label_informationOfLanguage" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="143" Height="26"/>
-
-        <!--
-        <Border BorderBrush="Black" BorderThickness="5" Margin="536,25,18,10">
-            <StackPanel/>
-        </Border>
-        -->
-
 
     </Grid>
 </Window>

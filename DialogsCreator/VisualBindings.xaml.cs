@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,29 +23,31 @@ using Point = System.Windows.Point;
 
 namespace DialogsCreator
 {
+
+    public class ItemListBoxDataElemet 
+    {
+        public string Name { get; set; }
+        public List<string> Options { get; set; }
+
+        public ItemListBoxDataElemet(string name, List<string> options)
+        {
+            Name = name;
+            Options = options;
+        }
+    }
+
     public partial class VisualBindings : Window
     {
-        // ===========================================================================================================================
-        // ============================= ПЕРЕМЕННЫЕ ДЛЯ ВИЗУАЛЬНОГО ОТОБРАЖЕНИЯ В ОКНЕ ===============================================
-        // ===========================================================================================================================
-
         private const string windowTitle = "Создатель диалогов.";
         private const string languageTitle = "Язык файла";
-
-        // ===========================================================================================================================
-        // ======================== ПЕРЕМЕННЫЕ ДЛЯ ХРАНЕНИЯ ИНФОРМАЦИИ О DFD В ФАЙЛЕ И СТРУКТУРЕ =====================================
-        // ===========================================================================================================================
 
         private FileManagerDLAG selFile = new FileManagerDLAG();
         private WPFtoDFD modelView;
         private SelectionObject selectionObject = new SelectionObject();
         private InfoPanel infoPanel = new InfoPanel();
 
-        // ===========================================================================================================================
-        // ================================ ПЕРЕМЕННЫЕ ИЛЬИ ХЗ ДЛЯ ЧЕГО ==============================================================
-        // ===========================================================================================================================
-
         private List<DialogComponentView> elements = null;
+        public ObservableCollection<ItemListBoxDataElemet> ElemetsData { get; set; }
         private Point lastClick = new Point();
 
         private BindingDialogComponentView startBindingDialogComponentView;
@@ -54,9 +57,6 @@ namespace DialogsCreator
         private Line currentLine;
         private List<Line> linesCollection = new List<Line>();
   
-        // ===========================================================================================================================
-        // ================================ КОНСТРУКТОРЫ ФОРМЫ VISUAL BINDINGS =======================================================
-        // ===========================================================================================================================
         public delegate void SelectedViewtHandler(object obj);
         public event SelectedViewtHandler SelectViewEvent;
 
@@ -71,12 +71,11 @@ namespace DialogsCreator
             InitializeSubscribedMouseForCanvas();
 
             SelectViewEvent += selectionObject.Select;
-
+     
+            ElemetsData = new ObservableCollection<ItemListBoxDataElemet>() { new ItemListBoxDataElemet("test", new List<string>() { "testOp" }) };
+            ListBoxView.ItemsSource = ElemetsData;
         }
 
-        // ===========================================================================================================================
-        // ================================ ИНИЦИАЛИЗАЦИИ ГРУПП КОМПОНЕНТОВ ФОРМЫ ====================================================
-        // ===========================================================================================================================
 
         private void InitializeSubscribedBaseComponentsWindow()
         {
@@ -134,10 +133,6 @@ namespace DialogsCreator
             else
                 this.MenuItem_deleteObject.IsEnabled = false;
         }
-
-        // ===========================================================================================================================
-        // ======================================== РАБОТА С MAINCANVAS ==============================================================
-        // ===========================================================================================================================
 
         private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e) // TODO добавить подписку на событие при нажатии. если нажата ЛКМ , то передавать тип объекта в SelectionObject.Select и InfoPanel.Show
         {
@@ -267,10 +262,6 @@ namespace DialogsCreator
             SelectViewEvent(e.Source);
         }
 
-        // ===========================================================================================================================
-        // =================================== РАБОТА С ВЕРХНИМ МЕНЮ =================================================================
-        // ===========================================================================================================================
-
         private void MenuItem_openFile_Click(object sender, RoutedEventArgs e)
         {
             SaveFileBeforeClosing(null, null);
@@ -336,10 +327,6 @@ namespace DialogsCreator
             element.Destroy();
             //this.MenuItem_deleteObject.IsEnabled = false;
         }
-
-        // ===========================================================================================================================
-        // =================================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ================================================================
-        // ===========================================================================================================================
 
         private void UpdateWindowElements(object sender, EventArgs e)
         {
@@ -450,6 +437,7 @@ namespace DialogsCreator
 
             
             elements = new List<DialogComponentView>();
+            
             for (int i = 0; i < modelView.id; i++)
             {
                 ElementDFD el = modelView.dialog.elements[i];
@@ -469,6 +457,7 @@ namespace DialogsCreator
                     elements[i].Options[elements[i].Options.Count - 1].ShowBindigsDialogComponentsView();
                     elements[i].Options[elements[i].Options.Count - 1].SetName();
                 }
+                ElemetsData.Add(new ItemListBoxDataElemet(el.question.text, el.answers.Select(a => a.text).ToList()));
             }
         }
         private void AddObjectToView(ElementDFD element)
@@ -491,6 +480,7 @@ namespace DialogsCreator
                 elements[pos].Options[elements[pos].Options.Count - 1].ShowBindigsDialogComponentsView();
                 elements[pos].Options[elements[pos].Options.Count - 1].SetName();
             }
+            ElemetsData.Add(new ItemListBoxDataElemet(element.question.text, element.answers.Select(a => a.text).ToList()));
         }
     }
 }

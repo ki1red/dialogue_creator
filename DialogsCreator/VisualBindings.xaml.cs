@@ -25,14 +25,7 @@ namespace DialogsCreator
 {
     public partial class VisualBindings : Window
     {
-        public class TestListBoxItem
-        {
-            public string Name { get; set; }
-            public TestListBoxItem(string name)
-            {
-                Name = name;
-            }
-        }
+
         // ===========================================================================================================================
         // ============================= ПЕРЕМЕННЫЕ ДЛЯ ВИЗУАЛЬНОГО ОТОБРАЖЕНИЯ В ОКНЕ ===============================================
         // ===========================================================================================================================
@@ -52,11 +45,8 @@ namespace DialogsCreator
         // ======================== ПЕРЕМЕННЫЕ ДЛЯ ВЗАИМОДЕЙСТВИЯ МЕЖДУ CANVAS И ОСТАЛЬНЫМ ===========================================
         // ===========================================================================================================================
 
-        //private List<DialogComponentView> elements = null;
-        //!!
-        public ObservableCollection<DialogComponentView> elements = null;
-        public ObservableCollection<TestListBoxItem> ItemsTextBox { get; set; }
-        //!!
+        public ObservableCollection<DialogComponentView> elements;
+    
         private Point lastClick = new Point();
         private SelectionObject selectionObject = new SelectionObject();
         private InfoPanel infoPanel = new InfoPanel(); // TODO сделать блять наконец
@@ -361,6 +351,9 @@ namespace DialogsCreator
 
             isEdit = true;
             this.MenuItem_deleteObject.IsEnabled = false;
+           
+            if (element != null)
+                elements.Remove(element);
         }
 
         // ===========================================================================================================================
@@ -547,15 +540,30 @@ namespace DialogsCreator
                 this.MenuItem_editObject.IsEnabled = false;
             }
         }
+
         internal void ClearCanvas()
         {
-            if (elements != null || elements.Count == 0)
+            if (elements != null && elements.Count > 0)
             {
-                foreach (var obj in elements)
+                var objInScene = elements.ToList();
+                foreach (var obj in objInScene)
                 {
                     obj.Destroy();
+                    elements.Remove(obj);
                 }
-                elements.Clear();
+            }
+        }
+
+        private void ListBoxView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            var hit = listBox.InputHitTest(e.GetPosition(listBox)) as FrameworkElement;
+            var item = hit.DataContext as DialogComponentView;
+           
+            if(item != null) 
+            {
+                ScrollViewer.ScrollToHorizontalOffset(Canvas.GetLeft(item) - 150);
+                ScrollViewer.ScrollToVerticalOffset(Canvas.GetTop(item) - 150);
             }
         }
     }

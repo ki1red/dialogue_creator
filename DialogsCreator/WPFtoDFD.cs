@@ -47,6 +47,7 @@ namespace DialogsCreator
         }
         public void SerializationDFD(string path = null)
         {
+            
             if (!manager.isOpen)
                 throw new Exception("File is close");
 
@@ -86,15 +87,15 @@ namespace DialogsCreator
         {
             if (id > this.id)
                 return false;
+            
+            ref ElementDFD delElement = ref this.dialog.elements[id-1];
 
-            ref ElementDFD delElement = ref this.dialog.elements[id];
-
-            for (int i = 0; i <= this.id; i++)
+            for (int i = 1; i <= this.id; i++)
             {
-                if (i == id)
+                if (i-1 == id-1)
                     continue;
 
-                ref ElementDFD element = ref this.dialog.elements[i];
+                ref ElementDFD element = ref this.dialog.elements[i-1];
 
                 if (element.idElement > id)
                     element.idElement = element.idElement - 1; // уменьшение id
@@ -155,6 +156,7 @@ namespace DialogsCreator
             }
 
             this.dialog.Delete(delElement);
+            this.id--;
             return true;
         }
         private int GetIdLastElement()

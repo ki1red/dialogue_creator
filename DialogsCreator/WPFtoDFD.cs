@@ -16,19 +16,22 @@ namespace DialogsCreator
 {
     public class WPFtoDFD
     {
-        public FileManagerDLAG fileManager { get; private set; }
+        private FileManager manager { get; set; }
         public DialogDFD dialog { get; private set; }
         public int id { get; private set; }
-        public WPFtoDFD(FileManagerDLAG fileManager)
+        public WPFtoDFD(FileManager fileManager)
         {
-            this.fileManager = fileManager;
+            this.manager = fileManager;
             this.dialog = new DialogDFD();
             this.id = -1;
         }
         public void DesirializationDFD()
         {
+            if (!manager.isOpen)
+                throw new Exception("File is close");
+
             string text;
-            using (StreamReader reader = new StreamReader($"{fileManager.path}{fileManager.file}.{FileManagerDLAG.type}")) // полный путь до файла
+            using (StreamReader reader = new StreamReader($"{manager.path}{manager.file}.{FileManager.type}")) // полный путь до файла
             {
                 text = reader.ReadToEnd();
             }
@@ -36,56 +39,25 @@ namespace DialogsCreator
             if (dialog == null)
             {
                 dialog = new DialogDFD();
-                dialog.language = fileManager.language.ToString();
+                dialog.language = manager.language.ToString();
             }
-            fileManager.language = fileManager.ToLanguage(dialog.language);
+            manager.language = manager.ToLanguage(dialog.language); // TODO нахуй надо?
             id = GetIdLastElement();
         }
-        public void SerializationDFD()
+        public void SerializationDFD(string path = null)
         {
+            if (!manager.isOpen)
+                throw new Exception("File is close");
+
             string json = JsonConvert.SerializeObject(dialog);
 
-            fileManager.SaveFile(json);
+            if (path == null)
+                manager.SaveFile(json);
+            else
+                if (manager.SaveAsFile(path, json) == false)
+                    return;
         }
-        public void SerializationDFD(string path)
-        {
-            string json = JsonConvert.SerializeObject(dialog);
-
-            if (fileManager.SaveAsFile(path, json) == false)
-                return;
-        }
-        public void AddElementDFDWithoutConnection(string author, string question, string pathToSound, string pathToImage, string[] answers)
-        {
-            if (id == -1)
-                throw new Exception("Не загружен dfd файл");
-
-            ElementDFD element = new ElementDFD();
-            element.idElement = ++id;
-            element.author = author;
-
-            SayingElementDFD sayingElement = new SayingElementDFD();
-            sayingElement.text = question;
-            sayingElement.nextElement = null;
-            sayingElement.requests = new SayingElementDFD[0];
-
-            element.question = sayingElement;
-
-            element.pathToSound = pathToSound;
-            element.pathToImage = pathToImage;
-
-            SayingElementDFD[] sayingElements = new SayingElementDFD[answers.Length];
-            
-            for (int iAnswers = 0; iAnswers <  sayingElements.Length; iAnswers++)
-            {
-                SayingElementDFD item = new SayingElementDFD(answers[iAnswers], null, new SayingElementDFD[0]);
-                sayingElements[iAnswers] = item;
-            }
-
-            element.answers = sayingElements;
-
-            dialog.Add(element);
-        }
-        public void AddElementDFDWithoutConnection(ElementDFD element)
+        public void AddEmptyElement(ElementDFD element)
         {
             if (id == -1)
                 throw new Exception("Не загружен dfd файл");
@@ -94,9 +66,17 @@ namespace DialogsCreator
 
             dialog.Add(element);
         }
-        public void AddCoords(ref ElementDFD element, Point point)
+        public void ReplaceCoords(ref ElementDFD element, Point point)
         {
-            element.point = point;
+            element.point = point; // TODO тестить
+        }
+        public void UpdateLinkeds(ref SayingElementViewDFD sayingViewElement)
+        {
+            ref ElementDFD element = ref dialog.Search(sayingViewElement.idElement); // TODO тестить
+            ref SayingElementDFD sayingElement = ref element.Search(sayingViewElement.elementOld);
+            sayingElement = sayingViewElement.elementNew;
+
+            sayingViewElement.UpdateElement(); // TODO возможно, лучше вынести
         }
         private int GetIdLastElement()
         {

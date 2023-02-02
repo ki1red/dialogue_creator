@@ -104,7 +104,7 @@ namespace DialogsCreator
             else
                 answers = new string[0];
 
-            //modelView.AddElementDFDWithoutConnection(author, question, pathToSound, pathToImage, answers);
+            //modelView.AddEmptyElement(author, question, pathToSound, pathToImage, answers);
             SayingElementDFD[] answs = new SayingElementDFD[answers.Length];
             for (int i = 0; i < answs.Length; i++)
             {

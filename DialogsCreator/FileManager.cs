@@ -14,7 +14,7 @@ namespace DialogsCreator
         en = 2,
         de = 3
     }
-    public class FileManagerDLAG
+    public class FileManager
     {
         public const uint countLanguages = 4;
         private Dictionary<string, string> titles = new Dictionary<string, string>() { { "open" , "Открыть файл"}, { "create", "Создать файл" }, { "save as", "Сохранить файл как" } };
@@ -26,20 +26,21 @@ namespace DialogsCreator
         public const string filter = $"Develop files dialogues (*.{type})|*.{type}";
         public const string type = "dfd";
 
+        public bool isOpen;
+
         private void SelectFile(string pathAndFile)
         {
             string[] pathToFile = pathAndFile.Split('\\');
 
-            string[] tmpfile = pathToFile[pathToFile.Length - 1].Split('.');
-
+            string[] tmpfile = pathToFile[pathToFile.Length - 1].Split('.'); // обращение к последнему элементу, где находится название файла
             this.file = tmpfile[0]; // название файла без расширения
-
+            
+            Array.Resize(ref pathToFile, pathToFile.Length - 1);
             this.path = "";
-            for (int i = 0; i < pathToFile.Length - 1; i++)
-                this.path += pathToFile[i] + "\\"; // путь к файлу без самого файла
+            this.path = String.Join("\\", pathToFile);
         }
 
-        public FileManagerDLAG(Language language = Language.none) { this.language = language; }
+        public FileManager(Language language = Language.none) { this.language = language; isOpen = false; }
 
         public bool CreateFile()
         {
@@ -57,6 +58,7 @@ namespace DialogsCreator
                 {
                     myStream.Close();
                     SelectFile(saveFileDialog.FileName);
+                    isOpen = true;
                     return true;
                 }
             }
@@ -75,6 +77,7 @@ namespace DialogsCreator
             if (openFileDialog.ShowDialog() == true)
             {
                 SelectFile(openFileDialog.FileName);
+                isOpen = true;
                 return true;
             }
             return false;
@@ -108,6 +111,13 @@ namespace DialogsCreator
             return false;
         }
 
+        public void CloseFile()
+        {
+            file = null;
+            language = Language.none;
+            isOpen = false;
+        }
+
         public Language ToLanguage(string language)
         {
             switch (language)
@@ -122,21 +132,5 @@ namespace DialogsCreator
                     return Language.none;
             }
         }
-        /*
-        public bool CheckIsNotEmptyFile()
-        {
-            string[] path = file.Split('\\');
-
-            string dfd = "";
-            for (int i = path[path.Length - 1].Length - 1; i > path[path.Length - 1].Length - 5; i--)
-                dfd += path[path.Length - 1][i];
-            dfd = new string(dfd.Reverse().ToArray());
-
-
-            if (dfd == $".{type}")
-                return true;
-            else
-                return false;
-        }*/
     }
 }

@@ -35,7 +35,7 @@ namespace DialogsCreator
         // ======================== ПЕРЕМЕННЫЕ ДЛЯ ХРАНЕНИЯ ИНФОРМАЦИИ О DFD В ФАЙЛЕ И СТРУКТУРЕ =====================================
         // ===========================================================================================================================
 
-        private FileManagerDLAG selFile = new FileManagerDLAG();
+        private FileManager selFile = new FileManager();
         private WPFtoDFD modelView;
         private SelectionObject selectionObject = new SelectionObject();
         private InfoPanel infoPanel = new InfoPanel();
@@ -302,7 +302,7 @@ namespace DialogsCreator
         {
             // TODO Сделать очистку MainCanvas
             SaveFileBeforeClosing(null, null);
-            selFile = new FileManagerDLAG(); // НЕ УДАЛЯТЬ, ИНАЧЕ НЕ ОТРАБОТАЕТ UpdateWindowElements
+            selFile = new FileManager(); // НЕ УДАЛЯТЬ, ИНАЧЕ НЕ ОТРАБОТАЕТ UpdateWindowElements
             modelView = null;
 
         }
@@ -317,8 +317,8 @@ namespace DialogsCreator
                 return;
 
             //modelView.DesirializationDFD();
-            modelView.AddElementDFDWithoutConnection(window.element);
-            modelView.AddCoords(ref modelView.dialog.elements[modelView.dialog.elements.Length - 1], lastClick);
+            modelView.AddEmptyElement(window.element);
+            modelView.ReplaceCoords(ref modelView.dialog.elements[modelView.dialog.elements.Length - 1], lastClick);
 
             // TODO добавить визуальное отображение
             AddObjectToView(window.element);
@@ -360,7 +360,7 @@ namespace DialogsCreator
                 }
 
                 selFile.language = selFile.ToLanguage(modelView.dialog.language);
-                this.Title = $"{windowTitle} Открыт файл {selFile.file}.{FileManagerDLAG.type}";
+                this.Title = $"{windowTitle} Открыт файл {selFile.file}.{FileManager.type}";
                 this.Label_informationOfLanguage.Content = $"{languageTitle}: {selFile.language}";
             }
             else

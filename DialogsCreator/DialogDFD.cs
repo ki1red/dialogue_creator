@@ -114,11 +114,11 @@ namespace DialogsCreator
             Array.Resize(ref answers, answers.Length - 1);
             tmp.CopyTo(answers, 0);
         }
-        public ref SayingElementDFD Search(string text)
+        public ref SayingElementDFD Search(SayingElementDFD text)
         {
             for (int i = 0; i < answers.Length; i++)
             {
-                if (answers[i].text == text)
+                if (answers[i] == text)
                     return ref answers[i];
             }
             return ref question;
@@ -172,32 +172,34 @@ namespace DialogsCreator
                     return ref requests[i];
             return ref requests[requests.Length - 1];
         }
-
-        
     }
 
     public class SayingElementViewDFD : LinkedObject
     {
         public int idElement;
-        public SayingElementDFD sayingElement;
+        public SayingElementDFD elementOld;
+        public SayingElementDFD elementNew;
         public SayingElementViewDFD(int idElement, SayingElementDFD sayingElement)
         {
             this.idElement = idElement;
-            this.sayingElement = sayingElement;
+            this.elementOld = sayingElement;
+            this.elementNew = sayingElement;
         }
-
+        public void UpdateElement()
+        {
+            this.elementOld = this.elementNew;
+        }
         public override void Bounds(LinkedObject linkObject)
         {
             if (linkObject == null)
-                throw new Exception("Неинициализированный объект во View");
-            sayingElement.Add((linkObject as SayingElementViewDFD).sayingElement);
+                throw new Exception("Uninitialized object in view");
+            elementNew.Add((linkObject as SayingElementViewDFD).elementNew);
         }
-
         public override void UnBounds(LinkedObject linkObject)
         {
             if (linkObject == null)
-                throw new Exception("Неинициализированный объект во View");
-            sayingElement.Delete((linkObject as SayingElementViewDFD).sayingElement);
+                throw new Exception("Uninitialized object in view");
+            elementNew.Delete((linkObject as SayingElementViewDFD).elementNew);
         }
     }
 }

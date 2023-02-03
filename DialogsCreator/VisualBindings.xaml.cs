@@ -440,6 +440,7 @@ namespace DialogsCreator
                 this.MenuItem_editObject.IsEnabled = false;
 
                 this.ScrollViewer.IsEnabled = false;
+                this.ListBoxView.Visibility = Visibility.Hidden;
             }
         }
         internal bool SaveAndClose()

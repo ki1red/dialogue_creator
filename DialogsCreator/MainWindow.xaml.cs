@@ -89,12 +89,12 @@ namespace DialogsCreator
             if (Label_imagePath.Content != null && CheckBox_image.IsChecked == true)
                 pathToImage = Label_imagePath.Content as string;
             else
-                pathToImage = "NULL";
+                pathToImage = null;
 
             if (Label_soundPath.Content != null && CheckBox_sound.IsChecked == true)
                 pathToSound = Label_soundPath.Content as string;
             else
-                pathToSound = "NULL";
+                pathToSound = null;
 
             if (CheckBox_answers.IsChecked == true)
             {

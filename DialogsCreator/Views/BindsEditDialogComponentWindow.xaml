@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogsCreator.Views"
         mc:Ignorable="d"
-        Title="BindsEditDialogComponentWindow" Height="450" Width="600">
+        Title="Связи объекта." Height="450" Width="600">
     <Grid>
         <StackPanel Name="BindingsComponentStack" Background="#FF171717">
 

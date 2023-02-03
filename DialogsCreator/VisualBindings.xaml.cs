@@ -91,7 +91,6 @@ namespace DialogsCreator
 
         internal void InitializeSubscribedBaseComponentsWindow()
         {
-            //this.Closed += SaveAndClose(null, null); TODO нахуй пошёл
             this.Closing += Close;
         }
         internal void InitializeBaseComponentsWindow()
@@ -326,11 +325,13 @@ namespace DialogsCreator
         {
             UpdatePointsViews();
             modelView.SerializationDFD();
+            isEdit = false;
         }
         internal void MenuItem_saveAsFile_Click(object sender, RoutedEventArgs e)
         {
             UpdatePointsViews();
             modelView.SerializationDFD(manager.path);
+            isEdit = false;
         }
         internal void MenuItem_closeFile_Click(object sender, RoutedEventArgs e)
         {
@@ -626,6 +627,8 @@ namespace DialogsCreator
                 double x = Canvas.GetLeft(elements[i]);
                 Point point = new Point(x, y);
                 modelView.ReplaceCoords(ref element, point);
+
+                elements[i].isMove = false;
             }
         }
         private bool CheckedMoved()

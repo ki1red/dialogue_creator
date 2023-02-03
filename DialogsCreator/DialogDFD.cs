@@ -22,7 +22,7 @@ namespace DialogsCreator
         }
         public DialogDFDs()
         {
-            this.language = "NULL";
+            this.language = null;
             this.elements = new ElementDFDs[0];
         }
         public void Clone(object obj)
@@ -69,10 +69,10 @@ namespace DialogsCreator
         public ElementDFDs()
         {
             this.idElement = -1;
-            this.pathToSound = "NULL";
-            this.pathToImage = "NULL";
-            this.author = "NULL";
-            this.question = new SayingElementDFDs();
+            this.pathToSound = null;
+            this.pathToImage = null;
+            this.author = null;
+            this.question = null;
             this.answers = new SayingElementDFDs[0];
             this.point = new Point(-1, -1);
         }
@@ -90,6 +90,7 @@ namespace DialogsCreator
 
             this.author = elementDFD.author;
 
+            this.question = new SayingElementDFDs();
             this.question.Clone(elementDFD.question);
 
             this.answers = new SayingElementDFDs[elementDFD.answers.Length];
@@ -117,7 +118,7 @@ namespace DialogsCreator
         }
         public SayingElementDFDs()
         {
-            this.text = "NULL";
+            this.text = null;
             this.nextElement = null;
             this.requests = new LinkSayingElementDFDs[0];
         }
@@ -192,7 +193,7 @@ namespace DialogsCreator
         }
         public DialogDFD()
         {
-            this.language = "NULL";
+            this.language = null;
             this.elements = new ElementDFD[0];
         }
         public void Add(ElementDFD element)
@@ -271,10 +272,10 @@ namespace DialogsCreator
         public ElementDFD()
         {
             this.idElement = -1;
-            this.pathToSound = "NULL";
-            this.pathToImage = "NULL";
-            this.author = "NULL";
-            this.question = new SayingElementDFD();
+            this.pathToSound = null;
+            this.pathToImage = null;
+            this.author = null;
+            this.question = null;
             this.answers = new SayingElementDFD[0];
             this.point = new Point(-1, -1);
         }
@@ -330,6 +331,7 @@ namespace DialogsCreator
             this.pathToImage = elementDFDs.pathToImage;
             this.pathToSound = elementDFDs.pathToSound;
 
+            this.question = new SayingElementDFD();
             this.question.Clone(elementDFDs.question);
             this.point = elementDFDs.point;
 
@@ -359,7 +361,7 @@ namespace DialogsCreator
         public SayingElementDFD()
         {
             this.idElement = -1;
-            this.text = "NULL";
+            this.text = null;
             this.nextElement = null;
             this.requests = new SayingElementDFD[0];
         }

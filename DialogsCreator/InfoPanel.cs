@@ -10,8 +10,8 @@ namespace DialogsCreator
 {
     public class InfoPanel
     {
-        private const int width = 600;
-        private const int height = 600;
+        //private const int width = 600;
+        //private const int height = 600;
         private const int fontSize = 16;
 
         private ListBox panel;
@@ -31,7 +31,8 @@ namespace DialogsCreator
 
             this.Close();
 
-            Grid grid = new Grid();
+            //Grid grid = new Grid();
+            //panel.ItemTemplate.DataType = typeof(Grid);
             //panel.Children.Add(grid);
 
             this.element = element;
@@ -41,14 +42,14 @@ namespace DialogsCreator
             label.FontSize = fontSize;
             label.Foreground = Brushes.White;
             label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-            grid.Children.Add(label);
+            panel.Items.Add(label);
 
             label = new Label();
             label.Content = $"Вопрос: {element.question.text}";
             label.FontSize = fontSize;
             label.Foreground = Brushes.White;
             label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-            grid.Children.Add(label);
+            panel.Items.Add(label);
 
 
             if (this.element.pathToImage != null)
@@ -59,7 +60,7 @@ namespace DialogsCreator
                 label.FontSize = fontSize;
                 label.Foreground = Brushes.White;
                 label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-                grid.Children.Add(label);
+                panel.Items.Add(label);
             }
             if (this.element.pathToSound != null)
             {
@@ -68,7 +69,7 @@ namespace DialogsCreator
                 label.FontSize = fontSize;
                 label.Foreground = Brushes.White;
                 label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-                grid.Children.Add(label);
+                panel.Items.Add(label);
             }
             for (int i = 0; i < this.element.answers.Length; i++)
             {
@@ -77,23 +78,16 @@ namespace DialogsCreator
                 label.FontSize = fontSize;
                 label.Foreground = Brushes.White;
                 label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-                grid.Children.Add(label);
+                panel.Items.Add(label);
 
             }
-
-            panel.Width = width;
-            panel.Height = height;
-            grid.Width = width;
-            grid.Height = height;
-
+            this.panel.Visibility = System.Windows.Visibility.Visible;
         }
         public void Close()
         {
-            //panel.Children.Clear();
             this.element = null;
-
-            panel.Width = 0;
-            panel.Height = 0;
+            panel.Items.Clear();
+            this.panel.Visibility = System.Windows.Visibility.Hidden;
         }
     }
 }

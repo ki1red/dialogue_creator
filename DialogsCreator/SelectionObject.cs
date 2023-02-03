@@ -29,25 +29,26 @@ namespace DialogsCreator
             this.dialog = dialog; 
             infoPanel = new InfoPanel(ref panel);
             this.listBoxView = listBoxView;
+
+            //listBoxView.Visibility = Visibility.Visible;
         }
 
         public void Select(object obj) // <- передается тип объекта
         {
-
             if (obj is DialogComponentView)
             {
                 selected = TypeObject.element;
                 element = (obj as DialogComponentView);
                 listBoxView.Visibility = Visibility.Hidden;
-                //ElementDFD el = dialog.Search(((element.Source) as SayingElementViewDFD).idElement);
+                ElementDFD el = dialog.Search(((element.Source) as SayingElementViewDFD).idElement);
 
-                //infoPanel.Show(el);
+                infoPanel.Show(el);
             }
             else
             {
                 selected = TypeObject.none;
                 listBoxView.Visibility = Visibility.Visible;
-                //infoPanel.Close();
+                infoPanel.Close();
             }
 
         }

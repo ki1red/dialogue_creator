@@ -97,6 +97,7 @@ namespace DialogsCreator
 
             this.ScrollViewer.IsEnabled = false;
             this.ListBoxView.Visibility = Visibility.Hidden;
+            this.ListBox_info.Visibility = Visibility.Hidden;
         }
         internal void InitializeComponentsTopMenu()
         {
@@ -441,6 +442,7 @@ namespace DialogsCreator
 
                 this.ScrollViewer.IsEnabled = false;
                 this.ListBoxView.Visibility = Visibility.Hidden;
+                this.ListBox_info.Visibility = Visibility.Hidden;
             }
         }
         internal bool SaveAndClose()

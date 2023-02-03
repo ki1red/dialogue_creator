@@ -15,6 +15,7 @@ namespace DialogsCreator
     {
         public string language;
         public ElementDFDs[] elements;
+
         public DialogDFDs(string language, ElementDFDs[] elements)
         {
             this.language = language;
@@ -25,6 +26,7 @@ namespace DialogsCreator
             this.language = null;
             this.elements = new ElementDFDs[0];
         }
+
         public void Clone(object obj)
         {
             if (!(obj is DialogDFD))
@@ -43,17 +45,17 @@ namespace DialogsCreator
             }
         }
     }
+
+
     [Serializable]
     public class ElementDFDs : IClonable
     {
         public int idElement;
         public string pathToSound;
         public string pathToImage;
-
         public string author;
         public SayingElementDFDs question;
         public SayingElementDFDs[] answers;
-
         public Point point;
 
         public ElementDFDs(int idElement, string pathToSound, string pathToImage, string author, SayingElementDFDs question, SayingElementDFDs[] answers, Point point)
@@ -103,6 +105,8 @@ namespace DialogsCreator
             this.point = elementDFD.point;
         }
     }
+
+
     [Serializable]
     public class SayingElementDFDs : IClonable
     {
@@ -110,6 +114,7 @@ namespace DialogsCreator
         public string text;
         public LinkSayingElementDFDs nextElement;
         public LinkSayingElementDFDs[] requests;
+
         public SayingElementDFDs(string text, LinkSayingElementDFDs nextElement, LinkSayingElementDFDs[] requests)
         {
             this.text = text;
@@ -145,6 +150,8 @@ namespace DialogsCreator
         }
 
     }
+
+
     [Serializable]
     public class LinkSayingElementDFDs : IClonable
     {
@@ -156,7 +163,6 @@ namespace DialogsCreator
             this.idElement = idElement;
             this.textElement = textElement;
         }
-
         public LinkSayingElementDFDs()
         {
             this.idElement = -1;
@@ -175,12 +181,7 @@ namespace DialogsCreator
         }
     }
 
-    public interface IClonable
-    {
-        void Clone(object obj);
-    }
 
-    
     public class DialogDFD : IClonable
     {
         public string language;
@@ -196,6 +197,7 @@ namespace DialogsCreator
             this.language = null;
             this.elements = new ElementDFD[0];
         }
+
         public void Add(ElementDFD element)
         {
             Array.Resize(ref elements, elements.Length + 1);
@@ -227,7 +229,6 @@ namespace DialogsCreator
             }
             return ref elements[elements.Length - 1];
         }
-
         public void Clone(object obj)
         {
             if (!(obj is DialogDFDs))
@@ -246,17 +247,15 @@ namespace DialogsCreator
         }
     }
 
-    
+
     public class ElementDFD : IClonable
     {
         public int idElement;
         public string pathToSound;
         public string pathToImage;
-
         public string author;
         public SayingElementDFD question;
         public SayingElementDFD[] answers;
-
         public Point point;
 
         public ElementDFD(int idElement, string pathToSound, string pathToImage, string author, SayingElementDFD question, SayingElementDFD[] answers, Point point)
@@ -279,6 +278,7 @@ namespace DialogsCreator
             this.answers = new SayingElementDFD[0];
             this.point = new Point(-1, -1);
         }
+
         public void Add(SayingElementDFD element)
         {
             Array.Resize(ref answers, answers.Length+1);
@@ -317,7 +317,6 @@ namespace DialogsCreator
             }
             return ref question;
         }
-
         public void Clone(object obj)
         {
             if (!(obj is ElementDFDs))
@@ -351,6 +350,7 @@ namespace DialogsCreator
         public string text;
         public SayingElementDFD nextElement;
         public SayingElementDFD[] requests;
+
         public SayingElementDFD(int idElement, string text, SayingElementDFD nextElement, SayingElementDFD[] requests)
         {
             this.idElement = idElement;
@@ -400,7 +400,17 @@ namespace DialogsCreator
                     return ref requests[i];
             return ref requests[requests.Length - 1];
         }
+        public void SetLinkeds(DialogDFD elements)
+        {
+            ref ElementDFD element = ref elements.Search(this.nextElement.idElement);
+            this.nextElement = element.Search(this.nextElement.text);
 
+            for (int i = 0; i < this.requests.Length; i++)
+            {
+                element = ref elements.Search(this.requests[i].idElement);
+                this.requests[i] = element.Search(this.requests[i].text);
+            }
+        }
         public void Clone(object obj)
         {
             if (!(obj is SayingElementDFDs))
@@ -417,31 +427,22 @@ namespace DialogsCreator
             for (int i = 0; i < this.requests.Length; i++)
                 this.requests[i] = new SayingElementDFD(sayingElementDFDs.requests[i]);
         }
-
-        public void SetLinkeds(DialogDFD elements)
-        {
-            ref ElementDFD element = ref elements.Search(this.nextElement.idElement);
-            this.nextElement = element.Search(this.nextElement.text);
-
-            for (int i = 0; i < this.requests.Length; i++)
-            {
-                element = ref elements.Search(this.requests[i].idElement);
-                this.requests[i] = element.Search(this.requests[i].text);
-            }
-        }
     }
+
 
     public class SayingElementViewDFD : LinkedObject
     {
         public int idElement;
         public SayingElementDFD elementOld;
         public SayingElementDFD elementNew;
+
         public SayingElementViewDFD(int idElement, SayingElementDFD sayingElement)
         {
             this.idElement = idElement;
             this.elementOld = sayingElement;
             this.elementNew = sayingElement;
         }
+
         public void UpdateElement()
         {
             this.elementOld = this.elementNew;
@@ -460,5 +461,11 @@ namespace DialogsCreator
                 throw new Exception("Uninitialized object in view");
             elementNew.Delete((linkObject as SayingElementViewDFD).elementNew);
         }
+    }
+
+
+    public interface IClonable
+    {
+        void Clone(object obj);
     }
 }

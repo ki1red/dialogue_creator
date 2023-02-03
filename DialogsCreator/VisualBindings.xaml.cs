@@ -400,7 +400,7 @@ namespace DialogsCreator
         // =================================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ================================================================
         // ===========================================================================================================================
 
-        private void UpdateWindowElements(object sender, EventArgs e)
+        internal void UpdateWindowElements(object sender, EventArgs e)
         {
             if (manager.isOpen)
             {
@@ -522,7 +522,7 @@ namespace DialogsCreator
             MainCanvas.Children.Remove(currentLine);
             currentLine = null;
         }
-        private void InitializingDialogComponentsView()
+        internal void InitializingDialogComponentsView()
         {
             if (!manager.isOpen || modelView.id == -1) // TODO удалено || modelView == null ||
                 throw new Exception("Не удалось отрисовать View при запуске файла");
@@ -554,7 +554,7 @@ namespace DialogsCreator
                 }
             }
         }
-        private void AddObjectToView(ElementDFD element)
+        internal void AddObjectToView(ElementDFD element)
         {
             elements.Add(new DialogComponentView(MainCanvas));
 
@@ -577,7 +577,6 @@ namespace DialogsCreator
                 
             }
         }
-
         internal void CheckSelectObject(object sender, MouseButtonEventArgs e) // TODO убедиться в корректности работы
         {
             if (selectionObject.selected == TypeObject.element)
@@ -593,7 +592,6 @@ namespace DialogsCreator
                 this.MenuItem_editObject.IsEnabled = false;
             }
         }
-
         internal void ClearCanvas()
         {
             if (elements != null && elements.Count > 0)
@@ -606,7 +604,7 @@ namespace DialogsCreator
                 }
             }
         }
-        private void ListBoxView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        internal void ListBoxView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var listBox = sender as ListBox;
             var hit = listBox.InputHitTest(e.GetPosition(listBox)) as FrameworkElement;
@@ -618,7 +616,7 @@ namespace DialogsCreator
                 ScrollViewer.ScrollToVerticalOffset(Canvas.GetTop(item) - 150);
             }
         }
-        private void UpdatePointsViews()
+        internal void UpdatePointsViews()
         {
             for (int i = 0; i < modelView.dialog.elements.Length; i++)
             {
@@ -631,7 +629,7 @@ namespace DialogsCreator
                 elements[i].isMove = false;
             }
         }
-        private bool CheckedMoved()
+        internal bool CheckedMoved()
         {
             foreach (var view in elements)
             {

@@ -50,6 +50,8 @@ namespace DialogsCreator
                 Border_addImage.IsEnabled = true;
                 CheckBox_image.IsChecked = true;
             }
+
+            this.CheckBox_image.Click += CheckBox_image_Click;
             this.Button_importImage.Click += Button_importImage_Click;
         }
         public void InintializeSound()
@@ -66,6 +68,8 @@ namespace DialogsCreator
                 Border_addSound.IsEnabled = true;
                 CheckBox_sound.IsChecked = true;
             }
+
+            this.CheckBox_sound.Click += CheckBox_sound_Click;
             this.Button_importSound.Click += Button_importSound_Click;
         }
         public void InitializeQuestion()
@@ -140,6 +144,22 @@ namespace DialogsCreator
 
             isEdit = true;
             this.Close();
+        }
+        private void CheckBox_sound_Click(object sender, RoutedEventArgs e)
+        {
+            if (CheckBox_sound.IsChecked == true)
+                Border_addSound.IsEnabled = true;
+            else
+            {
+                Border_addSound.IsEnabled = false;
+            }
+        }
+        private void CheckBox_image_Click(object sender, RoutedEventArgs e)
+        {
+            if (CheckBox_image.IsChecked == true)
+                Border_addImage.IsEnabled = true;
+            else
+                Border_addImage.IsEnabled = false;
         }
 
         private void Filling(ref SayingElementDFD sayingElement, string text)

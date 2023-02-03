@@ -22,11 +22,13 @@ namespace DialogsCreator
         public TypeObject selected { get; private set; } = TypeObject.none;
         public DialogComponentView element { get; private set; } = null;
         InfoPanel infoPanel;
+        ListBox listBoxView;
 
-        public SelectionObject(DialogDFD dialog, ref ListBox panel) 
+        public SelectionObject(DialogDFD dialog, ref ListBox panel, ref ListBox listBoxView) 
         { 
             this.dialog = dialog; 
-            infoPanel = new InfoPanel(ref panel); 
+            infoPanel = new InfoPanel(ref panel);
+            this.listBoxView = listBoxView;
         }
 
         public void Select(object obj) // <- передается тип объекта
@@ -36,6 +38,7 @@ namespace DialogsCreator
             {
                 selected = TypeObject.element;
                 element = (obj as DialogComponentView);
+                listBoxView.Visibility = Visibility.Hidden;
                 //ElementDFD el = dialog.Search(((element.Source) as SayingElementViewDFD).idElement);
 
                 //infoPanel.Show(el);
@@ -43,6 +46,7 @@ namespace DialogsCreator
             else
             {
                 selected = TypeObject.none;
+                listBoxView.Visibility = Visibility.Visible;
                 //infoPanel.Close();
             }
 

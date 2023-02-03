@@ -96,6 +96,7 @@ namespace DialogsCreator
             this.Label_informationOfLanguage.Content = null;
 
             this.ScrollViewer.IsEnabled = false;
+            this.ListBoxView.Visibility = Visibility.Hidden;
         }
         internal void InitializeComponentsTopMenu()
         {
@@ -301,7 +302,7 @@ namespace DialogsCreator
             {
                 if (!manager.OpenFile())
                     return;
-                selectionObject = new SelectionObject(modelView.dialog, ref ListBox_info);
+                selectionObject = new SelectionObject(modelView.dialog, ref ListBox_info, ref ListBoxView);
                 SelectViewEvent += selectionObject.Select;
             }
         }
@@ -319,7 +320,7 @@ namespace DialogsCreator
                     manager.language = window.language;
                 } while (manager.language == DialogsCreator.Language.none);
 
-                selectionObject = new SelectionObject(modelView.dialog, ref ListBox_info);
+                selectionObject = new SelectionObject(modelView.dialog, ref ListBox_info, ref ListBoxView);
                 SelectViewEvent += selectionObject.Select;
             }
         }

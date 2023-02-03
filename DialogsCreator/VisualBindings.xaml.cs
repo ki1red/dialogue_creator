@@ -48,8 +48,7 @@ namespace DialogsCreator
         public ObservableCollection<DialogComponentView> elements;
     
         private Point lastClick = new Point();
-        private SelectionObject selectionObject = new SelectionObject();
-        private InfoPanel infoPanel = new InfoPanel(); // TODO сделать блять наконец
+        private SelectionObject selectionObject;
 
         // ===========================================================================================================================
         // ================================ ПЕРЕМЕННЫЕ ИЛЬИ ХЗ ДЛЯ ЧЕГО ==============================================================
@@ -79,8 +78,6 @@ namespace DialogsCreator
             InitializeSubscribedClickForMenu();
             InitializeSubscribedMouseForCanvas();
 
-            SelectViewEvent += selectionObject.Select;
-
             elements = new ObservableCollection<DialogComponentView>();
             ListBoxView.ItemsSource = elements;
         }
@@ -97,6 +94,8 @@ namespace DialogsCreator
         {
             this.Title = windowTitle;
             this.Label_informationOfLanguage.Content = null;
+
+            this.ScrollViewer.IsEnabled = false;
         }
         internal void InitializeComponentsTopMenu()
         {
@@ -320,7 +319,8 @@ namespace DialogsCreator
             {
                 if (!manager.OpenFile())
                     return;
-                // TODO нужна переочистка канваса
+                selectionObject = new SelectionObject(modelView.dialog, ref ListBox_info);
+                SelectViewEvent += selectionObject.Select;
             }
         }
         internal void MenuItem_createFile_Click(object sender, RoutedEventArgs e)
@@ -336,7 +336,9 @@ namespace DialogsCreator
                     window.ShowDialog();
                     manager.language = window.language;
                 } while (manager.language == DialogsCreator.Language.none);
-                // TODO нужна переочистка канваса
+
+                selectionObject = new SelectionObject(modelView.dialog, ref ListBox_info);
+                SelectViewEvent += selectionObject.Select;
             }
         }
         private void MenuItem_saveFile_Click(object sender, RoutedEventArgs e)
@@ -418,7 +420,7 @@ namespace DialogsCreator
         // =================================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ================================================================
         // ===========================================================================================================================
 
-        private void UpdateWindowElements(object sender, EventArgs e)
+        internal void UpdateWindowElements(object sender, EventArgs e)
         {
             if (manager.isOpen)
             {
@@ -438,6 +440,7 @@ namespace DialogsCreator
                 }
                 this.Title = $"{windowTitle} Открыт файл {manager.file}.{FileManager.type}";
                 this.Label_informationOfLanguage.Content = $"{languageTitle}: {manager.language}";
+                this.ScrollViewer.IsEnabled = true;
             }
             else
             {
@@ -452,6 +455,8 @@ namespace DialogsCreator
                 this.MenuItem_addObject.IsEnabled = false;
                 this.MenuItem_deleteObject.IsEnabled = false;
                 this.MenuItem_editObject.IsEnabled = false;
+
+                this.ScrollViewer.IsEnabled = false;
             }
         }
         internal bool SaveAndClose()
@@ -540,7 +545,7 @@ namespace DialogsCreator
             MainCanvas.Children.Remove(currentLine);
             currentLine = null;
         }
-        private void InitializingDialogComponentsView()
+        internal void InitializingDialogComponentsView()
         {
             if (!manager.isOpen || modelView.id == -1) // TODO удалено || modelView == null ||
                 throw new Exception("Не удалось отрисовать View при запуске файла");
@@ -572,7 +577,7 @@ namespace DialogsCreator
                 }
             }
         }
-        private void AddObjectToView(ElementDFD element)
+        internal void AddObjectToView(ElementDFD element)
         {
             elements.Add(new DialogComponentView(MainCanvas));
 
@@ -595,7 +600,6 @@ namespace DialogsCreator
                 
             }
         }
-
         internal void CheckSelectObject(object sender, MouseButtonEventArgs e) // TODO убедиться в корректности работы
         {
             if (selectionObject.selected == TypeObject.element)
@@ -611,7 +615,6 @@ namespace DialogsCreator
                 this.MenuItem_editObject.IsEnabled = false;
             }
         }
-
         internal void ClearCanvas()
         {
             if (elements != null && elements.Count > 0)
@@ -624,7 +627,7 @@ namespace DialogsCreator
                 }
             }
         }
-        private void ListBoxView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        internal void ListBoxView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var listBox = sender as ListBox;
             var hit = listBox.InputHitTest(e.GetPosition(listBox)) as FrameworkElement;
@@ -636,7 +639,7 @@ namespace DialogsCreator
                 ScrollViewer.ScrollToVerticalOffset(Canvas.GetTop(item) - 150);
             }
         }
-        private void UpdatePointsViews()
+        internal void UpdatePointsViews()
         {
             for (int i = 0; i < modelView.dialog.elements.Length; i++)
             {
@@ -649,7 +652,7 @@ namespace DialogsCreator
                 elements[i].isMove = false;
             }
         }
-        private bool CheckedMoved()
+        internal bool CheckedMoved()
         {
             foreach (var view in elements)
             {

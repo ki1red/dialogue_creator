@@ -26,12 +26,13 @@
                 <MenuItem Header="Удалить" Name="MenuItem_deleteObject"></MenuItem>
             </MenuItem>
         </Menu>
-
+        
         <ScrollViewer Name ="ScrollViewer"  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="0,25,0,0">
             <Canvas Name="MainCanvas" Height="100000" Width="100000" Background="#FF1B1A1A">
 
             </Canvas>
         </ScrollViewer>
+        
         <ListBox PreviewMouseLeftButtonDown="ListBoxView_PreviewMouseLeftButtonDown" Name="ListBoxView" ItemsSource="{Binding Path=elements}" Width="250" Margin="0,25,17,17" Background="#FF191818" BorderBrush="#FF131313" Foreground="#FF13A9F7" HorizontalAlignment="Right">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -57,6 +58,11 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
+
         <Label Name="Label_informationOfLanguage" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="143" Height="26"/>
+        <ListBox Name="ListBox_info" Width="0" Height="0" Margin="10,398,780,23">
+
+        </ListBox>
     </Grid>
 </Window>

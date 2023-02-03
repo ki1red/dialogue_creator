@@ -48,8 +48,7 @@ namespace DialogsCreator
         public ObservableCollection<DialogComponentView> elements;
     
         private Point lastClick = new Point();
-        private SelectionObject selectionObject = new SelectionObject();
-        private InfoPanel infoPanel = new InfoPanel(); // TODO сделать блять наконец
+        private SelectionObject selectionObject;
 
         // ===========================================================================================================================
         // ================================ ПЕРЕМЕННЫЕ ИЛЬИ ХЗ ДЛЯ ЧЕГО ==============================================================
@@ -79,8 +78,6 @@ namespace DialogsCreator
             InitializeSubscribedClickForMenu();
             InitializeSubscribedMouseForCanvas();
 
-            SelectViewEvent += selectionObject.Select;
-
             elements = new ObservableCollection<DialogComponentView>();
             ListBoxView.ItemsSource = elements;
         }
@@ -97,6 +94,8 @@ namespace DialogsCreator
         {
             this.Title = windowTitle;
             this.Label_informationOfLanguage.Content = null;
+
+            this.ScrollViewer.IsEnabled = false;
         }
         internal void InitializeComponentsTopMenu()
         {
@@ -302,7 +301,8 @@ namespace DialogsCreator
             {
                 if (!manager.OpenFile())
                     return;
-                // TODO нужна переочистка канваса
+                selectionObject = new SelectionObject(modelView.dialog, ref ListBox_info);
+                SelectViewEvent += selectionObject.Select;
             }
         }
         internal void MenuItem_createFile_Click(object sender, RoutedEventArgs e)
@@ -318,7 +318,9 @@ namespace DialogsCreator
                     window.ShowDialog();
                     manager.language = window.language;
                 } while (manager.language == DialogsCreator.Language.none);
-                // TODO нужна переочистка канваса
+
+                selectionObject = new SelectionObject(modelView.dialog, ref ListBox_info);
+                SelectViewEvent += selectionObject.Select;
             }
         }
         private void MenuItem_saveFile_Click(object sender, RoutedEventArgs e)
@@ -420,6 +422,7 @@ namespace DialogsCreator
                 }
                 this.Title = $"{windowTitle} Открыт файл {manager.file}.{FileManager.type}";
                 this.Label_informationOfLanguage.Content = $"{languageTitle}: {manager.language}";
+                this.ScrollViewer.IsEnabled = true;
             }
             else
             {
@@ -434,6 +437,8 @@ namespace DialogsCreator
                 this.MenuItem_addObject.IsEnabled = false;
                 this.MenuItem_deleteObject.IsEnabled = false;
                 this.MenuItem_editObject.IsEnabled = false;
+
+                this.ScrollViewer.IsEnabled = false;
             }
         }
         internal bool SaveAndClose()

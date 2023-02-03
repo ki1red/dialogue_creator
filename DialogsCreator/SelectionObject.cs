@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace DialogsCreator
 {
@@ -17,23 +18,33 @@ namespace DialogsCreator
     }
     public class SelectionObject
     {
+        private DialogDFD dialog;
         public TypeObject selected { get; private set; } = TypeObject.none;
-        //public ElementDFD element { get; private set; } = null;
         public DialogComponentView element { get; private set; } = null;
+        InfoPanel infoPanel;
 
-        public SelectionObject() { }
+        public SelectionObject(DialogDFD dialog, ref ListBox panel) 
+        { 
+            this.dialog = dialog; 
+            infoPanel = new InfoPanel(ref panel); 
+        }
 
         public void Select(object obj) // <- передается тип объекта
         {
-            
+
             if (obj is DialogComponentView)
             {
                 selected = TypeObject.element;
                 element = (obj as DialogComponentView);
+                //ElementDFD el = dialog.Search(((element.Source) as SayingElementViewDFD).idElement);
+
+                //infoPanel.Show(el);
             }
             else
+            {
                 selected = TypeObject.none;
-            //element = (ElementDFD)obj;
+                //infoPanel.Close();
+            }
 
         }
     }

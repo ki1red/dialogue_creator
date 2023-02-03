@@ -106,7 +106,7 @@ namespace DialogsCreator
             this.MenuItem_importFile.IsEnabled = false;
             this.MenuItem_closeFile.IsEnabled = false;
             this.MenuItem_objectSettings.IsEnabled = false;
-            this.MenuItem_addObject.IsEnabled = true;
+            this.MenuItem_addObject.IsEnabled = false;
             this.MenuItem_editObject.IsEnabled = false;
             this.MenuItem_deleteObject.IsEnabled = false;
         }
@@ -126,7 +126,9 @@ namespace DialogsCreator
 
             this.MenuItem_addObject.Click += MenuItem_addObject_Click;
             this.MenuItem_deleteObject.Click += MenuItem_deleteObject_Click;
+            this.MenuItem_editObject.Click += MenuItem_editObject_Click;
         }
+
         internal void InitializeSubscribedMouseForCanvas()
         {
             MainCanvas.MouseLeftButtonDown += MainCanvas_MouseDown;
@@ -304,22 +306,20 @@ namespace DialogsCreator
         }
         private void MenuItem_saveFile_Click(object sender, RoutedEventArgs e)
         {
+            UpdatePointsViews();
             modelView.SerializationDFD();
         }
         internal void MenuItem_saveAsFile_Click(object sender, RoutedEventArgs e)
         {
+            UpdatePointsViews();
             modelView.SerializationDFD(manager.path);
         }
         internal void MenuItem_closeFile_Click(object sender, RoutedEventArgs e)
         {
-            // TODO Сделать очистку MainCanvas
             SaveAndClose();
-
-
         }
         private void MenuItem_addObject_Click(object sender, RoutedEventArgs e)
         {
-            //modelView.SerializationDFD();
 
             MainWindow window = new MainWindow();
             window.ShowDialog();
@@ -327,7 +327,6 @@ namespace DialogsCreator
             if (window.added == false)
                 return;
 
-            //modelView.DesirializationDFD();
             modelView.AddEmptyElement(window.element);
             modelView.ReplaceCoords(ref modelView.dialog.elements[modelView.dialog.elements.Length - 1], lastClick);
 
@@ -335,25 +334,47 @@ namespace DialogsCreator
             AddObjectToView(window.element);
 
             isEdit = true;
+            this.MenuItem_addObject.IsEnabled = false;
         }
         private void MenuItem_deleteObject_Click(object sender, RoutedEventArgs e)
         {
-            DialogComponentView element;// TODO обращение к объекту SelectionObject и взятие из него выбранного ElementDFD
+            DialogComponentView element;
             if (selectionObject.selected == TypeObject.element)
                 element = selectionObject.element;
             else
                 return;
 
-            //modelView.dialog.Delete(modelView.dialog.Search((element.Source as SayingElementViewDFD).idElement));
-            // TODO сюда поместить View Delete
             element.Destroy();
             modelView.DeleteId((element.Source as SayingElementViewDFD).idElement);
 
-            isEdit = true;
-            this.MenuItem_deleteObject.IsEnabled = false;
-           
             if (element != null)
                 elements.Remove(element);
+
+            isEdit = true;
+            this.MenuItem_deleteObject.IsEnabled = false;
+        }
+        private void MenuItem_editObject_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectionObject.selected != TypeObject.element)
+                return;
+
+            DialogComponentView delement = selectionObject.element;
+                
+
+            int id = (delement.Source as SayingElementViewDFD).idElement;
+            ref ElementDFD element = ref modelView.dialog.Search(id); // TODO может не работать
+
+            EditWindow window = new EditWindow(element);
+            window.ShowDialog();
+
+            if (!window.isEdit)
+                return;
+
+            // TODO обновление ViewElement delement ^ (этот элемент не ссылка, а копия, так что ищи его в списке)
+            delement.UpdateNameDialog();
+
+            isEdit = true;
+            this.MenuItem_editObject.IsEnabled = false;
         }
 
         // ===========================================================================================================================
@@ -398,6 +419,9 @@ namespace DialogsCreator
         }
         internal bool SaveAndClose()
         {
+            if (CheckedMoved())
+                isEdit = true;
+
             if ((manager.isOpen && !manager.isSave) || isEdit)
             {
                 MessageBoxResult result;
@@ -406,6 +430,7 @@ namespace DialogsCreator
                 switch (result)
                 {
                     case MessageBoxResult.Yes:
+                        UpdatePointsViews();
                         MenuItem_saveFile_Click(null, null); // TODO а можно другой метод ?
                         isEdit = false;
                         manager.CloseFile();
@@ -432,7 +457,10 @@ namespace DialogsCreator
         }
         internal void Close(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (manager.isOpen && !manager.isSave)
+            if (CheckedMoved())
+                isEdit = true;
+
+            if ((manager.isOpen && !manager.isSave) || isEdit)
             {
                 MessageBoxResult result;
                 result = MessageBox.Show("Сохранить изменения перед закрытием?", "Внимание", MessageBoxButton.YesNoCancel);
@@ -440,6 +468,7 @@ namespace DialogsCreator
                 switch (result)
                 {
                     case MessageBoxResult.Yes:
+                        UpdatePointsViews();
                         MenuItem_saveFile_Click(null, null);
                         manager.CloseFile();
                         break;
@@ -542,7 +571,6 @@ namespace DialogsCreator
                 this.MenuItem_editObject.IsEnabled = false;
             }
         }
-
         internal void ClearCanvas()
         {
             if (elements != null && elements.Count > 0)
@@ -555,7 +583,6 @@ namespace DialogsCreator
                 }
             }
         }
-
         private void ListBoxView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var listBox = sender as ListBox;
@@ -567,6 +594,26 @@ namespace DialogsCreator
                 ScrollViewer.ScrollToHorizontalOffset(Canvas.GetLeft(item) - 150);
                 ScrollViewer.ScrollToVerticalOffset(Canvas.GetTop(item) - 150);
             }
+        }
+        private void UpdatePointsViews()
+        {
+            for (int i = 0; i < modelView.dialog.elements.Length; i++)
+            {
+                ref ElementDFD element = ref modelView.dialog.elements[i];
+                double y = Canvas.GetTop(elements[i]);
+                double x = Canvas.GetLeft(elements[i]);
+                Point point = new Point(x, y);
+                modelView.ReplaceCoords(ref element, point);
+            }
+        }
+        private bool CheckedMoved()
+        {
+            foreach (var view in elements)
+            {
+                if (view.isMove)
+                    return true;
+            }
+            return false;
         }
     }
 }

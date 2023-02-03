@@ -56,7 +56,7 @@ namespace DialogsCreator.Views
 
         private List<BindingDialogComponentView> bindingDialogComponentViews = new List<BindingDialogComponentView>();
         public List<LinkDataDialogPackage> linkDataPackages { get; private set; } = new List<LinkDataDialogPackage>();
-        public BindingDialogComponentView TopBindingDialogComponentView { get; private set; }
+
         public BindingDialogComponentView LeftBindingDialogComponentView { get; private set; }
         public BindingDialogComponentView RightBindingDialogComponentView { get; private set; }
         public TextBlock _TextBlockComponentName { get; set; }
@@ -132,19 +132,12 @@ namespace DialogsCreator.Views
         private bool CheckBindingsInit()
         {
             return
-                 TopBindingDialogComponentView != null &&
                  LeftBindingDialogComponentView != null &&
                  RightBindingDialogComponentView != null;
         }
         private void InitEmptyBindings()
         {
-            if (TopBindingDialogComponentView == null)
-            {
-                TopBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointTopBindingComponent());
-                TopBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Yellow);
-                if (bindingDialogComponentViews.Contains(TopBindingDialogComponentView) == false)
-                    bindingDialogComponentViews.Add(TopBindingDialogComponentView);
-            }
+    
 
 
             if (LeftBindingDialogComponentView == null)
@@ -244,25 +237,20 @@ namespace DialogsCreator.Views
                 }
             }
         }
-        private Point GetPointTopBindingComponent()
-        {
-            return new Point(
-                x: Canvas.GetLeft(this) + (this.DialogComponentCanvas.Width / 2f),
-                y: Canvas.GetTop(this) - ((bindingDialogComponentHeight) + marginBindingDialogCopmonentView)
-            );
-        }
+
+
         private Point GetPointLeftBindingComponent()
         {
             return new Point(
                 x: Canvas.GetLeft(this) - ((bindingDialogComponentWidth) + marginBindingDialogCopmonentView),
-                y: Canvas.GetTop(this) + this.DialogComponentCanvas.Height / 2f
+                y: Canvas.GetTop(this) + ActualHeight / 2f
             );
         }
         private Point GetPointRightBindingComponent()
         {
             return new Point(
-                x: Canvas.GetLeft(this) + this.DialogComponentCanvas.Width + (bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView,
-                y: Canvas.GetTop(this) + this.DialogComponentCanvas.Height / 2f
+                x: Canvas.GetLeft(this) + ActualWidth + (bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView,
+                y: Canvas.GetTop(this) + ActualHeight / 2f
             );
         }
         public void Link(LinkDataDialogPackage linkDataPackage)
@@ -342,7 +330,6 @@ namespace DialogsCreator.Views
 
             canvas.Children.Remove(this.LeftBindingDialogComponentView);
             canvas.Children.Remove(this.RightBindingDialogComponentView);
-            canvas.Children.Remove(this.TopBindingDialogComponentView);
             canvas.Children.Remove(this);
         }
     }

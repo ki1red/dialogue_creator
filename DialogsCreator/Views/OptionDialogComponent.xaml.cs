@@ -150,14 +150,14 @@ namespace DialogsCreator.Views
         {
             return new Point(
                 x: Canvas.GetLeft(parent) + (bindingDialogComponentWidth / 2f),
-                y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3
+                y: Canvas.GetTop(parent) + (this.ActualHeight / 2f) + (parent.ActualHeight / 2f) + ((GetIndex() + 1) * ActualHeight + 10 * (GetIndex() + 1)) - 3
             );
         }
         private Point GetPointRightBindingComponent()
         {
             return new Point(
-                x: Canvas.GetLeft(parent) + this.OptionCanvas.Width + (bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView + 25,
-                y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3
+                x: Canvas.GetLeft(parent) + ActualWidth + (bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView + 25,
+                y: Canvas.GetTop(parent) + (ActualHeight / 2f) + (parent.ActualHeight / 2f) + ((GetIndex() + 1) * ActualHeight + 10 * (GetIndex() + 1)) - 3
             );
         }
         private bool CheckBindingsInit()

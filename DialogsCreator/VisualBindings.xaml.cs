@@ -469,7 +469,7 @@ namespace DialogsCreator
             startBindingDialogComponentView = null;
             endBindingDialogComponentView = null;
             startReqiredBindingDialogComponentView = null;
-            endReqiredBindingDialogComponentView = null;
+            endReqiredBindingDialogComponentView = null; 
             linesCollection.Clear();
             MainCanvas.Children.Remove(currentLine);
             currentLine = null;
@@ -491,16 +491,18 @@ namespace DialogsCreator
                 MainCanvas.Children.Add(elements[i]);
                 Canvas.SetLeft(elements[i], el.point.X);
                 Canvas.SetTop(elements[i], el.point.Y);
+                elements[i].UpdateLayout();
                 elements[i].ShowBindigsDialogComponentsView();
-
                 elements[i].Source = new SayingElementViewDFD(el.idElement, el.question); // инициализация вопроса
                 elements[i].SetName();
-
+                
                 foreach (var answer in el.answers) // инициализация ответов
                 {
                     elements[i].AddOption(new SayingElementViewDFD(el.idElement, answer));
-                    elements[i].Options[elements[i].Options.Count - 1].ShowBindigsDialogComponentsView();
                     elements[i].Options[elements[i].Options.Count - 1].SetName();
+                    elements[i].Options[elements[i].Options.Count - 1].UpdateLayout();
+                    elements[i].Options[elements[i].Options.Count - 1].ShowBindigsDialogComponentsView();
+
                 }
             }
         }
@@ -517,7 +519,7 @@ namespace DialogsCreator
 
             elements[pos].Source = new SayingElementViewDFD(element.idElement, element.question); // инициализация вопроса
             elements[pos].SetName();
-
+            elements[pos].UpdateLayout();
             foreach (var answer in element.answers) // инициализация ответов
             {
                 elements[pos].AddOption(new SayingElementViewDFD(element.idElement, answer));

@@ -6,7 +6,5 @@
              xmlns:local="clr-namespace:DialogsCreator.Views"
              mc:Ignorable="d" 
             >
-    <Canvas Name ="OptionCanvas"  Height="25" Width="140">
-        <TextBlock Name="TextBlockComponentName" FontSize="20" FontFamily="Bookman Old Style" HorizontalAlignment="Left" VerticalAlignment="Center" Text="The Option 1" FontStyle="Italic" FontWeight="Bold"  TextAlignment="Center" Grid.Column="1" Width="139" Height="24" />
-    </Canvas>
+    <TextBlock Name="TextBlockComponentName" FontSize="20" FontFamily="Bookman Old Style" HorizontalAlignment="Left" VerticalAlignment="Center" Text="The Option 1" FontStyle="Italic" FontWeight="Bold"  TextAlignment="Center" Grid.Column="1" Width="139" Height="24" />
 </UserControl>

@@ -65,8 +65,8 @@ namespace DialogsCreator
         // ===========================================================================================================================
         // ================================ КОНСТРУКТОРЫ ФОРМЫ VISUAL BINDINGS =======================================================
         // ===========================================================================================================================
-        private delegate void SelectedViewtHandler(object obj); // TODO private ?
-        private event SelectedViewtHandler SelectViewEvent; // TODO private ?
+        private delegate void SelectedViewtHandler(object obj);
+        private event SelectedViewtHandler SelectViewEvent;
 
         internal VisualBindings()
         {
@@ -90,7 +90,6 @@ namespace DialogsCreator
 
         internal void InitializeSubscribedBaseComponentsWindow()
         {
-            //this.Closed += SaveAndClose(null, null); TODO нахуй пошёл
             this.Closing += Close;
         }
         internal void InitializeBaseComponentsWindow()
@@ -362,7 +361,7 @@ namespace DialogsCreator
                 
 
             int id = (delement.Source as SayingElementViewDFD).idElement;
-            ref ElementDFD element = ref modelView.dialog.Search(id); // TODO может не работать
+            ref ElementDFD element = ref modelView.dialog.Search(id);
 
             EditWindow window = new EditWindow(element);
             window.ShowDialog();
@@ -370,7 +369,6 @@ namespace DialogsCreator
             if (!window.isEdit)
                 return;
 
-            // TODO обновление ViewElement delement ^ (этот элемент не ссылка, а копия, так что ищи его в списке)
             delement.UpdateNameDialog();
 
             isEdit = true;
@@ -381,7 +379,7 @@ namespace DialogsCreator
         // =================================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ================================================================
         // ===========================================================================================================================
 
-        private void UpdateWindowElements(object sender, EventArgs e)
+        internal void UpdateWindowElements(object sender, EventArgs e)
         {
             if (manager.isOpen)
             {
@@ -431,7 +429,7 @@ namespace DialogsCreator
                 {
                     case MessageBoxResult.Yes:
                         UpdatePointsViews();
-                        MenuItem_saveFile_Click(null, null); // TODO а можно другой метод ?
+                        modelView.SerializationDFD();
                         isEdit = false;
                         manager.CloseFile();
                         ClearCanvas();
@@ -444,7 +442,7 @@ namespace DialogsCreator
                     case MessageBoxResult.Cancel:
                         return false;
                     default:
-                        return false; // TODO это при крестике? тогда false
+                        return false;
                 }
             }
             else
@@ -469,7 +467,7 @@ namespace DialogsCreator
                 {
                     case MessageBoxResult.Yes:
                         UpdatePointsViews();
-                        MenuItem_saveFile_Click(null, null);
+                        modelView.SerializationDFD();
                         manager.CloseFile();
                         break;
                     case MessageBoxResult.No:
@@ -503,7 +501,7 @@ namespace DialogsCreator
             MainCanvas.Children.Remove(currentLine);
             currentLine = null;
         }
-        private void InitializingDialogComponentsView()
+        internal void InitializingDialogComponentsView()
         {
             if (!manager.isOpen || modelView.id == -1) // TODO удалено || modelView == null ||
                 throw new Exception("Не удалось отрисовать View при запуске файла");
@@ -533,7 +531,7 @@ namespace DialogsCreator
                 }
             }
         }
-        private void AddObjectToView(ElementDFD element)
+        internal void AddObjectToView(ElementDFD element)
         {
             elements.Add(new DialogComponentView(MainCanvas));
 
@@ -554,7 +552,7 @@ namespace DialogsCreator
                 elements[pos].Options[elements[pos].Options.Count - 1].SetName();
             }
         }
-        internal void CheckSelectObject(object sender, MouseButtonEventArgs e) // TODO убедиться в корректности работы
+        internal void CheckSelectObject(object sender, MouseButtonEventArgs e)
         {
             if (selectionObject.selected == TypeObject.element)
             {
@@ -581,7 +579,7 @@ namespace DialogsCreator
                 }
             }
         }
-        private void ListBoxView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        internal void ListBoxView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var listBox = sender as ListBox;
             var hit = listBox.InputHitTest(e.GetPosition(listBox)) as FrameworkElement;
@@ -593,7 +591,7 @@ namespace DialogsCreator
                 ScrollViewer.ScrollToVerticalOffset(Canvas.GetTop(item) - 150);
             }
         }
-        private void UpdatePointsViews()
+        internal void UpdatePointsViews()
         {
             for (int i = 0; i < modelView.dialog.elements.Length; i++)
             {
@@ -604,7 +602,7 @@ namespace DialogsCreator
                 modelView.ReplaceCoords(ref element, point);
             }
         }
-        private bool CheckedMoved()
+        internal bool CheckedMoved()
         {
             foreach (var view in elements)
             {

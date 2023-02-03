@@ -108,9 +108,10 @@ namespace DialogsCreator
             SayingElementDFD[] answs = new SayingElementDFD[answers.Length];
             for (int i = 0; i < answs.Length; i++)
             {
-                answs[i] = new SayingElementDFD(answers[i], new SayingElementDFD(), new SayingElementDFD[0]);
+                answs[i] = new SayingElementDFD(0 ,answers[i], new SayingElementDFD(), new SayingElementDFD[0]);
             }
-            element = new ElementDFD(0, pathToSound, pathToImage, author, new SayingElementDFD(question, new SayingElementDFD(), new SayingElementDFD[0]), answs, new Point(-1,-1));
+            SayingElementDFD quest = new SayingElementDFD(0 , question, new SayingElementDFD(), new SayingElementDFD[0]);
+            element = new ElementDFD(0, pathToSound, pathToImage, author, quest, answs, new Point(-1,-1));
             //modelView.SerializationDFD();
             added = true;
 

@@ -17,6 +17,8 @@ namespace DialogsCreator
     public class WPFtoDFD
     {
         private FileManager manager { get; set; }
+
+        private DialogDFDs dialogSecure { get; set; }
         public DialogDFD dialog { get; private set; }
         public int id { get; private set; }
         public WPFtoDFD(FileManager fileManager)
@@ -35,23 +37,37 @@ namespace DialogsCreator
             {
                 text = reader.ReadToEnd();
             }
-            dialog = JsonConvert.DeserializeObject<DialogDFD>(text);
-            if (dialog == null)
+            dialogSecure = JsonConvert.DeserializeObject<DialogDFDs>(text);
+            if (dialogSecure == null)
             {
-                dialog = new DialogDFD();
-                dialog.language = manager.language.ToString();
+                dialogSecure = new DialogDFDs();
+                dialogSecure.language = manager.language.ToString();
             }
             else
-                manager.language = manager.ToLanguage(dialog.language); // TODO нахуй надо?
+                manager.language = manager.ToLanguage(dialogSecure.language);
+
+            dialog.Clone(dialogSecure);// TODO проверить
+            for (int i = 0; i < dialog.elements.Length; i++)
+            {
+                ref ElementDFD element = ref dialog.elements[i];
+                element.question.SetLinkeds(dialog);
+
+                for (int j = 0; j < element.answers.Length; j++)
+                {
+                    ref SayingElementDFD sayingElement = ref element.answers[j];
+                    sayingElement.SetLinkeds(dialog);
+                }
+            }
             id = GetIdLastElement();
         }
         public void SerializationDFD(string path = null)
         {
-            
             if (!manager.isOpen)
                 throw new Exception("File is close");
 
-            string json = JsonConvert.SerializeObject(dialog);
+            dialogSecure.Clone(dialog);
+
+            string json = JsonConvert.SerializeObject(dialogSecure, Formatting.Indented);
 
             if (path == null)
                 manager.SaveFile(json);
@@ -66,6 +82,9 @@ namespace DialogsCreator
                 throw new Exception("Не загружен dfd файл");
 
             element.idElement = ++id;
+            element.question.idElement = element.idElement;
+            for (int i = 0; i < element.answers.Length; i++)
+                element.answers[i].idElement = element.idElement;
 
             dialog.Add(element);
         }

@@ -11,7 +11,176 @@ using Point = System.Windows.Point;
 namespace DialogsCreator
 {
     [Serializable]
-    public class DialogDFD
+    public class DialogDFDs : IClonable
+    {
+        public string language;
+        public ElementDFDs[] elements;
+        public DialogDFDs(string language, ElementDFDs[] elements)
+        {
+            this.language = language;
+            this.elements = elements;
+        }
+        public DialogDFDs()
+        {
+            this.language = "NULL";
+            this.elements = new ElementDFDs[0];
+        }
+        public void Clone(object obj)
+        {
+            if (!(obj is DialogDFD))
+                throw new Exception($"{obj} is not DialogDFD");
+
+            DialogDFD dialogDFD = obj as DialogDFD;
+
+            this.language = dialogDFD.language;
+
+            this.elements = new ElementDFDs[dialogDFD.elements.Length];
+
+            for (int i = 0; i < this.elements.Length; i++)
+            {
+                this.elements[i] = new ElementDFDs();
+                this.elements[i].Clone(dialogDFD.elements[i]);
+            }
+        }
+    }
+    [Serializable]
+    public class ElementDFDs : IClonable
+    {
+        public int idElement;
+        public string pathToSound;
+        public string pathToImage;
+
+        public string author;
+        public SayingElementDFDs question;
+        public SayingElementDFDs[] answers;
+
+        public Point point;
+
+        public ElementDFDs(int idElement, string pathToSound, string pathToImage, string author, SayingElementDFDs question, SayingElementDFDs[] answers, Point point)
+        {
+            this.idElement = idElement;
+            this.pathToSound = pathToSound;
+            this.pathToImage = pathToImage;
+            this.author = author;
+            this.question = question;
+            this.answers = answers;
+            this.point = point;
+        }
+        public ElementDFDs()
+        {
+            this.idElement = -1;
+            this.pathToSound = "NULL";
+            this.pathToImage = "NULL";
+            this.author = "NULL";
+            this.question = new SayingElementDFDs();
+            this.answers = new SayingElementDFDs[0];
+            this.point = new Point(-1, -1);
+        }
+
+        public void Clone(object obj)
+        {
+            if (!(obj is ElementDFD))
+                throw new Exception($"{obj} is not ElementDFD");
+
+            ElementDFD elementDFD = obj as ElementDFD;
+
+            this.idElement = elementDFD.idElement;
+            this.pathToImage = elementDFD.pathToImage;
+            this.pathToSound = elementDFD.pathToSound;
+
+            this.author = elementDFD.author;
+
+            this.question.Clone(elementDFD.question);
+
+            this.answers = new SayingElementDFDs[elementDFD.answers.Length];
+            for (int i = 0; i < elementDFD.answers.Length; i++)
+            {
+                this.answers[i] = new SayingElementDFDs();
+                this.answers[i].Clone(elementDFD.answers[i]);
+            }
+
+            this.point = elementDFD.point;
+        }
+    }
+    [Serializable]
+    public class SayingElementDFDs : IClonable
+    {
+        public int idElement;
+        public string text;
+        public LinkSayingElementDFDs nextElement;
+        public LinkSayingElementDFDs[] requests;
+        public SayingElementDFDs(string text, LinkSayingElementDFDs nextElement, LinkSayingElementDFDs[] requests)
+        {
+            this.text = text;
+            this.nextElement = nextElement;
+            this.requests = requests;
+        }
+        public SayingElementDFDs()
+        {
+            this.text = "NULL";
+            this.nextElement = null;
+            this.requests = new LinkSayingElementDFDs[0];
+        }
+
+        public void Clone(object obj)
+        {
+            if (!(obj is SayingElementDFD))
+                throw new Exception($"{obj} is not SayingElementDFD");
+
+            SayingElementDFD sayingElementDFD = obj as SayingElementDFD;
+
+            this.idElement = sayingElementDFD.idElement;
+            this.text = sayingElementDFD.text;
+
+            this.nextElement = new LinkSayingElementDFDs();
+            this.nextElement.Clone(sayingElementDFD.nextElement);
+
+            this.requests = new LinkSayingElementDFDs[sayingElementDFD.requests.Length];
+            for (int i = 0; i < sayingElementDFD.requests.Length; i++)
+            {
+                this.requests[i] = new LinkSayingElementDFDs();
+                this.requests[i].Clone(sayingElementDFD.requests[i]);
+            }
+        }
+
+    }
+    [Serializable]
+    public class LinkSayingElementDFDs : IClonable
+    {
+        public int idElement;
+        public string textElement;
+
+        public LinkSayingElementDFDs (int idElement, string textElement)
+        {
+            this.idElement = idElement;
+            this.textElement = textElement;
+        }
+
+        public LinkSayingElementDFDs()
+        {
+            this.idElement = -1;
+            this.textElement = null;
+        }
+
+        public void Clone(object obj)
+        {
+            if (!(obj is SayingElementDFD))
+                throw new Exception($"{obj} is not SayingElementDFD");
+
+            SayingElementDFD sayingElementDFD = obj as SayingElementDFD;
+
+            this.idElement = sayingElementDFD.idElement;
+            this.textElement = sayingElementDFD.text;
+        }
+    }
+
+    public interface IClonable
+    {
+        void Clone(object obj);
+    }
+
+    
+    public class DialogDFD : IClonable
     {
         public string language;
         public ElementDFD[] elements;
@@ -28,8 +197,8 @@ namespace DialogsCreator
         }
         public void Add(ElementDFD element)
         {
-            Array.Resize(ref elements, elements.Length+1);
-            elements[elements.Length-1] = element;
+            Array.Resize(ref elements, elements.Length + 1);
+            elements[elements.Length - 1] = element;
         }
         public void Replace(ref ElementDFD elementOld, ElementDFD elementNew)
         {
@@ -55,12 +224,29 @@ namespace DialogsCreator
                 if (elements[i].idElement == id)
                     return ref elements[i];
             }
-            return ref elements[elements.Length-1];
+            return ref elements[elements.Length - 1];
+        }
+
+        public void Clone(object obj)
+        {
+            if (!(obj is DialogDFDs))
+                throw new Exception($"{obj} is not DialogDFDs");
+
+            DialogDFDs dialogDFDs = obj as DialogDFDs;
+
+            this.language = dialogDFDs.language;
+            this.elements = new ElementDFD[dialogDFDs.elements.Length];
+
+            for (int i = 0; i < this.elements.Length; i++)
+            {
+                this.elements[i] = new ElementDFD();
+                this.elements[i].Clone(dialogDFDs.elements[i]);
+            }
         }
     }
 
-    [Serializable]
-    public class ElementDFD
+    
+    public class ElementDFD : IClonable
     {
         public int idElement;
         public string pathToSound;
@@ -114,6 +300,13 @@ namespace DialogsCreator
             Array.Resize(ref answers, answers.Length - 1);
             tmp.CopyTo(answers, 0);
         }
+        public ref SayingElementDFD Search(string text)
+        {
+            for (int i = 0; i < answers.Length; i++)
+                if (answers[i].text == text)
+                    return ref answers[i];
+            return ref question;
+        }
         public ref SayingElementDFD Search(SayingElementDFD text)
         {
             for (int i = 0; i < answers.Length; i++)
@@ -123,26 +316,59 @@ namespace DialogsCreator
             }
             return ref question;
         }
+
+        public void Clone(object obj)
+        {
+            if (!(obj is ElementDFDs))
+                throw new Exception($"{obj} is not ElementDFDs");
+
+            ElementDFDs elementDFDs = obj as ElementDFDs;
+
+            this.idElement = elementDFDs.idElement;
+            this.author = elementDFDs.author;
+
+            this.pathToImage = elementDFDs.pathToImage;
+            this.pathToSound = elementDFDs.pathToSound;
+
+            this.question.Clone(elementDFDs.question);
+            this.point = elementDFDs.point;
+
+            this.answers = new SayingElementDFD[elementDFDs.answers.Length];
+            for (int i = 0; i < this.answers.Length; i++)
+            {
+                this.answers[i] = new SayingElementDFD();
+                this.answers[i].Clone(elementDFDs.answers[i]);
+            }
+        }
     }
 
-    [Serializable]
-    public class SayingElementDFD
+    
+    public class SayingElementDFD : IClonable
     {
+        public int idElement;
         public string text;
         public SayingElementDFD nextElement;
         public SayingElementDFD[] requests;
-        public SayingElementDFD(string text, SayingElementDFD nextElement, SayingElementDFD[] requests)
+        public SayingElementDFD(int idElement, string text, SayingElementDFD nextElement, SayingElementDFD[] requests)
         {
+            this.idElement = idElement;
             this.text = text;
             this.nextElement = nextElement;
             this.requests = requests;
         }
         public SayingElementDFD()
         {
+            this.idElement = -1;
             this.text = "NULL";
             this.nextElement = null;
             this.requests = new SayingElementDFD[0];
         }
+        private SayingElementDFD(LinkSayingElementDFDs linkSayingElementDFDs)
+        {
+            this.idElement = linkSayingElementDFDs.idElement;
+            this.text = linkSayingElementDFDs.textElement;
+        }
+
         public void Add(SayingElementDFD element)
         {
             Array.Resize(ref requests, requests.Length + 1);
@@ -172,6 +398,35 @@ namespace DialogsCreator
                     return ref requests[i];
             return ref requests[requests.Length - 1];
         }
+
+        public void Clone(object obj)
+        {
+            if (!(obj is SayingElementDFDs))
+                throw new Exception($"{obj} is not SayingElementDFDs");
+
+            SayingElementDFDs sayingElementDFDs = obj as SayingElementDFDs;
+
+            this.idElement = sayingElementDFDs.idElement;
+            this.text = sayingElementDFDs.text;
+
+            this.nextElement = new SayingElementDFD(sayingElementDFDs.nextElement);
+
+            this.requests = new SayingElementDFD[sayingElementDFDs.requests.Length];
+            for (int i = 0; i < this.requests.Length; i++)
+                this.requests[i] = new SayingElementDFD(sayingElementDFDs.requests[i]);
+        }
+
+        public void SetLinkeds(DialogDFD elements)
+        {
+            ref ElementDFD element = ref elements.Search(this.nextElement.idElement);
+            this.nextElement = element.Search(this.nextElement.text);
+
+            for (int i = 0; i < this.requests.Length; i++)
+            {
+                element = ref elements.Search(this.requests[i].idElement);
+                this.requests[i] = element.Search(this.requests[i].text);
+            }
+        }
     }
 
     public class SayingElementViewDFD : LinkedObject
@@ -193,6 +448,8 @@ namespace DialogsCreator
         {
             if (linkObject == null)
                 throw new Exception("Uninitialized object in view");
+
+            
             elementNew.Add((linkObject as SayingElementViewDFD).elementNew);
         }
         public override void UnBounds(LinkedObject linkObject)

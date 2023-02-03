@@ -5,14 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DialogsCreator.Views"
              mc:Ignorable="d">
-
-    <Canvas  Name="DialogComponentCanvas" Width="200" Height="50"  MouseLeftButtonDown="DialogComponentView_MouseLeftButtonDown" MouseLeftButtonUp="DialogComponentView_MouseLeftButtonUp" MouseMove="DialogComponentView_MouseMove" Background="White">
-        <Grid Width="200" Height="50">
-            <TextBlock Name="TextBlockComponentName" FontSize="20" FontFamily="Bookman Old Style" HorizontalAlignment="Center" VerticalAlignment="Center" Text="The Dialog 1" FontStyle="Italic" FontWeight="Bold"  TextAlignment="Center" Grid.Column="1" />
-            <ContentPresenter  Grid.ColumnSpan="2"/>
-        </Grid>
-        <StackPanel Background="#FFD6D6D6" Name="OptionStackPanel" Width="205" Canvas.Top="60" Canvas.Left="0">
+    <Border BorderThickness="2" Name ="OutSideBorder"  CornerRadius="8" BorderBrush="#FF020202" Background="#FF101010"  MouseLeftButtonDown="DialogComponentView_MouseLeftButtonDown" MouseLeftButtonUp="DialogComponentView_MouseLeftButtonUp" MouseMove="DialogComponentView_MouseMove" Width = "400">
+        <StackPanel Name="OptionStackPanel"  Margin="5,5,5,10">
+            <Border Padding="10,5,10,5">
+                <Grid Name="Header">
+                    <TextBlock Name="TextBlockComponentName" FontSize="24" FontFamily="Bookman Old Style" HorizontalAlignment="Center" VerticalAlignment="Center" Text="The Dlog 1" FontWeight="Bold"  TextAlignment="Center" Grid.Column="1" Foreground="#FF13A9F7" />
+                    <ContentPresenter  Grid.ColumnSpan="2" Margin="0,5,0,5"/>
+                </Grid>
+            </Border>
+            <Rectangle Height="5"  Width="385" Fill="#FF13A9F7" RadiusX="2" RadiusY="5" Margin="0,10,0,0"/>
         </StackPanel>
-    </Canvas>
-
+    </Border>
 </UserControl>

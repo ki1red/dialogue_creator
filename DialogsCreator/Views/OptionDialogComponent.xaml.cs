@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -47,8 +48,11 @@ namespace DialogsCreator.Views
     {
         public RequiredBindingOptionComponentView LeftBindingDialogComponentView { get; private set; }
         public RequiredBindingOptionComponentView RightBindingDialogComponentView { get; private set; }
-        private const int marginBindingDialogCopmonentView = 10;
-        private const int bindingDialogComponentWidth = 10;
+        
+        private const int marginBindingDialogCopmonentViewLeft = 25;
+        private const int marginBindingDialogCopmonentViewRight = 5;
+        private const int marginBindingDialogCopmonentTop = -37;
+
         public DialogComponentView parent { get; private set; }
         private Canvas canvas;
         public LinkedObject OptionSource { get; set; }
@@ -126,14 +130,11 @@ namespace DialogsCreator.Views
             if (LeftBindingDialogComponentView == null)
             {
                 LeftBindingDialogComponentView = new RequiredBindingOptionComponentView(this, canvas, GetPointLeftBindingComponent());
-                LeftBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Green);
-
             }
 
             if (RightBindingDialogComponentView == null)
             {
                 RightBindingDialogComponentView = new RequiredBindingOptionComponentView(this, canvas, GetPointRightBindingComponent());
-                RightBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Blue);
             }
         }
         private int GetIndex()
@@ -146,18 +147,19 @@ namespace DialogsCreator.Views
 
             throw new ArgumentException("Option don't find in parent");
         }
+
         private Point GetPointLeftBindingComponent()
         {
             return new Point(
-                x: Canvas.GetLeft(parent) + (bindingDialogComponentWidth / 2f),
-                y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3
+                x: Canvas.GetLeft(parent) - marginBindingDialogCopmonentViewLeft,
+                y: Canvas.GetTop(parent) + parent.ActualHeight + marginBindingDialogCopmonentTop
             );
         }
         private Point GetPointRightBindingComponent()
         {
             return new Point(
-                x: Canvas.GetLeft(parent) + this.OptionCanvas.Width + (bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView + 25,
-                y: Canvas.GetTop(parent) + (this.OptionCanvas.Height / 2f) + (parent.DialogComponentCanvas.Height / 2f) + ((GetIndex() + 1) * this.OptionCanvas.Height + 10 * (GetIndex() + 1)) - 3
+                x: Canvas.GetLeft(parent) + parent.ActualWidth + marginBindingDialogCopmonentViewRight,
+                y: Canvas.GetTop(parent) + parent.ActualHeight + marginBindingDialogCopmonentTop
             );
         }
         private bool CheckBindingsInit()
@@ -171,7 +173,7 @@ namespace DialogsCreator.Views
         {
             string fullName = (OptionSource as SayingElementViewDFD).elementOld.text;
 
-            if (fullName.Length <= 7)
+            if (fullName.Length <= 24)
             {
                 TextBlockComponentName.Text = fullName;
                 return;
@@ -181,11 +183,12 @@ namespace DialogsCreator.Views
             string shortName = "";
             foreach (var ch in fullName)
             {
-                if (i == 7)
+                if (i == 24)
                     break;
                 shortName += ch;
                 i++;
             }
+
             TextBlockComponentName.Text = shortName;
         }
         public void Destroy()

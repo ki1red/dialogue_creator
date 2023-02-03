@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DialogsCreator"
         mc:Ignorable="d"
         Name="VisualBindings_window" Height="451" Width="800" WindowStartupLocation="CenterScreen">
-    
+
     <Grid Margin="0,0,0,4" Background="Aqua">
         <Menu Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="MenuItem_fileSettings" Grid.ColumnSpan="2" Foreground="#FF13A9F7" Background="#FF252424">
             <MenuItem Header="Файл">
@@ -26,12 +26,18 @@
                 <MenuItem Header="Удалить" Name="MenuItem_deleteObject"></MenuItem>
             </MenuItem>
         </Menu>
-
-        <ScrollViewer Name ="ScrollViewer"  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="0,25,0,0">
-            <Canvas Name="MainCanvas" Height="100000" Width="100000" Background="#FF1B1A1A">
-
-            </Canvas>
+       
+        <!-- PreviewMouseLeftButtonDown="scrollViewer_PreviewMouseLeftButtonDown"
+                      PreviewMouseMove="scrollViewer_PreviewMouseMove"
+                      PreviewMouseLeftButtonUp="scrollViewer_PreviewMouseLeftButtonUp" -->
+        
+        <ScrollViewer Name ="ScrollViewer"
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Visible"
+                      Margin="0,25,0,0">
+            <Canvas Name="MainCanvas" Height="100000" Width="100000" Background="#FF1B1A1A"/>
         </ScrollViewer>
+
         <ListBox PreviewMouseLeftButtonDown="ListBoxView_PreviewMouseLeftButtonDown" Name="ListBoxView" ItemsSource="{Binding Path=elements}" Width="250" Margin="0,25,17,17" Background="#FF191818" BorderBrush="#FF131313" Foreground="#FF13A9F7" HorizontalAlignment="Right">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -45,7 +51,7 @@
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-                            
+
                             <ListBox.Background>
                                 <SolidColorBrush Color="Transparent"/>
                             </ListBox.Background>

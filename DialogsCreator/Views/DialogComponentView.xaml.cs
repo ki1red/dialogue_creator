@@ -81,6 +81,14 @@ namespace DialogsCreator.Views
             option.Margin = new Thickness(0, 10, 0, 0);
             OptionStackPanel.Children.Add(option);
             Options.Add(option);
+            if(Options.Count > 0) 
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Visible;
+            }
         }
         
         public void AddOption(LinkedObject source)
@@ -91,6 +99,14 @@ namespace DialogsCreator.Views
             option.OptionSource = source;
             OptionStackPanel.Children.Add(option);
             Options.Add(option);
+            if (Options.Count > 0)
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Visible;
+            }
         }
 
         public void RemoveOption(OptionDialogComponent option)
@@ -102,6 +118,14 @@ namespace DialogsCreator.Views
             }
             OptionStackPanel.Children.Remove(option);
             Options.Remove(option);
+            if (Options.Count > 0)
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Visible;
+            }
         }
 
         public void Select() 
@@ -273,13 +297,13 @@ namespace DialogsCreator.Views
 
             if (linkDataPackage.firstDialogComponent == this)
             {
-                Source?.Bounds(linkDataPackage.secondeDialogComponent.Source);
+                Source?.Bounds(linkDataPackage.secondeDialogComponent.Source,linkDataPackage.secondeDialogComponent.Source);
                 linkDataPackages.Add(linkDataPackage);
             }
 
             else if (linkDataPackage.secondeDialogComponent == this)
             {
-                Source?.Bounds(linkDataPackage.firstDialogComponent.Source);
+                Source?.Bounds(linkDataPackage.firstDialogComponent.Source, linkDataPackage.secondeDialogComponent.Source);
                 linkDataPackages.Add(linkDataPackage);
             }
         }

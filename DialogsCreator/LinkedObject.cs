@@ -8,7 +8,7 @@ namespace DialogsCreator
 {
     public abstract class LinkedObject
     {
-        public abstract void Bounds(LinkedObject linkObject);
+        public abstract void Bounds(LinkedObject outlinkObject, LinkedObject inLinkObject);
 
         public abstract void UnBounds(LinkedObject linkObject);
     }

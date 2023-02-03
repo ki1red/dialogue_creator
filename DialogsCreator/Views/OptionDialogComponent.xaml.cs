@@ -98,11 +98,11 @@ namespace DialogsCreator.Views
 
             if (linkDataOption.firstOptionComponent == this)
             {
-                OptionSource?.Bounds(linkDataOption.secondeOptionComponent.OptionSource);
+                OptionSource?.Bounds(linkDataOption.firstOptionComponent.OptionSource,linkDataOption.secondeOptionComponent.OptionSource);
             }
             else if (linkDataOption.secondeOptionComponent == this)
             {
-                OptionSource?.Bounds(linkDataOption.firstOptionComponent.OptionSource);
+                OptionSource?.Bounds(linkDataOption.firstOptionComponent.OptionSource, linkDataOption.secondeOptionComponent.OptionSource);
             }
             else
                 throw new InvalidOperationException("You link different object but this object is not one from them");

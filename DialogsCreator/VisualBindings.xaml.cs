@@ -137,6 +137,7 @@ namespace DialogsCreator
             MainCanvas.MouseMove += MainCanvas_MouseMove;
 
             MainCanvas.MouseLeftButtonUp += CheckSelectObject;
+            
         }
         internal void InitializeComponentsDFD()
         {
@@ -149,6 +150,23 @@ namespace DialogsCreator
 
         internal void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.Source != selectedView)
+            {
+                if (selectedView is DialogComponentView)
+                {
+                    var dilogCopmponent = selectedView as DialogComponentView;
+                    dilogCopmponent?.UnSelect();
+                }
+
+                if (e.Source is DialogComponentView)
+                {
+                    var dilogCopmponent = e.Source as DialogComponentView;
+                    dilogCopmponent?.Select();
+                }
+
+                selectedView = e.Source;
+            }
+
             if (e.Source is BindingDialogComponentView && startReqiredBindingDialogComponentView == null)
             {
                 if (startBindingDialogComponentView == null)
@@ -640,5 +658,47 @@ namespace DialogsCreator
             }
             return false;
         }
+
+        private Point startPoint;
+        private bool isPanning;
+
+        /*        private void scrollViewer_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+                {
+                    startPoint = e.GetPosition(MainCanvas);
+                    isPanning = false;
+                    ScrollViewer.CaptureMouse();
+                }
+
+                private void scrollViewer_PreviewMouseMove(object sender, MouseEventArgs e)
+                {
+                    if(selectionObject.selected == TypeObject.none)
+                    {
+                        if (!isPanning && e.LeftButton == MouseButtonState.Pressed)
+                        {
+                            Point currentPoint = e.GetPosition(MainCanvas);
+                            if (Math.Abs(currentPoint.X - startPoint.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                                Math.Abs(currentPoint.Y - startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
+                            {
+                                isPanning = true;
+                            }
+                        }
+
+                        if (isPanning && selectedView == null || selectedView == MainCanvas)
+                        {
+                            Point currentPoint = e.GetPosition(MainCanvas);
+                            double deltaX = currentPoint.X - startPoint.X;
+                            double deltaY = currentPoint.Y - startPoint.Y;
+                            ScrollViewer.ScrollToHorizontalOffset(ScrollViewer.HorizontalOffset - deltaX);
+                            ScrollViewer.ScrollToVerticalOffset(ScrollViewer.VerticalOffset - deltaY);
+                        }
+                    }
+                }
+
+                private void scrollViewer_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+                {
+                    isPanning = false;
+                    ScrollViewer.ReleaseMouseCapture();
+                }
+        */
     }
 }

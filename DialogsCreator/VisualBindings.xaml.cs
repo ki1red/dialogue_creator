@@ -67,6 +67,7 @@ namespace DialogsCreator
         // ===========================================================================================================================
         private delegate void SelectedViewtHandler(object obj); // TODO private ?
         private event SelectedViewtHandler SelectViewEvent; // TODO private ?
+        private object selectedView = null;
 
         internal VisualBindings()
         {
@@ -267,11 +268,28 @@ namespace DialogsCreator
                 windowInfo.ShowDialog();
 
             }
-            SelectViewEvent(e.Source);
+
             RemoveUnconnectedLines();
         }
         internal void MainCanvasLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
+            if(e.Source != selectedView) 
+            { 
+                if(selectedView is DialogComponentView) 
+                {
+                    var dilogCopmponent = selectedView as DialogComponentView;
+                    dilogCopmponent?.UnSelect();
+                }
+
+                if(e.Source is DialogComponentView) 
+                {
+                    var dilogCopmponent = e.Source as DialogComponentView;
+                    dilogCopmponent?.Select();
+                }
+
+                selectedView = e.Source;
+            }
+
             SelectViewEvent(e.Source);
         }
 
@@ -544,18 +562,21 @@ namespace DialogsCreator
             MainCanvas.Children.Add(elements[pos]);
             Canvas.SetLeft(elements[pos], element.point.X);
             Canvas.SetTop(elements[pos], element.point.Y);
+            elements[pos].UpdateLayout();
             elements[pos].ShowBindigsDialogComponentsView();
-
             elements[pos].Source = new SayingElementViewDFD(element.idElement, element.question); // инициализация вопроса
             elements[pos].SetName();
-            elements[pos].UpdateLayout();
+       
             foreach (var answer in element.answers) // инициализация ответов
             {
                 elements[pos].AddOption(new SayingElementViewDFD(element.idElement, answer));
-                elements[pos].Options[elements[pos].Options.Count - 1].ShowBindigsDialogComponentsView();
                 elements[pos].Options[elements[pos].Options.Count - 1].SetName();
+                elements[pos].Options[elements[pos].Options.Count - 1].UpdateLayout();
+                elements[pos].Options[elements[pos].Options.Count - 1].ShowBindigsDialogComponentsView();
+                
             }
         }
+
         internal void CheckSelectObject(object sender, MouseButtonEventArgs e) // TODO убедиться в корректности работы
         {
             if (selectionObject.selected == TypeObject.element)
@@ -571,6 +592,7 @@ namespace DialogsCreator
                 this.MenuItem_editObject.IsEnabled = false;
             }
         }
+
         internal void ClearCanvas()
         {
             if (elements != null && elements.Count > 0)

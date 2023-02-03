@@ -54,7 +54,6 @@ namespace DialogsCreator.Views
                 ) throw new ArgumentException("This dialog components view is already bindings!");
             }
 
-
             var nlines = new List<Line>();
             nlines.AddRange(lines);
             var package = new LinkDataDialogPackage(this.parent, other.parent, this, other, nlines);

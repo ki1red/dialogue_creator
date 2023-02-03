@@ -4,7 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DialogsCreator.Views"
-             mc:Ignorable="d" 
-            >
-    <TextBlock Name="TextBlockComponentName" FontSize="20" FontFamily="Bookman Old Style" HorizontalAlignment="Left" VerticalAlignment="Center" Text="The Option 1" FontStyle="Italic" FontWeight="Bold"  TextAlignment="Center" Grid.Column="1" Width="139" Height="24" />
+             mc:Ignorable="d">
+    <Border BorderThickness="2" BorderBrush="#FF13A9F7" CornerRadius="4" Padding="0,5,0,5" Margin="10,10,10,0">
+        <Grid Width = "350">
+            <TextBlock Name="TextBlockComponentName" FontSize="18" FontFamily="Bookman Old Style" HorizontalAlignment="Center" VerticalAlignment="Center" Text="The Option 1"  TextAlignment="Center" Foreground="#FF13A9F7" Grid.Column="1" FontWeight="Bold"/>
+        </Grid>
+    </Border>
 </UserControl>

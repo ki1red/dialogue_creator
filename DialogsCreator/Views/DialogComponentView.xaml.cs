@@ -27,8 +27,8 @@ namespace DialogsCreator.Views
         public DialogComponentView secondeDialogComponent { get; private set; }
         public BindingDialogComponentView firstBindingDialogComponentView { get; private set; }
         public BindingDialogComponentView secondeBindingDialogComponentView { get; private set; }
-        public ElementDFD element { get; private set; }
         public List<Line> Lines { get; private set; } 
+
         public LinkDataDialogPackage(
             DialogComponentView firstDialogComponent,
             DialogComponentView secondeDialogComponent,
@@ -46,9 +46,11 @@ namespace DialogsCreator.Views
 
     public partial class DialogComponentView : UserControl
     {
-        private const int marginBindingDialogCopmonentView = 10;
-        private const int bindingDialogComponentWidth = 10;
-        private const int bindingDialogComponentHeight = 10;
+        private const int marginBindingDialogCopmonentViewLeft = 25;
+        private const int marginBindingDialogCopmonentViewRight = 5;
+        private const int marginBindingDialogCopmonentTop = 0;
+       
+        public bool IsSelectObj { get;private set; } = false ;
 
         public Canvas canvas { get; private set; }
         private Point _mousePosition;
@@ -102,6 +104,20 @@ namespace DialogsCreator.Views
             Options.Remove(option);
         }
 
+        public void Select() 
+        {
+            OutSideBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x13, 0xA9, 0xF7));
+            OutSideBorder.Background = new SolidColorBrush(Color.FromArgb(0x3F, 0x13, 0xA9, 0xF7));
+            IsSelectObj = true;
+        }
+
+        public void UnSelect()
+        {
+            OutSideBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x02, 0x02, 0x02));
+            OutSideBorder.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x10, 0x010, 0x10));
+            IsSelectObj = false;
+        }
+
         public void ShowBindigsDialogComponentsView()
         {
             if (CheckBindingsInit() == true)
@@ -140,13 +156,9 @@ namespace DialogsCreator.Views
         }
         private void InitEmptyBindings()
         {
-    
-
-
             if (LeftBindingDialogComponentView == null)
             {
                 LeftBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointLeftBindingComponent());
-                LeftBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Green);
                 if (bindingDialogComponentViews.Contains(LeftBindingDialogComponentView) == false)
                     bindingDialogComponentViews.Add(LeftBindingDialogComponentView);
             }
@@ -154,12 +166,9 @@ namespace DialogsCreator.Views
             if (RightBindingDialogComponentView == null)
             {
                 RightBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointRightBindingComponent());
-                RightBindingDialogComponentView.ShapeView.Stroke = new SolidColorBrush(Colors.Blue);
                 if (bindingDialogComponentViews.Contains(RightBindingDialogComponentView) == false)
                     bindingDialogComponentViews.Add(RightBindingDialogComponentView);
             }
-
-
         }
         private void DialogComponentView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -244,19 +253,19 @@ namespace DialogsCreator.Views
             }
         }
 
-
         private Point GetPointLeftBindingComponent()
         {
             return new Point(
-                x: Canvas.GetLeft(this) - ((bindingDialogComponentWidth) + marginBindingDialogCopmonentView),
-                y: Canvas.GetTop(this) + ActualHeight / 2f
+                x: Canvas.GetLeft(this) - marginBindingDialogCopmonentViewLeft,
+                y: Canvas.GetTop(this) + Header.ActualHeight / 2f + marginBindingDialogCopmonentTop
             );
         }
         private Point GetPointRightBindingComponent()
         {
+          
             return new Point(
-                x: Canvas.GetLeft(this) + ActualWidth + (bindingDialogComponentWidth / 2f) + marginBindingDialogCopmonentView,
-                y: Canvas.GetTop(this) + ActualHeight / 2f
+                x: Canvas.GetLeft(this) + ActualWidth + marginBindingDialogCopmonentViewRight,
+                y: Canvas.GetTop(this) + Header.ActualHeight / 2f + marginBindingDialogCopmonentTop
             );
         }
         public void Link(LinkDataDialogPackage linkDataPackage)
@@ -266,8 +275,6 @@ namespace DialogsCreator.Views
             {
                 Source?.Bounds(linkDataPackage.secondeDialogComponent.Source);
                 linkDataPackages.Add(linkDataPackage);
-
-
             }
 
             else if (linkDataPackage.secondeDialogComponent == this)
@@ -299,7 +306,7 @@ namespace DialogsCreator.Views
         {
             string fullName = (Source as SayingElementViewDFD).elementOld.text;
 
-            if (fullName.Length <= 7)
+            if (fullName.Length <= 20)
             {
                 TextBlockComponentName.Text = fullName;
                 return;
@@ -309,7 +316,7 @@ namespace DialogsCreator.Views
             string shortName = "";
             foreach (var ch in fullName)
             {
-                if (i == 7)
+                if (i == 20)
                     break;
                 shortName += ch;
                 i++;

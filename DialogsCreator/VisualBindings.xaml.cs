@@ -594,16 +594,7 @@ namespace DialogsCreator
                 }
             }
 
-            // TODO выгрузка данных из LinkViews
-
-            // DialogComponetViewId - int > 0
-            // OptionComponetViewId - int > 0 || -1
-            // BindingDialogComponentId - int > 0
-            // Lines {x1,x2,y1,y2};
-
-            var packsLinks = new List<LinkDataDialogPackageSerialize>();
-
-            foreach (var link in packsLinks)
+            foreach (var link in LinkDataDialogPackageSerialize[])
             {
 
                 List<Line> lines = new List<Line>();
@@ -660,7 +651,7 @@ namespace DialogsCreator
                     MainCanvas.Children.Add(line);
                 }
 
-                outViewBinding.LinkWith(inViewBinding,lines);
+                LinkDataDialogPackages.Add(outViewBinding.LinkWith(inViewBinding,lines));
             }
         }
         internal void AddObjectToView(ElementDFD element)

@@ -37,7 +37,7 @@ namespace DialogsCreator.Views
             Id = id;
         }
 
-        public void LinkWith(BindingDialogComponentView other, List<Line> lines)
+        public LinkDataDialogPackage LinkWith(BindingDialogComponentView other, List<Line> lines)
         {
             if (parent == null)
                 throw new NullReferenceException("Parent is null but you try link BindingDialogComponentView object without parent");
@@ -110,6 +110,8 @@ namespace DialogsCreator.Views
                 }
 
             }
+
+            return package;
         }
     }
 

@@ -350,60 +350,36 @@ namespace DialogsCreator.Views
 
             if (linkedPackage.firstView == this)
             {
-                if (linkedPackage.firstView is DialogComponentView)
-                {
-                    DialogComponentView firstView = (DialogComponentView)linkedPackage.firstView;
-                    firstView.UnLinkWith(linkedPackage);
-                }
-                else if (linkedPackage.firstView is OptionDialogComponent)
-                {
-                    OptionDialogComponent firstView = (OptionDialogComponent)linkedPackage.firstView;
-                    firstView.UnLinkWith(linkedPackage);
-                }
-
                 if (linkedPackage.secondeView is DialogComponentView)
                 {
                     DialogComponentView secondeView = (DialogComponentView)linkedPackage.secondeView;
-                    secondeView.UnLinkWith(linkedPackage);
+               
                     Source?.UnBounds(secondeView.Source);
                 }
                 else if (linkedPackage.secondeView is OptionDialogComponent)
                 {
                     OptionDialogComponent secondeView = (OptionDialogComponent)linkedPackage.secondeView;
-                    secondeView.UnLinkWith(linkedPackage);
                     Source?.UnBounds(secondeView.OptionSource);
                 }
-          
             }
 
             else if (linkedPackage.secondeView == this)
             {
+
                 if (linkedPackage.firstView is DialogComponentView)
                 {
                     DialogComponentView firstView = (DialogComponentView)linkedPackage.firstView;
-                    firstView.UnLinkWith(linkedPackage);
                     Source?.UnBounds(firstView.Source);
                 }
                 else if (linkedPackage.firstView is OptionDialogComponent)
                 {
                     OptionDialogComponent firstView = (OptionDialogComponent)linkedPackage.firstView;
-                    firstView.UnLinkWith(linkedPackage);
                     Source?.UnBounds(firstView.OptionSource);
                 }
-
-                if (linkedPackage.secondeView is DialogComponentView)
-                {
-                    DialogComponentView secondeView = (DialogComponentView)linkedPackage.secondeView;
-                    secondeView.UnLinkWith(linkedPackage);
-                }
-                else if (linkedPackage.secondeView is OptionDialogComponent)
-                {
-                    OptionDialogComponent secondeView = (OptionDialogComponent)linkedPackage.secondeView;
-                    secondeView.UnLinkWith(linkedPackage);
-                }
-
-                linkDataPackages.Remove(linkedPackage);
             }
+            else
+                throw new Exception("Bad link two view is not have this view in link");
+
             linkDataPackages.Remove(linkedPackage);
         }
         public void SetName()

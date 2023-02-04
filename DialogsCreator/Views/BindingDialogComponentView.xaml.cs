@@ -46,7 +46,13 @@ namespace DialogsCreator.Views
             if (other.parent == this.parent)
                 throw new ArgumentException("You try link two BindingDialogComponentView with same parent");
 
-            if(parent is DialogComponentView) 
+
+            var nlines = new List<Line>();
+            nlines.AddRange(lines);
+
+            var package = new LinkDataDialogPackage(this.parent, other.parent, this, other, nlines);
+
+            if (parent is DialogComponentView) 
             {
                 var _parent = (DialogComponentView)parent;
                 foreach (var linkDataPackage in _parent.linkDataPackages)
@@ -60,9 +66,6 @@ namespace DialogsCreator.Views
                     ) throw new ArgumentException("This dialog components view is already bindings!");
                 }
 
-                var nlines = new List<Line>();
-                nlines.AddRange(lines);
-                var package = new LinkDataDialogPackage(this.parent, other.parent, this, other, nlines);
                 _parent.Link(package);
               
                 if(other.parent is DialogComponentView) 
@@ -90,10 +93,7 @@ namespace DialogsCreator.Views
                         (linkDataPackage.secondeView == parent && linkDataPackage.firstView == other.parent)
                     ) throw new ArgumentException("This dialog components view is already bindings!");
                 }
-                var nlines = new List<Line>();
-                nlines.AddRange(lines);
-
-                var package = new LinkDataDialogPackage(this.parent, other.parent, this, other, nlines);
+  
                 _parent.LinkWith(package);
 
                 if (other.parent is DialogComponentView)
@@ -106,6 +106,7 @@ namespace DialogsCreator.Views
                     var _otherParent = (OptionDialogComponent)other.parent;
                     _otherParent.LinkWith(package);
                 }
+
             }
         }
     }

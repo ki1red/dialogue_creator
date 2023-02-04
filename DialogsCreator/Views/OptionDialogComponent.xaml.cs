@@ -95,8 +95,6 @@ namespace DialogsCreator.Views
         }
         public void LinkWith(LinkDataDialogPackage linkDataOption)
         {
-            
-
             if (linkDataOption.firstView is DialogComponentView && linkDataOption.secondeView is DialogComponentView)
             {
                 throw new InvalidOperationException("How you get DialogComponentView && DialogComponentView in Option Link, You Eblan?");
@@ -134,6 +132,7 @@ namespace DialogsCreator.Views
             {
                 parent.canvas.Children.Remove(line);
             }
+
             if (linkedPackage.firstView == this)
             {
                 if (linkedPackage.secondeView is DialogComponentView)

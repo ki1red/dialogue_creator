@@ -19,9 +19,10 @@ namespace DialogsCreator.Views
     public partial class BindingDialogComponentView : UserControl
     {
 
-        public DialogComponentView parent { get; private set; }
-  
-        public BindingDialogComponentView(DialogComponentView parent, Canvas canvas, Point pointCreate)
+        public object parent { get; private set; }  //DialogView or OptionView
+        public TypePointBindingView TypePointBinding { get; private set; }
+
+        public BindingDialogComponentView(object parent, Canvas canvas, Point pointCreate, TypePointBindingView type)
         {
             InitializeComponent();
             this.parent = parent;
@@ -30,6 +31,8 @@ namespace DialogsCreator.Views
 
             Canvas.SetLeft(this, pointCreate.X);
             Canvas.SetTop(this, pointCreate.Y);
+
+            TypePointBinding = type;
         }
 
         public void LinkWith(BindingDialogComponentView other, List<Line> lines)
@@ -43,22 +46,73 @@ namespace DialogsCreator.Views
             if (other.parent == this.parent)
                 throw new ArgumentException("You try link two BindingDialogComponentView with same parent");
 
-            foreach (var linkDataPackage in parent.linkDataPackages)
+            if(parent is DialogComponentView) 
             {
-                if ((linkDataPackage.firstBindingDialogComponentView == this && linkDataPackage.secondeBindingDialogComponentView == other) ||
-                    (linkDataPackage.secondeBindingDialogComponentView == this && linkDataPackage.firstBindingDialogComponentView == other)
-                ) throw new ArgumentException("This link already exsist");
+                var _parent = (DialogComponentView)parent;
+                foreach (var linkDataPackage in _parent.linkDataPackages)
+                {
+                    if ((linkDataPackage.firstBindingDialogComponentView == this && linkDataPackage.secondeBindingDialogComponentView == other) ||
+                        (linkDataPackage.secondeBindingDialogComponentView == this && linkDataPackage.firstBindingDialogComponentView == other)
+                    ) throw new ArgumentException("This link already exsist");
 
-                if ((linkDataPackage.firstDialogComponent == parent && linkDataPackage.secondeDialogComponent == other.parent) ||
-                    (linkDataPackage.secondeDialogComponent == parent && linkDataPackage.firstDialogComponent == other.parent)
-                ) throw new ArgumentException("This dialog components view is already bindings!");
+                    if ((linkDataPackage.firstView == parent && linkDataPackage.secondeView == other.parent) ||
+                        (linkDataPackage.secondeView == parent && linkDataPackage.firstView == other.parent)
+                    ) throw new ArgumentException("This dialog components view is already bindings!");
+                }
+
+                var nlines = new List<Line>();
+                nlines.AddRange(lines);
+                var package = new LinkDataDialogPackage(this.parent, other.parent, this, other, nlines);
+                _parent.Link(package);
+              
+                if(other.parent is DialogComponentView) 
+                {
+                    var _otherParent = (DialogComponentView)other.parent;
+                    _otherParent.Link(package);
+                }
+                else if (other.parent is OptionDialogComponent) {
+                    var _otherParent = (OptionDialogComponent)other.parent;
+                    _otherParent.LinkWith(package);
+                }
+                
             }
+            else if (parent is OptionDialogComponent) 
+            {
+                var _parent = (OptionDialogComponent)parent;
+               
+                foreach (var linkDataPackage in _parent.linkDataOptionPackages)
+                {
+                    if ((linkDataPackage.firstBindingDialogComponentView == this && linkDataPackage.secondeBindingDialogComponentView == other) ||
+                        (linkDataPackage.secondeBindingDialogComponentView == this && linkDataPackage.firstBindingDialogComponentView == other)
+                    ) throw new ArgumentException("This link already exsist");
 
-            var nlines = new List<Line>();
-            nlines.AddRange(lines);
-            var package = new LinkDataDialogPackage(this.parent, other.parent, this, other, nlines);
-            this.parent.Link(package) ;
-            other.parent.Link(package);
+                    if ((linkDataPackage.firstView == parent && linkDataPackage.secondeView == other.parent) ||
+                        (linkDataPackage.secondeView == parent && linkDataPackage.firstView == other.parent)
+                    ) throw new ArgumentException("This dialog components view is already bindings!");
+                }
+                var nlines = new List<Line>();
+                nlines.AddRange(lines);
+
+                var package = new LinkDataDialogPackage(this.parent, other.parent, this, other, nlines);
+                _parent.LinkWith(package);
+
+                if (other.parent is DialogComponentView)
+                {
+                    var _otherParent = (DialogComponentView)other.parent;
+                    _otherParent.Link(package);
+                }
+                else if (other.parent is OptionDialogComponent)
+                {
+                    var _otherParent = (OptionDialogComponent)other.parent;
+                    _otherParent.LinkWith(package);
+                }
+            }
         }
+    }
+
+    public enum TypePointBindingView
+    {
+        InputTypePoint,
+        OutTypePoint
     }
 }

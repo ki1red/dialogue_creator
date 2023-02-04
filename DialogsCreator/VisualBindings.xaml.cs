@@ -56,8 +56,7 @@ namespace DialogsCreator
 
         private BindingDialogComponentView startBindingDialogComponentView;
         private BindingDialogComponentView endBindingDialogComponentView;
-        private RequiredBindingOptionComponentView startReqiredBindingDialogComponentView;
-        private RequiredBindingOptionComponentView endReqiredBindingDialogComponentView;
+    
         private Line currentLine;
         private List<Line> linesCollection = new List<Line>();
 
@@ -166,7 +165,7 @@ namespace DialogsCreator
                 selectedView = e.Source;
             }
 
-            if (e.Source is BindingDialogComponentView && startReqiredBindingDialogComponentView == null)
+            if (e.Source is BindingDialogComponentView )
             {
                 if (startBindingDialogComponentView == null)
                 {
@@ -204,45 +203,9 @@ namespace DialogsCreator
                 }
             }
 
-            else if (e.Source is RequiredBindingOptionComponentView && startBindingDialogComponentView == null)
-            {
-                if (startReqiredBindingDialogComponentView == null)
-                {
-                    startReqiredBindingDialogComponentView = e.Source as RequiredBindingOptionComponentView;
-                    currentLine = new Line();
-                    currentLine.Stroke = new SolidColorBrush(Colors.Black);
 
-                    currentLine.StrokeStartLineCap = PenLineCap.Round;
-                    currentLine.StrokeEndLineCap = PenLineCap.Round;
 
-                    currentLine.StrokeThickness = 5;
-                    currentLine.X1 = Canvas.GetLeft(startReqiredBindingDialogComponentView) + startReqiredBindingDialogComponentView.Width / 2;
-                    currentLine.Y1 = Canvas.GetTop(startReqiredBindingDialogComponentView) + startReqiredBindingDialogComponentView.Height / 2;
-
-                    currentLine.X2 = e.GetPosition(MainCanvas).X;
-                    currentLine.Y2 = e.GetPosition(MainCanvas).Y;
-                    MainCanvas.Children.Add(currentLine);
-                }
-                else
-                {
-                    endReqiredBindingDialogComponentView = e.Source as RequiredBindingOptionComponentView;
-                    if (startReqiredBindingDialogComponentView != endReqiredBindingDialogComponentView && CanLink())
-                    {
-                        currentLine.X2 = Canvas.GetLeft(endReqiredBindingDialogComponentView) + endReqiredBindingDialogComponentView.Width / 2;
-                        currentLine.Y2 = Canvas.GetTop(endReqiredBindingDialogComponentView) + endReqiredBindingDialogComponentView.Height / 2;
-
-                        linesCollection.Add(currentLine);
-                        startReqiredBindingDialogComponentView.LinkWith(endReqiredBindingDialogComponentView, linesCollection);
-
-                        linesCollection.Clear();
-                        currentLine = null;
-                        startReqiredBindingDialogComponentView = null;
-                        endReqiredBindingDialogComponentView = null;
-                    }
-                }
-            }
-
-            else if ((startBindingDialogComponentView != null || startReqiredBindingDialogComponentView != null) && currentLine != null)
+            else if ((startBindingDialogComponentView != null) && currentLine != null)
             {
                 var x = currentLine.X2;
                 var y = currentLine.Y2;
@@ -539,8 +502,6 @@ namespace DialogsCreator
             }
             startBindingDialogComponentView = null;
             endBindingDialogComponentView = null;
-            startReqiredBindingDialogComponentView = null;
-            endReqiredBindingDialogComponentView = null; 
             linesCollection.Clear();
             MainCanvas.Children.Remove(currentLine);
             currentLine = null;

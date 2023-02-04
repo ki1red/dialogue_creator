@@ -21,31 +21,61 @@ namespace DialogsCreator.Views
     public partial class ElemetInBindingsWindow : UserControl
     {
         private LinkDataDialogPackage package;
-        private LinkDataOptionPackage optionPackage;
+  /*      private LinkDataOptionPackage optionPackage;*/
         private BindsEditDialogComponentWindow parent;
 
         public ElemetInBindingsWindow(LinkDataDialogPackage linkDataDialogPackage, BindsEditDialogComponentWindow parent)
         {
             InitializeComponent();
-            ItemElementName.Text = $"Dialog link {linkDataDialogPackage.firstDialogComponent.TextBlockComponentName.Text} to {linkDataDialogPackage.secondeDialogComponent.TextBlockComponentName.Text}";
-            this.package = linkDataDialogPackage;
-            this.parent = parent;
+           
+            if(linkDataDialogPackage.firstView is DialogComponentView && linkDataDialogPackage.secondeView is DialogComponentView)
+            {
+                DialogComponentView firstView = (DialogComponentView)linkDataDialogPackage.firstView;
+                DialogComponentView secondeView = (DialogComponentView)linkDataDialogPackage.secondeView;
+                ItemElementName.Text = $"Dialog link {firstView.TextBlockComponentName.Text} to {secondeView.TextBlockComponentName.Text}";
+                this.package = linkDataDialogPackage;
+                this.parent = parent;
+            }
+            else if (linkDataDialogPackage.firstView is DialogComponentView && linkDataDialogPackage.secondeView is OptionDialogComponent)
+            {
+                DialogComponentView firstView = (DialogComponentView)linkDataDialogPackage.firstView;
+                OptionDialogComponent secondeView = (OptionDialogComponent)linkDataDialogPackage.secondeView;
+                ItemElementName.Text = $"Dialog link {firstView.TextBlockComponentName.Text} to {secondeView.TextBlockComponentName.Text}";
+                this.package = linkDataDialogPackage;
+                this.parent = parent;
+            }
+            else if (linkDataDialogPackage.firstView is OptionDialogComponent && linkDataDialogPackage.secondeView is DialogComponentView)
+            {
+                OptionDialogComponent firstView = (OptionDialogComponent)linkDataDialogPackage.firstView;
+                DialogComponentView secondeView = (DialogComponentView)linkDataDialogPackage.secondeView;
+                ItemElementName.Text = $"Dialog link {firstView.TextBlockComponentName.Text} to {secondeView.TextBlockComponentName.Text}";
+                this.package = linkDataDialogPackage;
+                this.parent = parent;
+            }
+            else if (linkDataDialogPackage.firstView is OptionDialogComponent && linkDataDialogPackage.secondeView is OptionDialogComponent)
+            {
+                OptionDialogComponent firstView = (OptionDialogComponent)linkDataDialogPackage.firstView;
+                OptionDialogComponent secondeView = (OptionDialogComponent)linkDataDialogPackage.secondeView;
+                ItemElementName.Text = $"Dialog link {firstView.TextBlockComponentName.Text} to {secondeView.TextBlockComponentName.Text}";
+                this.package = linkDataDialogPackage;
+                this.parent = parent;
+            }
         }
 
-        public ElemetInBindingsWindow(LinkDataOptionPackage linkDataOptionPackage, BindsEditDialogComponentWindow parent)
+/*        public ElemetInBindingsWindow(LinkDataOptionPackage linkDataOptionPackage, BindsEditDialogComponentWindow parent)
         {
             InitializeComponent();
             ItemElementName.Text = $"Option link {linkDataOptionPackage.firstOptionComponent.TextBlockComponentName.Text} to {linkDataOptionPackage.secondeOptionComponent.TextBlockComponentName.Text} " ;
             optionPackage = linkDataOptionPackage;
             this.parent = parent;
-        }
+        }*/
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (package != null)
                 parent.UnLink(package, this);
-            else if (optionPackage != null)
-                parent.UnLink(optionPackage, this);
+/*            else if (optionPackage != null)
+                parent.UnLink(optionPackage, this);*/
             else
                 throw new Exception("Package dialog and option is null");
         }

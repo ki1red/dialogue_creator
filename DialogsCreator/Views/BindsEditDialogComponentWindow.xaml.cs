@@ -22,7 +22,9 @@ namespace DialogsCreator.Views
     /// </summary>
     public partial class BindsEditDialogComponentWindow : Window
     {
-        public BindsEditDialogComponentWindow(DialogComponentView dialogComponentView)
+        List<LinkDataDialogPackage> packages;
+
+        public BindsEditDialogComponentWindow(DialogComponentView dialogComponentView, List<LinkDataDialogPackage> packages)
         {
             InitializeComponent();
 
@@ -38,6 +40,8 @@ namespace DialogsCreator.Views
                     BindingsComponentStack.Children.Add(new ElemetInBindingsWindow(dataOption, this));
                 }
             }
+
+            this.packages = packages;
         }
 
         public void UnLink(LinkDataDialogPackage package,ElemetInBindingsWindow children) 
@@ -63,15 +67,9 @@ namespace DialogsCreator.Views
                 OptionDialogComponent secondeView = (OptionDialogComponent)package.secondeView;
                 secondeView.UnLinkWith(package);
             }
+
+            packages.Remove(package);
            
         }
-
-/*        public void UnLink(LinkDataOptionPackage package, ElemetInBindingsWindow children)
-        {
-            BindingsComponentStack.Children.Remove(children);
-            package.firstOptionComponent.UnLinkWith(package);
-            package.secondeOptionComponent.UnLinkWith(package);
-        }*/
-
     }
 }

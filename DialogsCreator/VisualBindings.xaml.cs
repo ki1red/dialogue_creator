@@ -66,6 +66,9 @@ namespace DialogsCreator
         private delegate void SelectedViewtHandler(object obj); // TODO private ?
         private event SelectedViewtHandler SelectViewEvent; // TODO private ?
         private object selectedView = null;
+
+        public List<LinkDataDialogPackage> LinkDataDialogPackages = new List<LinkDataDialogPackage>();
+
         bool isPanning; // для передвижения по Scroll
         internal VisualBindings()
         {
@@ -79,8 +82,6 @@ namespace DialogsCreator
 
             elements = new ObservableCollection<DialogComponentView>();
             ListBoxView.ItemsSource = elements;
-
-
         }
 
         // ===========================================================================================================================
@@ -229,7 +230,7 @@ namespace DialogsCreator
                         currentLine.Y2 = Canvas.GetTop(endBindingDialogComponentView) + endBindingDialogComponentView.Height / 2;
 
                         linesCollection.Add(currentLine);
-                        startBindingDialogComponentView.LinkWith(endBindingDialogComponentView, linesCollection);
+                        LinkDataDialogPackages.Add(startBindingDialogComponentView.LinkWith(endBindingDialogComponentView, linesCollection));
 
                         linesCollection.Clear();
                         currentLine = null;
@@ -279,7 +280,7 @@ namespace DialogsCreator
             if (e.Source is DialogComponentView && currentLine == null)
             {
                 var component = e.Source as DialogComponentView;
-                var windowInfo = new BindsEditDialogComponentWindow(component);
+                var windowInfo = new BindsEditDialogComponentWindow(component,LinkDataDialogPackages);
                 windowInfo.ShowDialog();
 
             }

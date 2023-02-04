@@ -46,7 +46,6 @@ namespace DialogsCreator
         // ===========================================================================================================================
 
         public ObservableCollection<DialogComponentView> elements;
-    
         private Point lastClick = new Point();
         private SelectionObject selectionObject;
 
@@ -67,7 +66,7 @@ namespace DialogsCreator
         private delegate void SelectedViewtHandler(object obj); // TODO private ?
         private event SelectedViewtHandler SelectViewEvent; // TODO private ?
         private object selectedView = null;
-
+        bool isPanning; // для передвижения по Scroll
         internal VisualBindings()
         {
             InitializeComponent();
@@ -81,7 +80,7 @@ namespace DialogsCreator
             elements = new ObservableCollection<DialogComponentView>();
             ListBoxView.ItemsSource = elements;
 
-            
+
         }
 
         // ===========================================================================================================================
@@ -131,7 +130,6 @@ namespace DialogsCreator
             this.MenuItem_deleteObject.Click += MenuItem_deleteObject_Click;
             this.MenuItem_editObject.Click += MenuItem_editObject_Click;
         }
-
         internal void InitializeSubscribedMouseForCanvas()
         {
             MainCanvas.MouseLeftButtonDown += MainCanvas_MouseDown;
@@ -141,9 +139,59 @@ namespace DialogsCreator
 
             MainCanvas.MouseLeftButtonUp += CheckSelectObject;
         }
+        internal void InitializeSubsribedClickForScrollViewer()
+        {
+            //TODO перенести подписки из xaml
+        }
         internal void InitializeComponentsDFD()
         {
             modelView = new WPFtoDFD(manager);
+        }
+
+        // ===========================================================================================================================
+        // ======================================== РАБОТА СО SCROLLVIEWER ===========================================================
+        // ===========================================================================================================================
+
+        internal void ScrollViewer_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (selectionObject.selected != TypeObject.none)
+                return;
+
+            lastClick = e.GetPosition(MainCanvas);
+            isPanning = false;
+            ScrollViewer.CaptureMouse();
+        }
+        internal void ScrollViewer_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (selectionObject.selected != TypeObject.none)
+                return;
+
+            if (!isPanning && e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point currentPoint = e.GetPosition(MainCanvas);
+                if (Math.Abs(currentPoint.X - lastClick.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                    Math.Abs(currentPoint.Y - lastClick.Y) > SystemParameters.MinimumVerticalDragDistance)
+                {
+                    isPanning = true;
+                }
+            }
+
+            if (isPanning)
+            {
+                Point currentPoint = e.GetPosition(MainCanvas);
+                double deltaX = currentPoint.X - lastClick.X;
+                double deltaY = currentPoint.Y - lastClick.Y;
+                ScrollViewer.ScrollToHorizontalOffset(ScrollViewer.HorizontalOffset - deltaX);
+                ScrollViewer.ScrollToVerticalOffset(ScrollViewer.VerticalOffset - deltaY);
+            }
+        }
+        internal void ScrollViewer_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (selectionObject.selected != TypeObject.none)
+                return;
+
+            isPanning = false;
+            ScrollViewer.ReleaseMouseCapture();
         }
 
         // ===========================================================================================================================
@@ -325,9 +373,11 @@ namespace DialogsCreator
 
                 selectionObject = new SelectionObject(modelView.dialog, ref ListBox_info, ref ListBoxView);
                 SelectViewEvent += selectionObject.Select;
+
+                SetStartPositionInScrollViewer();
             }
         }
-        private void MenuItem_saveFile_Click(object sender, RoutedEventArgs e)
+        internal void MenuItem_saveFile_Click(object sender, RoutedEventArgs e)
         {
             UpdatePointsViews();
             modelView.SerializationDFD();
@@ -343,7 +393,7 @@ namespace DialogsCreator
         {
             SaveAndClose();
         }
-        private void MenuItem_addObject_Click(object sender, RoutedEventArgs e)
+        internal void MenuItem_addObject_Click(object sender, RoutedEventArgs e)
         {
 
             MainWindow window = new MainWindow();
@@ -361,7 +411,7 @@ namespace DialogsCreator
             isEdit = true;
             this.MenuItem_addObject.IsEnabled = false;
         }
-        private void MenuItem_deleteObject_Click(object sender, RoutedEventArgs e)
+        internal void MenuItem_deleteObject_Click(object sender, RoutedEventArgs e)
         {
             DialogComponentView element;
             if (selectionObject.selected == TypeObject.element)
@@ -380,7 +430,7 @@ namespace DialogsCreator
             isEdit = true;
             this.MenuItem_deleteObject.IsEnabled = false;
         }
-        private void MenuItem_editObject_Click(object sender, RoutedEventArgs e)
+        internal void MenuItem_editObject_Click(object sender, RoutedEventArgs e)
         {
             if (selectionObject.selected != TypeObject.element)
                 return;
@@ -652,6 +702,11 @@ namespace DialogsCreator
                     return true;
             }
             return false;
+        }
+        internal void SetStartPositionInScrollViewer()
+        {
+            ScrollViewer.ScrollToHorizontalOffset(MainCanvas.Width / 10);
+            ScrollViewer.ScrollToVerticalOffset(MainCanvas.Height / 2);
         }
     }
 }

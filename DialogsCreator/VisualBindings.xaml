@@ -26,8 +26,8 @@
                 <MenuItem Header="Удалить" Name="MenuItem_deleteObject"></MenuItem>
             </MenuItem>
         </Menu>
-        
-        <ScrollViewer Name ="ScrollViewer"  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="0,25,0,0">
+
+        <ScrollViewer Name ="ScrollViewer" PreviewMouseLeftButtonDown="ScrollViewer_PreviewMouseLeftButtonDown" PreviewMouseMove="ScrollViewer_PreviewMouseMove" PreviewMouseLeftButtonUp="ScrollViewer_PreviewMouseLeftButtonUp" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Margin="0,25,0,0">
             <Canvas Name="MainCanvas" Height="100000" Width="100000" Background="#FF1B1A1A">
 
             </Canvas>

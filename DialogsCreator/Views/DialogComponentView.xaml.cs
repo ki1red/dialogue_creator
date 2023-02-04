@@ -42,6 +42,43 @@ namespace DialogsCreator.Views
             this.secondeBindingDialogComponentView = secondeBindingDialogComponentView;
             Lines = lines;
         }
+
+        public LinkDataDialogPackageSerialize toLinkDataDialogPackageSerialize() 
+        {
+            int outViewId;
+            int inViewId;
+            
+            int outBindingId = firstBindingDialogComponentView.Id;
+            int inBindingId = secondeBindingDialogComponentView.Id;
+            
+            int outOptionId;
+            int inOptionId;
+
+            if (firstView is DialogComponentView)
+            {
+                outViewId = (firstView as DialogComponentView ?? throw new NullReferenceException("FristView is null")).Id;
+            }
+            else if (firstView is OptionDialogComponent)
+            {
+               outViewId = (firstView as OptionDialogComponent ?? throw new NullReferenceException("FristView is null")).parent.Id;
+               outOptionId = (firstView as OptionDialogComponent ?? throw new NullReferenceException("FristView is null")).Id;
+            }
+            else throw new ArgumentException("Unknow view in LinkDatapackage");
+
+            if (secondeView is DialogComponentView)
+            {
+                inViewId = (secondeView as DialogComponentView ?? throw new NullReferenceException("FristView is null")).Id;
+            }
+            else if (secondeView is OptionDialogComponent)
+            {
+                inViewId = (secondeView as OptionDialogComponent ?? throw new NullReferenceException("FristView is null")).parent.Id;
+                inOptionId = (secondeView as OptionDialogComponent ?? throw new NullReferenceException("FristView is null")).Id;
+            }
+            else throw new ArgumentException("Unknow view in LinkDatapackage");
+
+            Vector4[] vectorArray = Lines.Select(line => new Vector4(line.X1, line.Y1, line.X2, line.Y2)).ToArray();
+            return new LinkDataDialogPackageSerialize(outViewId,outBindingId,inViewId,inBindingId,vectorArray);
+        }
     }
 
     public partial class DialogComponentView : UserControl

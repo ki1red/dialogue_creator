@@ -68,7 +68,7 @@ namespace DialogsCreator.Views
 
         public int Id { get; private set; }
 
-        public DialogComponentView(Canvas drawingCanvas,int id)
+        public DialogComponentView(Canvas drawingCanvas, int id)
         {
             InitializeComponent();
             canvas = drawingCanvas;
@@ -79,7 +79,7 @@ namespace DialogsCreator.Views
         }
         public void AddOption()
         {
-            var option = new OptionDialogComponent(canvas, this);
+            var option = new OptionDialogComponent(canvas, this, Options.Count);
             option.HorizontalAlignment = HorizontalAlignment.Center;
             option.Margin = new Thickness(0, 10, 0, 0);
             OptionStackPanel.Children.Add(option);
@@ -96,7 +96,7 @@ namespace DialogsCreator.Views
         
         public void AddOption(LinkedObject source)
         {
-            var option = new OptionDialogComponent(canvas, this);
+            var option = new OptionDialogComponent(canvas, this, Options.Count);
             option.HorizontalAlignment = HorizontalAlignment.Center;
             option.Margin = new Thickness(0, 10, 0, 0);
             option.OptionSource = source;
@@ -204,14 +204,14 @@ namespace DialogsCreator.Views
         {
             if (LeftBindingDialogComponentView == null)
             {
-                LeftBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointLeftBindingComponent(), TypePointBindingView.InputTypePoint);
+                LeftBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointLeftBindingComponent(), TypePointBindingView.InputTypePoint, 0);
                 if (bindingDialogComponentViews.Contains(LeftBindingDialogComponentView) == false)
                     bindingDialogComponentViews.Add(LeftBindingDialogComponentView);
             }
 
             if (RightBindingDialogComponentView == null)
             {
-                RightBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointRightBindingComponent(), TypePointBindingView.OutTypePoint);
+                RightBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointRightBindingComponent(), TypePointBindingView.OutTypePoint, 1);
                 if (bindingDialogComponentViews.Contains(RightBindingDialogComponentView) == false)
                     bindingDialogComponentViews.Add(RightBindingDialogComponentView);
             }

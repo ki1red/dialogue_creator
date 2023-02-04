@@ -175,13 +175,13 @@ namespace DialogsCreator.Views
 
             if (LeftBindingDialogComponentView == null)
             {
-                LeftBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointLeftBindingComponent(),TypePointBindingView.InputTypePoint);
+                LeftBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointLeftBindingComponent(),TypePointBindingView.InputTypePoint, 0);
                 bindingDialogComponentViews.Add(LeftBindingDialogComponentView);
             }
 
             if (RightBindingDialogComponentView == null)
             {
-                RightBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointRightBindingComponent(),TypePointBindingView.OutTypePoint);
+                RightBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointRightBindingComponent(),TypePointBindingView.OutTypePoint, 1);
                 bindingDialogComponentViews.Add(RightBindingDialogComponentView);
             }
         }

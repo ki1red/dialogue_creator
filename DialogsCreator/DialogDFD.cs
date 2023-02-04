@@ -16,6 +16,7 @@ namespace DialogsCreator
         public string language;
         public Point positionCanvas;
         public ElementDFDs[] elements;
+        public LinkDataDialogPackageSerialize[] linkeds;
 
         public DialogDFDs(string language, ElementDFDs[] elements)
         {
@@ -39,6 +40,10 @@ namespace DialogsCreator
             this.language = dialogDFD.language;
             this.positionCanvas = dialogDFD.positionCanvas;
             this.elements = new ElementDFDs[dialogDFD.elements.Length];
+
+            this.linkeds = new LinkDataDialogPackageSerialize[dialogDFD.linkeds.Length];
+            for (int i = 0; i < this.linkeds.Length; i++)
+                this.linkeds[i] = dialogDFD.linkeds[i];
 
             for (int i = 0; i < this.elements.Length; i++)
             {
@@ -198,7 +203,7 @@ namespace DialogsCreator
         public string language;
         public Point positionCanvas;
         public ElementDFD[] elements;
-
+        public LinkDataDialogPackageSerialize[] linkeds;
         public DialogDFD(string language, ElementDFD[] elements)
         {
             this.language = language;
@@ -248,6 +253,10 @@ namespace DialogsCreator
                 throw new Exception($"{obj} is not DialogDFDs");
 
             DialogDFDs dialogDFDs = obj as DialogDFDs;
+
+            this.linkeds = new LinkDataDialogPackageSerialize[dialogDFDs.linkeds.Length];
+            for (int i = 0; i < this.linkeds.Length; i++)
+                this.linkeds[i] = dialogDFDs.linkeds[i];
 
             this.language = dialogDFDs.language;
             this.positionCanvas = dialogDFDs.positionCanvas;

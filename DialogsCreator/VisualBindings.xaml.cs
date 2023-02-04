@@ -55,16 +55,14 @@ namespace DialogsCreator
 
         private BindingDialogComponentView startBindingDialogComponentView;
         private BindingDialogComponentView endBindingDialogComponentView;
-        //private RequiredBindingOptionComponentView startReqiredBindingDialogComponentView;
-        //private RequiredBindingOptionComponentView endReqiredBindingDialogComponentView;
         private Line currentLine;
         private List<Line> linesCollection = new List<Line>();
 
         // ===========================================================================================================================
         // ================================ КОНСТРУКТОРЫ ФОРМЫ VISUAL BINDINGS =======================================================
         // ===========================================================================================================================
-        private delegate void SelectedViewtHandler(object obj); // TODO private ?
-        private event SelectedViewtHandler SelectViewEvent; // TODO private ?
+        private delegate void SelectedViewtHandler(object obj);
+        private event SelectedViewtHandler SelectViewEvent;
         private object selectedView = null;
         bool isPanning; // для передвижения по Scroll
         internal VisualBindings()
@@ -307,6 +305,18 @@ namespace DialogsCreator
                 SelectViewEvent(e.Source);
             }
         }
+        internal void ListBoxView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            var hit = listBox.InputHitTest(e.GetPosition(listBox)) as FrameworkElement;
+            var item = hit.DataContext as DialogComponentView;
+
+            if (item != null)
+            {
+                ScrollViewer.ScrollToHorizontalOffset(Canvas.GetLeft(item) - 150);
+                ScrollViewer.ScrollToVerticalOffset(Canvas.GetTop(item) - 150);
+            }
+        }
 
         // ===========================================================================================================================
         // =================================== РАБОТА С ВЕРХНИМ МЕНЮ =================================================================
@@ -372,7 +382,6 @@ namespace DialogsCreator
             modelView.AddEmptyElement(window.element);
             modelView.ReplaceCoords(ref modelView.dialog.elements[modelView.dialog.elements.Length - 1], lastClick);
 
-            // TODO добавить визуальное отображение
             AddObjectToView(window.element);
 
             isEdit = true;
@@ -406,7 +415,7 @@ namespace DialogsCreator
                 
 
             int id = (delement.Source as SayingElementViewDFD).idElement;
-            ref ElementDFD element = ref modelView.dialog.Search(id); // TODO может не работать
+            ref ElementDFD element = ref modelView.dialog.Search(id);
 
             EditWindow window = new EditWindow(element);
             window.ShowDialog();
@@ -414,7 +423,6 @@ namespace DialogsCreator
             if (!window.isEdit)
                 return;
 
-            // TODO обновление ViewElement delement ^ (этот элемент не ссылка, а копия, так что ищи его в списке)
             delement.UpdateNameDialog();
 
             selectionObject.Select(delement);
@@ -482,7 +490,7 @@ namespace DialogsCreator
                 {
                     case MessageBoxResult.Yes:
                         UpdatePointsViews();
-                        MenuItem_saveFile_Click(null, null); // TODO а можно другой метод ?
+                        modelView.SerializationDFD();
                         isEdit = false;
                         manager.CloseFile();
                         ClearCanvas();
@@ -495,7 +503,7 @@ namespace DialogsCreator
                     case MessageBoxResult.Cancel:
                         return false;
                     default:
-                        return false; // TODO это при крестике? тогда false
+                        return false;
                 }
             }
             else
@@ -520,7 +528,7 @@ namespace DialogsCreator
                 {
                     case MessageBoxResult.Yes:
                         UpdatePointsViews();
-                        MenuItem_saveFile_Click(null, null);
+                        modelView.SerializationDFD();
                         manager.CloseFile();
                         break;
                     case MessageBoxResult.No:
@@ -556,7 +564,7 @@ namespace DialogsCreator
         }
         internal void InitializingDialogComponentsView()
         {
-            if (!manager.isOpen || modelView.id == -1) // TODO удалено || modelView == null ||
+            if (!manager.isOpen || modelView.id == -1)
                 throw new Exception("Не удалось отрисовать View при запуске файла");
 
             ClearCanvas();
@@ -564,25 +572,28 @@ namespace DialogsCreator
             for (int i = 0; i < modelView.id; i++)
             {
                 ElementDFD el = modelView.dialog.elements[i];
+                var elV = new DialogComponentView(MainCanvas, el.idElement);
 
-                elements.Add(new DialogComponentView(MainCanvas));
-                MainCanvas.Children.Add(elements[i]);
-                Canvas.SetLeft(elements[i], el.point.X);
-                Canvas.SetTop(elements[i], el.point.Y);
-                elements[i].UpdateLayout();
-                elements[i].ShowBindigsDialogComponentsView();
-                elements[i].Source = new SayingElementViewDFD(el.idElement, el.question); // инициализация вопроса
-                elements[i].SetName();
+                elements.Add(elV);
+                MainCanvas.Children.Add(elV);
+                Canvas.SetLeft(elV, el.point.X);
+                Canvas.SetTop(elV, el.point.Y);
+                elV.UpdateLayout();
+                elV.ShowBindigsDialogComponentsView();
+                elV.Source = new SayingElementViewDFD(el.idElement, el.question);
+                elV.SetName();
         
                 foreach (var answer in el.answers) // инициализация ответов
                 {
-                    elements[i].AddOption(new SayingElementViewDFD(el.idElement, answer));
-                    elements[i].Options[elements[i].Options.Count - 1].SetName();
-                    elements[i].Options[elements[i].Options.Count - 1].UpdateLayout();
-                    elements[i].Options[elements[i].Options.Count - 1].ShowBindigsDialogComponentsView();
+                    elV.AddOption(new SayingElementViewDFD(el.idElement, answer));
+                    elV.Options[elV.Options.Count - 1].SetName();
+                    elV.Options[elV.Options.Count - 1].UpdateLayout();
+                    elV.Options[elV.Options.Count - 1].ShowBindigsDialogComponentsView();
 
                 }
             }
+
+            // TODO выгрузка данных из LinkViews
 
             // DialogComponetViewId - int > 0
             // OptionComponetViewId - int > 0 || -1
@@ -653,7 +664,7 @@ namespace DialogsCreator
         }
         internal void AddObjectToView(ElementDFD element)
         {
-            elements.Add(new DialogComponentView(MainCanvas));
+            elements.Add(new DialogComponentView(MainCanvas, element.idElement));
 
             int pos = elements.Count - 1;
 
@@ -689,7 +700,7 @@ namespace DialogsCreator
                 this.MenuItem_editObject.IsEnabled = false;
             }
         }
-        internal void ClearCanvas()
+        private void ClearCanvas()
         {
             if (elements != null && elements.Count > 0)
             {
@@ -700,20 +711,10 @@ namespace DialogsCreator
                     elements.Remove(obj);
                 }
             }
+
+            // TODO удаление линий LinkViews
         }
-        internal void ListBoxView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var listBox = sender as ListBox;
-            var hit = listBox.InputHitTest(e.GetPosition(listBox)) as FrameworkElement;
-            var item = hit.DataContext as DialogComponentView;
-           
-            if(item != null) 
-            {
-                ScrollViewer.ScrollToHorizontalOffset(Canvas.GetLeft(item) - 150);
-                ScrollViewer.ScrollToVerticalOffset(Canvas.GetTop(item) - 150);
-            }
-        }
-        internal void UpdatePointsViews()
+        private void UpdatePointsViews()
         {
             for (int i = 0; i < modelView.dialog.elements.Length; i++)
             {
@@ -724,6 +725,9 @@ namespace DialogsCreator
                 modelView.ReplaceCoords(ref element, point);
                 elements[i].isMove = false;
             }
+
+            // TODO сбор данных об LinkViews
+
             modelView.dialog.positionCanvas = new Point(ScrollViewer.HorizontalOffset, ScrollViewer.VerticalOffset);
         }
         internal bool CheckedMoved()
@@ -750,58 +754,4 @@ namespace DialogsCreator
             }
         }
     }
-
-    [Serializable]
-    public class Vector4
-    {
-        public float X1 { get; private set; }
-        public float X2 { get; private set; }
-        public float Y1 { get; private set; }
-        public float Y2 { get; private set; }
-
-        public Vector4(float x1, float x2, float y1, float y2)
-        {
-            X1 = x1;
-            X2 = x2;
-            Y1 = y1;
-            Y2 = y2;
-        }
-    }
-
-    [Serializable]
-    public class LinkDataDialogPackageSerialize
-    {
-        public int OutIdDialogView { get; private set; }
-        public int OutIdOptionView { get; private set; }
-        public int OutIdBindingView { get; private set; }
-
-        public int InIdDialogView { get; private set; }
-        public int InIdOptionView { get; private set; }
-        public int InIdBindingView { get; private set; }
-
-        public Vector4[] LinesCoords { get; private set; }
-
-        public LinkDataDialogPackageSerialize(int outIdDialogView, int outIdBindingView, int inIdDialogView, int inIdBindingView,Vector4 [] linesCoords)
-        {
-            OutIdDialogView = outIdDialogView;
-            OutIdOptionView = -1;
-            OutIdBindingView = outIdBindingView;
-            InIdDialogView = inIdDialogView;
-            InIdOptionView = -1;
-            InIdBindingView = inIdBindingView;
-            LinesCoords = linesCoords;
-        }
-
-        public LinkDataDialogPackageSerialize(int outIdDialogView, int outIdOptionView, int outIdBindingView, int inIdDialogView, int inIdOptionView, int inIdBindingView,Vector4 [] linesCoords)
-        {
-            OutIdDialogView = outIdDialogView;
-            OutIdOptionView = outIdOptionView;
-            OutIdBindingView = outIdBindingView;
-            InIdDialogView = inIdDialogView;
-            InIdOptionView = inIdOptionView;
-            InIdBindingView = inIdBindingView;
-            LinesCoords = linesCoords;
-        }
-    }
-
 }

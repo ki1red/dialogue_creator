@@ -26,8 +26,8 @@ namespace DialogsCreator
 
         public void Show(ElementDFD element)
         {
-            if (element == this.element)
-                return;
+            //if (element == this.element)
+            //    return;
 
             this.Close();
 
@@ -40,14 +40,14 @@ namespace DialogsCreator
             Label label = new Label();
             label.Content = $"Автор: {element.author}";
             label.FontSize = fontSize;
-            label.Foreground = Brushes.White;
+            label.Foreground = Brushes.DeepSkyBlue;
             label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             panel.Items.Add(label);
 
             label = new Label();
             label.Content = $"Вопрос: {element.question.text}";
             label.FontSize = fontSize;
-            label.Foreground = Brushes.White;
+            label.Foreground = Brushes.DeepSkyBlue;
             label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             panel.Items.Add(label);
 
@@ -58,7 +58,7 @@ namespace DialogsCreator
                 label = new Label();
                 label.Content = $"Картинка: {element.pathToImage}";
                 label.FontSize = fontSize;
-                label.Foreground = Brushes.White;
+                label.Foreground = Brushes.DeepSkyBlue;
                 label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
                 panel.Items.Add(label);
             }
@@ -67,7 +67,7 @@ namespace DialogsCreator
                 label = new Label();
                 label.Content = $"Звук: {element.pathToSound}";
                 label.FontSize = fontSize;
-                label.Foreground = Brushes.White;
+                label.Foreground = Brushes.DeepSkyBlue;
                 label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
                 panel.Items.Add(label);
             }
@@ -76,7 +76,7 @@ namespace DialogsCreator
                 label = new Label();
                 label.Content = $"Ответ {i+1}: {element.answers[i].text}";
                 label.FontSize = fontSize;
-                label.Foreground = Brushes.White;
+                label.Foreground = Brushes.DeepSkyBlue;
                 label.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
                 panel.Items.Add(label);
 

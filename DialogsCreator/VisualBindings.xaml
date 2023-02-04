@@ -60,7 +60,7 @@
         </ListBox>
 
 
-        <Label Name="Label_informationOfLanguage" Margin="10,0,0,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="143" Height="26"/>
+        <Label Name="Label_informationOfLanguage" Margin="10,0,0,18" Foreground="#FF13A9F7" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="143" Height="26"/>
         <ListBox Name="ListBox_info" Width="250" Margin="0,25,17,17" Background="#FF191818" BorderBrush="#FF131313" Foreground="#FF13A9F7" HorizontalAlignment="Right">
 
         </ListBox>

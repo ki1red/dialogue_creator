@@ -80,6 +80,8 @@ namespace DialogsCreator
 
             elements = new ObservableCollection<DialogComponentView>();
             ListBoxView.ItemsSource = elements;
+
+            
         }
 
         // ===========================================================================================================================
@@ -373,6 +375,8 @@ namespace DialogsCreator
             if (element != null)
                 elements.Remove(element);
 
+            selectionObject.Select(null);
+
             isEdit = true;
             this.MenuItem_deleteObject.IsEnabled = false;
         }
@@ -395,6 +399,8 @@ namespace DialogsCreator
 
             // TODO обновление ViewElement delement ^ (этот элемент не ссылка, а копия, так что ищи его в списке)
             delement.UpdateNameDialog();
+
+            selectionObject.Select(delement);
 
             isEdit = true;
             this.MenuItem_editObject.IsEnabled = false;

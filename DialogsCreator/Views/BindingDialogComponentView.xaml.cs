@@ -21,8 +21,9 @@ namespace DialogsCreator.Views
 
         public object parent { get; private set; }  //DialogView or OptionView
         public TypePointBindingView TypePointBinding { get; private set; }
+        public int Id;
 
-        public BindingDialogComponentView(object parent, Canvas canvas, Point pointCreate, TypePointBindingView type)
+        public BindingDialogComponentView(object parent, Canvas canvas, Point pointCreate, TypePointBindingView type, int id)
         {
             InitializeComponent();
             this.parent = parent;
@@ -33,6 +34,7 @@ namespace DialogsCreator.Views
             Canvas.SetTop(this, pointCreate.Y);
 
             TypePointBinding = type;
+            Id = id;
         }
 
         public void LinkWith(BindingDialogComponentView other, List<Line> lines)

@@ -49,7 +49,9 @@ namespace DialogsCreator.Views
     {
         public BindingDialogComponentView LeftBindingDialogComponentView { get; private set; }
         public BindingDialogComponentView RightBindingDialogComponentView { get; private set; }
-        
+
+        public List<BindingDialogComponentView> bindingDialogComponentViews = new List<BindingDialogComponentView>();
+
         private const int marginBindingDialogCopmonentViewLeft = 25;
         private const int marginBindingDialogCopmonentViewRight = 5;
         private const int marginBindingDialogCopmonentTop = -37;
@@ -59,12 +61,14 @@ namespace DialogsCreator.Views
         public LinkedObject OptionSource { get; set; }
         public List<LinkDataDialogPackage> linkDataOptionPackages { get; private set; } = new List<LinkDataDialogPackage>();
         public string _textNameOption { get => TextBlockComponentName.Text; }
+        public int Id;
 
-        public OptionDialogComponent(Canvas drawingCanvas, DialogComponentView componentView)
+        public OptionDialogComponent(Canvas drawingCanvas, DialogComponentView componentView,int id)
         {
             InitializeComponent();
             parent = componentView;
             canvas = drawingCanvas;
+            Id = id;
         }
 
         public void ShowBindigsDialogComponentsView()
@@ -172,11 +176,13 @@ namespace DialogsCreator.Views
             if (LeftBindingDialogComponentView == null)
             {
                 LeftBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointLeftBindingComponent(),TypePointBindingView.InputTypePoint);
+                bindingDialogComponentViews.Add(LeftBindingDialogComponentView);
             }
 
             if (RightBindingDialogComponentView == null)
             {
                 RightBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointRightBindingComponent(),TypePointBindingView.OutTypePoint);
+                bindingDialogComponentViews.Add(RightBindingDialogComponentView);
             }
         }
         private int GetIndex()

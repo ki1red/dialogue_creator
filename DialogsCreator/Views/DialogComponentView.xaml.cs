@@ -56,9 +56,8 @@ namespace DialogsCreator.Views
         private Point _mousePosition;
         private bool _isMouseDown = false;
 
-        private List<BindingDialogComponentView> bindingDialogComponentViews = new List<BindingDialogComponentView>();
+        public List<BindingDialogComponentView> bindingDialogComponentViews = new List<BindingDialogComponentView>();
         public List<LinkDataDialogPackage> linkDataPackages { get; private set; } = new List<LinkDataDialogPackage>();
-
         public BindingDialogComponentView LeftBindingDialogComponentView { get; private set; }
         public BindingDialogComponentView RightBindingDialogComponentView { get; private set; }
         public TextBlock _TextBlockComponentName { get; set; }
@@ -66,13 +65,17 @@ namespace DialogsCreator.Views
         // TODO сделать понмиание номера элемента при связях
         public LinkedObject Source { get; set; }
         public bool isMove { get; set; }
-        public DialogComponentView(Canvas drawingCanvas)
+
+        public int Id { get; private set; }
+
+        public DialogComponentView(Canvas drawingCanvas,int id)
         {
             InitializeComponent();
             canvas = drawingCanvas;
             this._TextBlockComponentName = TextBlockComponentName;
 
             isMove = false;
+            Id = id;
         }
         public void AddOption()
         {

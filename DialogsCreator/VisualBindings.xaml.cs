@@ -559,10 +559,8 @@ namespace DialogsCreator
             if (!manager.isOpen || modelView.id == -1) // TODO удалено || modelView == null ||
                 throw new Exception("Не удалось отрисовать View при запуске файла");
 
-            // TODO удаление старых компонентов канваса
             ClearCanvas();
 
-            //elements = new List<DialogComponentView>();
             for (int i = 0; i < modelView.id; i++)
             {
                 ElementDFD el = modelView.dialog.elements[i];
@@ -575,7 +573,7 @@ namespace DialogsCreator
                 elements[i].ShowBindigsDialogComponentsView();
                 elements[i].Source = new SayingElementViewDFD(el.idElement, el.question); // инициализация вопроса
                 elements[i].SetName();
-                
+        
                 foreach (var answer in el.answers) // инициализация ответов
                 {
                     elements[i].AddOption(new SayingElementViewDFD(el.idElement, answer));
@@ -584,6 +582,73 @@ namespace DialogsCreator
                     elements[i].Options[elements[i].Options.Count - 1].ShowBindigsDialogComponentsView();
 
                 }
+            }
+
+            // DialogComponetViewId - int > 0
+            // OptionComponetViewId - int > 0 || -1
+            // BindingDialogComponentId - int > 0
+            // Lines {x1,x2,y1,y2};
+
+            var packsLinks = new List<LinkDataDialogPackageSerialize>();
+
+            foreach (var link in packsLinks)
+            {
+
+                List<Line> lines = new List<Line>();
+
+                BindingDialogComponentView outViewBinding;
+                BindingDialogComponentView inViewBinding ;
+
+                var outDialog = elements.FirstOrDefault(dialog => dialog.Id == link.OutIdDialogView) ?? throw new NullReferenceException("Dialog not found in Scene");
+                var inDialog = elements.FirstOrDefault(dialog => dialog.Id == link.InIdDialogView) ?? throw new NullReferenceException("Dialog not found in Scene");
+
+                if (link.OutIdOptionView != -1)
+                    outViewBinding = (
+                            outDialog.Options.FirstOrDefault(option => option.Id == link.OutIdOptionView) ??
+                            throw new NullReferenceException("Option not found in Scene")
+                        )
+                        .bindingDialogComponentViews
+                        .FirstOrDefault(bindingView => bindingView.Id == link.OutIdBindingView) 
+                        ?? throw new NullReferenceException("Binding View not found in Scene");
+
+                else
+                    outViewBinding = outDialog
+                        .bindingDialogComponentViews
+                        .FirstOrDefault(bindingView => bindingView.Id == link.OutIdBindingView) 
+                        ?? throw new NullReferenceException("Binding View not found in Scene");
+                
+                if(link.InIdOptionView != -1)
+                    inViewBinding = (
+                        inDialog.Options.FirstOrDefault(option => option.Id == link.InIdOptionView) ??
+                        throw new NullReferenceException("Option not found in Scene")
+                    )
+                    .bindingDialogComponentViews
+                    .FirstOrDefault(bindingView => bindingView.Id == link.InIdBindingView) 
+                    ?? throw new NullReferenceException("Option not found in Scene");
+                else inViewBinding = inDialog
+                        .bindingDialogComponentViews
+                        .FirstOrDefault(bindingView => bindingView.Id == link.InIdBindingView) 
+                        ?? throw new NullReferenceException("Binding View not found in Scene");
+
+                foreach (Vector4 vector in link.LinesCoords)
+                {
+                    Line line = new Line();
+
+                    line.X1 = vector.X1;
+                    line.Y1 = vector.Y1;
+                    line.X2 = vector.X2;
+                    line.Y2 = vector.Y2;
+                    
+                    line.Stroke = new SolidColorBrush(Colors.Black);
+                    line.StrokeThickness = 5;
+                    line.StrokeStartLineCap = PenLineCap.Round;
+                    line.StrokeEndLineCap = PenLineCap.Round;
+
+                    lines.Add(line);
+                    MainCanvas.Children.Add(line);
+                }
+
+                outViewBinding.LinkWith(inViewBinding,lines);
             }
         }
         internal void AddObjectToView(ElementDFD element)
@@ -685,4 +750,58 @@ namespace DialogsCreator
             }
         }
     }
+
+    [Serializable]
+    public class Vector4
+    {
+        public float X1 { get; private set; }
+        public float X2 { get; private set; }
+        public float Y1 { get; private set; }
+        public float Y2 { get; private set; }
+
+        public Vector4(float x1, float x2, float y1, float y2)
+        {
+            X1 = x1;
+            X2 = x2;
+            Y1 = y1;
+            Y2 = y2;
+        }
+    }
+
+    [Serializable]
+    public class LinkDataDialogPackageSerialize
+    {
+        public int OutIdDialogView { get; private set; }
+        public int OutIdOptionView { get; private set; }
+        public int OutIdBindingView { get; private set; }
+
+        public int InIdDialogView { get; private set; }
+        public int InIdOptionView { get; private set; }
+        public int InIdBindingView { get; private set; }
+
+        public Vector4[] LinesCoords { get; private set; }
+
+        public LinkDataDialogPackageSerialize(int outIdDialogView, int outIdBindingView, int inIdDialogView, int inIdBindingView,Vector4 [] linesCoords)
+        {
+            OutIdDialogView = outIdDialogView;
+            OutIdOptionView = -1;
+            OutIdBindingView = outIdBindingView;
+            InIdDialogView = inIdDialogView;
+            InIdOptionView = -1;
+            InIdBindingView = inIdBindingView;
+            LinesCoords = linesCoords;
+        }
+
+        public LinkDataDialogPackageSerialize(int outIdDialogView, int outIdOptionView, int outIdBindingView, int inIdDialogView, int inIdOptionView, int inIdBindingView,Vector4 [] linesCoords)
+        {
+            OutIdDialogView = outIdDialogView;
+            OutIdOptionView = outIdOptionView;
+            OutIdBindingView = outIdBindingView;
+            InIdDialogView = inIdDialogView;
+            InIdOptionView = inIdOptionView;
+            InIdBindingView = inIdBindingView;
+            LinesCoords = linesCoords;
+        }
+    }
+
 }

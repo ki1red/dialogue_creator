@@ -51,8 +51,8 @@ namespace DialogsCreator.Views
             int outBindingId = firstBindingDialogComponentView.Id;
             int inBindingId = secondeBindingDialogComponentView.Id;
             
-            int outOptionId;
-            int inOptionId;
+            int outOptionId = -1;
+            int inOptionId = -1;
 
             if (firstView is DialogComponentView)
             {
@@ -76,8 +76,8 @@ namespace DialogsCreator.Views
             }
             else throw new ArgumentException("Unknow view in LinkDatapackage");
 
-            Vector4[] vectorArray = Lines.Select(line => new Vector4(line.X1, line.Y1, line.X2, line.Y2)).ToArray();
-            return new LinkDataDialogPackageSerialize(outViewId,outBindingId,inViewId,inBindingId,vectorArray);
+            Vector4[] vectorArray = Lines.Select(line => new Vector4(line.X1, line.X2, line.Y1, line.Y2)).ToArray();
+            return new LinkDataDialogPackageSerialize(outViewId, outOptionId, outBindingId, inViewId, inOptionId, inBindingId,vectorArray);
         }
     }
 

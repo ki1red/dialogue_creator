@@ -18,16 +18,18 @@ namespace DialogsCreator
         public ElementDFDs[] elements;
         public LinkDataDialogPackageSerialize[] linkeds;
 
-        public DialogDFDs(string language, ElementDFDs[] elements)
+        public DialogDFDs(string language, ElementDFDs[] elements, LinkDataDialogPackageSerialize[] linkeds)
         {
             this.language = language;
             this.elements = elements;
+            this.linkeds = linkeds;
         }
         public DialogDFDs()
         {
             this.language = null;
             this.positionCanvas = new Point(0, 0);
             this.elements = new ElementDFDs[0];
+            this.linkeds = new LinkDataDialogPackageSerialize[0];
         }
 
         public void Clone(object obj)
@@ -204,16 +206,18 @@ namespace DialogsCreator
         public Point positionCanvas;
         public ElementDFD[] elements;
         public LinkDataDialogPackageSerialize[] linkeds;
-        public DialogDFD(string language, ElementDFD[] elements)
+        public DialogDFD(string language, ElementDFD[] elements, LinkDataDialogPackageSerialize[] linkeds)
         {
             this.language = language;
             this.elements = elements;
+            this.linkeds = linkeds;
         }
         public DialogDFD()
         {
             this.language = null;
             this.positionCanvas = new Point(0, 0);
             this.elements = new ElementDFD[0];
+            this.linkeds = new LinkDataDialogPackageSerialize[0];
         }
 
         public void Add(ElementDFD element)

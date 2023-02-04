@@ -42,6 +42,7 @@ namespace DialogsCreator
             {
                 dialogSecure = new DialogDFDs();
                 dialogSecure.language = manager.language.ToString();
+                dialogSecure.linkeds = new LinkDataDialogPackageSerialize[0];
             }
             else
                 manager.language = manager.ToLanguage(dialogSecure.language);

@@ -594,7 +594,9 @@ namespace DialogsCreator
                 }
             }
 
-            foreach (var link in LinkDataDialogPackageSerialize[])
+
+
+            foreach (var link in modelView.dialog.linkeds)
             {
 
                 List<Line> lines = new List<Line>();
@@ -637,18 +639,22 @@ namespace DialogsCreator
                 {
                     Line line = new Line();
 
-                    line.X1 = vector.X1;
-                    line.Y1 = vector.Y1;
-                    line.X2 = vector.X2;
-                    line.Y2 = vector.Y2;
+                    lines.Add(line);
+                    MainCanvas.Children.Add(line);
                     
                     line.Stroke = new SolidColorBrush(Colors.Black);
                     line.StrokeThickness = 5;
                     line.StrokeStartLineCap = PenLineCap.Round;
                     line.StrokeEndLineCap = PenLineCap.Round;
 
-                    lines.Add(line);
-                    MainCanvas.Children.Add(line);
+
+
+                    line.X1 = vector.X1;
+                    line.Y1 = vector.Y1;
+                    line.X2 = vector.X2;
+                    line.Y2 = vector.Y2;
+
+                    line.UpdateLayout();
                 }
 
                 LinkDataDialogPackages.Add(outViewBinding.LinkWith(inViewBinding,lines));
@@ -719,6 +725,7 @@ namespace DialogsCreator
             }
 
             // TODO сбор данных об LinkViews
+            modelView.dialog.linkeds = LinkDataDialogPackages.Select(linesCollection => linesCollection.toLinkDataDialogPackageSerialize()).ToArray();
 
             modelView.dialog.positionCanvas = new Point(ScrollViewer.HorizontalOffset, ScrollViewer.VerticalOffset);
         }

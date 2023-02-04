@@ -9,12 +9,12 @@ namespace DialogsCreator
     [Serializable]
     public class Vector4
     {
-        public float X1 { get; private set; }
-        public float X2 { get; private set; }
-        public float Y1 { get; private set; }
-        public float Y2 { get; private set; }
+        public double X1 { get; private set; }
+        public double X2 { get; private set; }
+        public double Y1 { get; private set; }
+        public double Y2 { get; private set; }
 
-        public Vector4(float x1, float x2, float y1, float y2)
+        public Vector4(double x1, double x2, double y1, double y2)
         {
             this.X1 = x1;
             this.X2 = x2;

@@ -43,16 +43,35 @@ namespace DialogsCreator.Views
         public void UnLink(LinkDataDialogPackage package,ElemetInBindingsWindow children) 
         {
             BindingsComponentStack.Children.Remove(children);
-            package.firstDialogComponent.UnLinkWith(package);
-            package.secondeDialogComponent.UnLinkWith(package);
+            if(package.firstView is DialogComponentView) 
+            {
+                DialogComponentView firstView = (DialogComponentView)package.firstView;
+                firstView.UnLinkWith(package);
+            }
+            else if(package.firstView is OptionDialogComponent) {
+                OptionDialogComponent firstView = (OptionDialogComponent)package.firstView;
+                firstView.UnLinkWith(package);
+            }
+
+            if (package.secondeView is DialogComponentView)
+            {
+                DialogComponentView secondeView = (DialogComponentView)package.secondeView;
+                secondeView.UnLinkWith(package);
+            }
+            else if (package.secondeView is OptionDialogComponent)
+            {
+                OptionDialogComponent secondeView = (OptionDialogComponent)package.secondeView;
+                secondeView.UnLinkWith(package);
+            }
+           
         }
 
-        public void UnLink(LinkDataOptionPackage package, ElemetInBindingsWindow children)
+/*        public void UnLink(LinkDataOptionPackage package, ElemetInBindingsWindow children)
         {
             BindingsComponentStack.Children.Remove(children);
             package.firstOptionComponent.UnLinkWith(package);
             package.secondeOptionComponent.UnLinkWith(package);
-        }
+        }*/
 
     }
 }

@@ -452,7 +452,7 @@ namespace DialogsCreator
         {
             this.elementOld = this.elementNew;
         }
-        public override void Bounds(LinkedObject linkObject)
+        public override void Bounds(LinkedObject linkObject, LinkedObject linkObject2)
         {
             if (linkObject == null)
                 throw new Exception("Uninitialized object in view");

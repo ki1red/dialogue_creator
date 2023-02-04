@@ -23,21 +23,21 @@ namespace DialogsCreator.Views
 {
     public class LinkDataDialogPackage
     {
-        public DialogComponentView firstDialogComponent { get; private set; }
-        public DialogComponentView secondeDialogComponent { get; private set; }
+        public object firstView { get; private set; }
+        public object secondeView { get; private set; }
         public BindingDialogComponentView firstBindingDialogComponentView { get; private set; }
         public BindingDialogComponentView secondeBindingDialogComponentView { get; private set; }
         public List<Line> Lines { get; private set; } 
 
         public LinkDataDialogPackage(
-            DialogComponentView firstDialogComponent,
-            DialogComponentView secondeDialogComponent,
+            object firstDialogComponent,
+            object secondeDialogComponent,
             BindingDialogComponentView firstBindingDialogComponentView,
             BindingDialogComponentView secondeBindingDialogComponentView,
             List<Line>lines)
         {
-            this.firstDialogComponent = firstDialogComponent;
-            this.secondeDialogComponent = secondeDialogComponent;
+            this.firstView = firstDialogComponent;
+            this.secondeView = secondeDialogComponent;
             this.firstBindingDialogComponentView = firstBindingDialogComponentView;
             this.secondeBindingDialogComponentView = secondeBindingDialogComponentView;
             Lines = lines;
@@ -81,6 +81,14 @@ namespace DialogsCreator.Views
             option.Margin = new Thickness(0, 10, 0, 0);
             OptionStackPanel.Children.Add(option);
             Options.Add(option);
+            if(Options.Count > 0) 
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Visible;
+            }
         }
         
         public void AddOption(LinkedObject source)
@@ -91,17 +99,52 @@ namespace DialogsCreator.Views
             option.OptionSource = source;
             OptionStackPanel.Children.Add(option);
             Options.Add(option);
+            if (Options.Count > 0)
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Visible;
+            }
         }
 
         public void RemoveOption(OptionDialogComponent option)
         {
             foreach (var package in option.linkDataOptionPackages)
             {
-                package.firstOptionComponent.UnLinkWith(package);
-                package.secondeOptionComponent.UnLinkWith(package);
+                if (package.firstView is DialogComponentView)
+                {
+                    DialogComponentView firstView = (DialogComponentView)package.firstView;
+                    firstView.UnLinkWith(package);
+                }
+                else if (package.firstView is OptionDialogComponent)
+                {
+                    OptionDialogComponent firstView = (OptionDialogComponent)package.firstView;
+                    firstView.UnLinkWith(package);
+                }
+
+                if (package.secondeView is DialogComponentView)
+                {
+                    DialogComponentView secondeView = (DialogComponentView)package.secondeView;
+                    secondeView.UnLinkWith(package);
+                }
+                else if (package.secondeView is OptionDialogComponent)
+                {
+                    OptionDialogComponent secondeView = (OptionDialogComponent)package.secondeView;
+                    secondeView.UnLinkWith(package);
+                }
             }
             OptionStackPanel.Children.Remove(option);
             Options.Remove(option);
+            if (Options.Count > 0)
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                RightBindingDialogComponentView.Visibility = Visibility.Visible;
+            }
         }
 
         public void Select() 
@@ -158,14 +201,14 @@ namespace DialogsCreator.Views
         {
             if (LeftBindingDialogComponentView == null)
             {
-                LeftBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointLeftBindingComponent());
+                LeftBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointLeftBindingComponent(), TypePointBindingView.InputTypePoint);
                 if (bindingDialogComponentViews.Contains(LeftBindingDialogComponentView) == false)
                     bindingDialogComponentViews.Add(LeftBindingDialogComponentView);
             }
 
             if (RightBindingDialogComponentView == null)
             {
-                RightBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointRightBindingComponent());
+                RightBindingDialogComponentView = new BindingDialogComponentView(this, canvas, GetPointRightBindingComponent(), TypePointBindingView.OutTypePoint);
                 if (bindingDialogComponentViews.Contains(RightBindingDialogComponentView) == false)
                     bindingDialogComponentViews.Add(RightBindingDialogComponentView);
             }
@@ -200,7 +243,7 @@ namespace DialogsCreator.Views
 
                 foreach (var linkData in linkDataPackages)
                 {
-                    if (linkData.firstDialogComponent == this)
+                    if (linkData.firstView == this)
                     {
                         linkData.Lines.First().X1 =
                             offset.X + linkData.Lines.First().X1;
@@ -208,7 +251,7 @@ namespace DialogsCreator.Views
                             linkData.Lines.First().Y1 + offset.Y;
                     }
 
-                    else if (linkData.secondeDialogComponent == this)
+                    else if (linkData.secondeView == this)
                     {
                         linkData.Lines.Last().X2 =
                             offset.X + linkData.Lines.Last().X2;
@@ -233,7 +276,7 @@ namespace DialogsCreator.Views
 
                     foreach (var linkDataOption in option.linkDataOptionPackages)
                     {
-                        if (linkDataOption.firstOptionComponent == option)
+                        if (linkDataOption.firstView == option)
                         {
                             linkDataOption.Lines.First().X1 =
                                 offset.X + linkDataOption.Lines.First().X1;
@@ -241,7 +284,7 @@ namespace DialogsCreator.Views
                                 linkDataOption.Lines.First().Y1 + offset.Y;
                         }
 
-                        else if (linkDataOption.secondeOptionComponent == option)
+                        else if (linkDataOption.secondeView == option)
                         {
                             linkDataOption.Lines.Last().X2 =
                                 offset.X + linkDataOption.Lines.Last().X2;
@@ -270,18 +313,33 @@ namespace DialogsCreator.Views
         }
         public void Link(LinkDataDialogPackage linkDataPackage)
         {
-
-            if (linkDataPackage.firstDialogComponent == this)
+            if (linkDataPackage.firstView is DialogComponentView && linkDataPackage.secondeView is DialogComponentView)
             {
-                Source?.Bounds(linkDataPackage.secondeDialogComponent.Source);
-                linkDataPackages.Add(linkDataPackage);
+                OptionDialogComponent firstView = (OptionDialogComponent)linkDataPackage.firstView;
+                OptionDialogComponent secondeView = (OptionDialogComponent)linkDataPackage.secondeView;
+                Source?.Bounds(firstView.OptionSource, secondeView.OptionSource);
+            }
+            else if (linkDataPackage.firstView is DialogComponentView && linkDataPackage.secondeView is OptionDialogComponent)
+            {
+                DialogComponentView firstView = (DialogComponentView)linkDataPackage.firstView;
+                OptionDialogComponent secondeView = (OptionDialogComponent)linkDataPackage.secondeView;
+                Source?.Bounds(firstView.Source, secondeView.OptionSource);
+
+            }
+            else if (linkDataPackage.firstView is OptionDialogComponent && linkDataPackage.secondeView is DialogComponentView)
+            {
+                OptionDialogComponent firstView = (OptionDialogComponent)linkDataPackage.firstView;
+                DialogComponentView secondeView = (DialogComponentView)linkDataPackage.secondeView;
+                Source?.Bounds(firstView.OptionSource, secondeView.Source);
+
+            }
+            else if (linkDataPackage.firstView is OptionDialogComponent && linkDataPackage.secondeView is OptionDialogComponent)
+            {
+                throw new Exception("You Eblan how you get in linkDataPackage OptionDialogComponent && OptionDialogComponent");
+
             }
 
-            else if (linkDataPackage.secondeDialogComponent == this)
-            {
-                Source?.Bounds(linkDataPackage.firstDialogComponent.Source);
-                linkDataPackages.Add(linkDataPackage);
-            }
+            linkDataPackages.Add(linkDataPackage);
         }
         public void UnLinkWith(LinkDataDialogPackage linkedPackage)
         {
@@ -290,17 +348,39 @@ namespace DialogsCreator.Views
                 canvas.Children.Remove(line);
             }
 
-            if (linkedPackage.firstDialogComponent == this)
+            if (linkedPackage.firstView == this)
             {
-                Source?.UnBounds(linkedPackage.secondeDialogComponent.Source);
-                linkDataPackages.Remove(linkedPackage);
+                if (linkedPackage.secondeView is DialogComponentView)
+                {
+                    DialogComponentView secondeView = (DialogComponentView)linkedPackage.secondeView;
+               
+                    Source?.UnBounds(secondeView.Source);
+                }
+                else if (linkedPackage.secondeView is OptionDialogComponent)
+                {
+                    OptionDialogComponent secondeView = (OptionDialogComponent)linkedPackage.secondeView;
+                    Source?.UnBounds(secondeView.OptionSource);
+                }
             }
 
-            else if (linkedPackage.secondeDialogComponent == this)
+            else if (linkedPackage.secondeView == this)
             {
-                Source?.UnBounds(linkedPackage.firstDialogComponent.Source);
-                linkDataPackages.Remove(linkedPackage);
+
+                if (linkedPackage.firstView is DialogComponentView)
+                {
+                    DialogComponentView firstView = (DialogComponentView)linkedPackage.firstView;
+                    Source?.UnBounds(firstView.Source);
+                }
+                else if (linkedPackage.firstView is OptionDialogComponent)
+                {
+                    OptionDialogComponent firstView = (OptionDialogComponent)linkedPackage.firstView;
+                    Source?.UnBounds(firstView.OptionSource);
+                }
             }
+            else
+                throw new Exception("Bad link two view is not have this view in link");
+
+            linkDataPackages.Remove(linkedPackage);
         }
         public void SetName()
         {
@@ -344,8 +424,27 @@ namespace DialogsCreator.Views
 
             foreach (var package in packages)
             {
-                package.firstDialogComponent.UnLinkWith(package);
-                package.secondeDialogComponent.UnLinkWith(package);
+                if (package.firstView is DialogComponentView)
+                {
+                    DialogComponentView firstView = (DialogComponentView)package.firstView;
+                    firstView.UnLinkWith(package);
+                }
+                else if (package.firstView is OptionDialogComponent)
+                {
+                    OptionDialogComponent firstView = (OptionDialogComponent)package.firstView;
+                    firstView.UnLinkWith(package);
+                }
+
+                if (package.secondeView is DialogComponentView)
+                {
+                    DialogComponentView secondeView = (DialogComponentView)package.secondeView;
+                    secondeView.UnLinkWith(package);
+                }
+                else if (package.secondeView is OptionDialogComponent)
+                {
+                    OptionDialogComponent secondeView = (OptionDialogComponent)package.secondeView;
+                    secondeView.UnLinkWith(package);
+                }
             }
 
             canvas.Children.Remove(this.LeftBindingDialogComponentView);

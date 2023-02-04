@@ -114,18 +114,21 @@ namespace DialogsCreator
     {
         public int idElement;
         public string text;
+        public TypeSayingElementDFD type;
         public LinkSayingElementDFDs nextElement;
         public LinkSayingElementDFDs[] requests;
 
-        public SayingElementDFDs(string text, LinkSayingElementDFDs nextElement, LinkSayingElementDFDs[] requests)
+        public SayingElementDFDs(string text, TypeSayingElementDFD type,LinkSayingElementDFDs nextElement, LinkSayingElementDFDs[] requests)
         {
             this.text = text;
+            this.type = type;
             this.nextElement = nextElement;
             this.requests = requests;
         }
         public SayingElementDFDs()
         {
             this.text = null;
+            this.type = TypeSayingElementDFD.none;
             this.nextElement = null;
             this.requests = new LinkSayingElementDFDs[0];
         }
@@ -139,6 +142,7 @@ namespace DialogsCreator
 
             this.idElement = sayingElementDFD.idElement;
             this.text = sayingElementDFD.text;
+            this.type = sayingElementDFD.type;
 
             this.nextElement = new LinkSayingElementDFDs();
             this.nextElement.Clone(sayingElementDFD.nextElement);
@@ -158,27 +162,32 @@ namespace DialogsCreator
     public class LinkSayingElementDFDs : IClonable
     {
         public int idElement;
+        public TypeSayingElementDFD type;
         public string textElement;
 
-        public LinkSayingElementDFDs (int idElement, string textElement)
+        public LinkSayingElementDFDs (int idElement, TypeSayingElementDFD type, string textElement)
         {
             this.idElement = idElement;
+            this.type = type;
             this.textElement = textElement;
         }
         public LinkSayingElementDFDs()
         {
             this.idElement = -1;
+            this.type = TypeSayingElementDFD.none;
             this.textElement = null;
         }
 
         public void Clone(object obj)
         {
             if (!(obj is SayingElementDFD))
-                throw new Exception($"{obj} is not SayingElementDFD");
+                return;
+                //throw new Exception($"{obj} is not SayingElementDFD");
 
             SayingElementDFD sayingElementDFD = obj as SayingElementDFD;
 
             this.idElement = sayingElementDFD.idElement;
+            this.type = sayingElementDFD.type;
             this.textElement = sayingElementDFD.text;
         }
     }
@@ -231,7 +240,7 @@ namespace DialogsCreator
                 if (elements[i].idElement == id)
                     return ref elements[i];
             }
-            return ref elements[elements.Length - 1];
+            throw new IndexOutOfRangeException("Element is not found.");
         }
         public void Clone(object obj)
         {
@@ -306,21 +315,27 @@ namespace DialogsCreator
             Array.Resize(ref answers, answers.Length - 1);
             tmp.CopyTo(answers, 0);
         }
-        public ref SayingElementDFD Search(string text)
+        public SayingElementDFD Search(string text)
         {
+            if (question.text == text)
+                return question;
             for (int i = 0; i < answers.Length; i++)
                 if (answers[i].text == text)
-                    return ref answers[i];
-            return ref question;
+                    return answers[i];
+            return null;
+            
         }
-        public ref SayingElementDFD Search(SayingElementDFD text)
+        public SayingElementDFD Search(SayingElementDFD text)
         {
             for (int i = 0; i < answers.Length; i++)
             {
                 if (answers[i] == text)
-                    return ref answers[i];
+                    return answers[i];
             }
-            return ref question;
+            if (question == text)
+                return question;
+            else
+                return null;
         }
         public void Clone(object obj)
         {
@@ -353,13 +368,15 @@ namespace DialogsCreator
     {
         public int idElement;
         public string text;
+        public TypeSayingElementDFD type;
         public SayingElementDFD nextElement;
         public SayingElementDFD[] requests;
 
-        public SayingElementDFD(int idElement, string text, SayingElementDFD nextElement, SayingElementDFD[] requests)
+        public SayingElementDFD(int idElement, string text, TypeSayingElementDFD type, SayingElementDFD nextElement, SayingElementDFD[] requests)
         {
             this.idElement = idElement;
             this.text = text;
+            this.type = type;
             this.nextElement = nextElement;
             this.requests = requests;
         }
@@ -367,6 +384,7 @@ namespace DialogsCreator
         {
             this.idElement = -1;
             this.text = null;
+            this.type = TypeSayingElementDFD.none;
             this.nextElement = null;
             this.requests = new SayingElementDFD[0];
         }
@@ -387,7 +405,13 @@ namespace DialogsCreator
         }
         public void Delete(SayingElementDFD element)
         {
-            SayingElementDFD[] tmp = new SayingElementDFD[requests.Length - 1];
+            if (element == nextElement)
+            {
+                nextElement = new SayingElementDFD();
+                return;
+            }
+
+            SayingElementDFD[] tmp = new SayingElementDFD[requests.Length];
             int iTmp = 0;
             foreach (var item in requests)
             {
@@ -395,7 +419,8 @@ namespace DialogsCreator
                     continue;
                 tmp[iTmp++] = item;
             }
-            Array.Resize(ref requests, requests.Length - 1);
+            Array.Resize(ref tmp, iTmp);
+            Array.Resize(ref requests, tmp.Length);
             tmp.CopyTo(requests, 0);
         }
         public ref SayingElementDFD Search(SayingElementDFD request)
@@ -407,13 +432,25 @@ namespace DialogsCreator
         }
         public void SetLinkeds(DialogDFD elements)
         {
-            ref ElementDFD element = ref elements.Search(this.nextElement.idElement);
-            this.nextElement = element.Search(this.nextElement.text);
+            ElementDFD element;
+            if (this.nextElement.idElement != -1)
+                element = elements.Search(this.nextElement.idElement);
+            else
+                return;
+
+            if (element != null)
+                this.nextElement = element.Search(this.nextElement.text);
+            else
+                this.nextElement = null;
 
             for (int i = 0; i < this.requests.Length; i++)
             {
-                element = ref elements.Search(this.requests[i].idElement);
-                this.requests[i] = element.Search(this.requests[i].text);
+                element = elements.Search(this.requests[i].idElement);
+
+                if (element != null)
+                    this.requests[i] = element.Search(this.requests[i].text);
+                else
+                    this.requests[i] = null;
             }
         }
         public void Clone(object obj)
@@ -425,6 +462,7 @@ namespace DialogsCreator
 
             this.idElement = sayingElementDFDs.idElement;
             this.text = sayingElementDFDs.text;
+            this.type = sayingElementDFDs.type;
 
             this.nextElement = new SayingElementDFD(sayingElementDFDs.nextElement);
 
@@ -452,18 +490,38 @@ namespace DialogsCreator
         {
             this.elementOld = this.elementNew;
         }
-        public override void Bounds(LinkedObject linkObject, LinkedObject linkObject2)
+        public override void Bounds(LinkedObject output, LinkedObject input)
         {
-            if (linkObject == null)
+            if (output == null || input == null)
                 throw new Exception("Uninitialized object in view");
 
-            
-            elementNew.Add((linkObject as SayingElementViewDFD).elementNew);
+            if (output == input)
+                throw new Exception("This is same object");
+
+            if (output == this)
+            {
+                if ((input as SayingElementViewDFD).elementNew.type == TypeSayingElementDFD.question && (this.elementNew.type != TypeSayingElementDFD.none))
+                    this.elementNew.nextElement = (input as SayingElementViewDFD).elementNew;
+                else if ((input as SayingElementViewDFD).elementNew.type == TypeSayingElementDFD.none)
+                    throw new Exception("This is NOT object");
+            }
+            else if (input == this)
+            {
+                if (this.elementNew.type == TypeSayingElementDFD.answer && (output as SayingElementViewDFD).elementNew.type == TypeSayingElementDFD.question)
+                    throw new Exception("Other object is question!");
+                else if((output as SayingElementViewDFD).elementNew.type == TypeSayingElementDFD.none)
+                    throw new Exception("This is NOT object");
+                else
+                    elementNew.Add((output as SayingElementViewDFD).elementNew);
+            }
+            else
+                throw new Exception("This is FUCKING DATA");
         }
         public override void UnBounds(LinkedObject linkObject)
         {
             if (linkObject == null)
                 throw new Exception("Uninitialized object in view");
+
             elementNew.Delete((linkObject as SayingElementViewDFD).elementNew);
         }
     }
@@ -472,5 +530,12 @@ namespace DialogsCreator
     public interface IClonable
     {
         void Clone(object obj);
+    }
+
+    public enum TypeSayingElementDFD
+    {
+        none = 0,
+        question = 1,
+        answer = 2
     }
 }

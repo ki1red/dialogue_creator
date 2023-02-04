@@ -315,9 +315,9 @@ namespace DialogsCreator.Views
         {
             if (linkDataPackage.firstView is DialogComponentView && linkDataPackage.secondeView is DialogComponentView)
             {
-                OptionDialogComponent firstView = (OptionDialogComponent)linkDataPackage.firstView;
-                OptionDialogComponent secondeView = (OptionDialogComponent)linkDataPackage.secondeView;
-                Source?.Bounds(firstView.OptionSource, secondeView.OptionSource);
+                DialogComponentView firstView = (DialogComponentView)linkDataPackage.firstView;
+                DialogComponentView secondeView = (DialogComponentView)linkDataPackage.secondeView;
+                Source?.Bounds(firstView.Source, secondeView.Source);
             }
             else if (linkDataPackage.firstView is DialogComponentView && linkDataPackage.secondeView is OptionDialogComponent)
             {

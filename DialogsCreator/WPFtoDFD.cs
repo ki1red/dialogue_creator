@@ -94,14 +94,14 @@ namespace DialogsCreator
             element.point = pointNew; // TODO тестить
         }
         // Обновление связей объекта
-        public void UpdateLinkeds(ref SayingElementViewDFD sayingViewElement)
-        {
-            ref ElementDFD element = ref dialog.Search(sayingViewElement.idElement); // TODO тестить
-            ref SayingElementDFD sayingElement = ref element.Search(sayingViewElement.elementOld);
-            sayingElement = sayingViewElement.elementNew;
+        //public void UpdateLinkeds(ref SayingElementViewDFD sayingViewElement)
+        //{
+        //    ref ElementDFD element = ref dialog.Search(sayingViewElement.idElement); // TODO тестить
+        //    ref SayingElementDFD sayingElement = ref element.Search(sayingViewElement.elementOld);
+        //    sayingElement = sayingViewElement.elementNew;
 
-            sayingViewElement.UpdateElement(); // TODO возможно, лучше вынести
-        }
+        //    sayingViewElement.UpdateElement(); // TODO возможно, лучше вынести
+        //}
         public bool DeleteId(int id)
         {
             if (id > this.id)

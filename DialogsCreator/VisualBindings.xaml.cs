@@ -261,7 +261,7 @@ namespace DialogsCreator
                 currentLine.Y2 = y;
             }
 
-            lastClick = new Point(e.GetPosition(MainCanvas).X, e.GetPosition(MainCanvas).Y);
+            
         }
         internal void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
@@ -302,7 +302,7 @@ namespace DialogsCreator
                     dilogCopmponent?.Select();
                 }
 
-
+                lastClick = new Point(e.GetPosition(MainCanvas).X, e.GetPosition(MainCanvas).Y);
                 selectedView = e.Source;
                 SelectViewEvent(e.Source);
             }
@@ -609,7 +609,7 @@ namespace DialogsCreator
                 
             }
         }
-        internal void CheckSelectObject(object sender, MouseButtonEventArgs e) // TODO убедиться в корректности работы
+        internal void CheckSelectObject(object sender, MouseButtonEventArgs e)
         {
             if (selectionObject.selected == TypeObject.element)
             {
@@ -657,9 +657,9 @@ namespace DialogsCreator
                 double x = Canvas.GetLeft(elements[i]);
                 Point point = new Point(x, y);
                 modelView.ReplaceCoords(ref element, point);
-                modelView.dialog.positionCanvas = new Point(ScrollViewer.HorizontalOffset, ScrollViewer.VerticalOffset);
                 elements[i].isMove = false;
             }
+            modelView.dialog.positionCanvas = new Point(ScrollViewer.HorizontalOffset, ScrollViewer.VerticalOffset);
         }
         internal bool CheckedMoved()
         {

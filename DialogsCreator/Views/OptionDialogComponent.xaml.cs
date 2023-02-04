@@ -239,7 +239,7 @@ namespace DialogsCreator.Views
 
             TextBlockComponentName.Text = shortName;
         }
-        public void Destroy()
+        public List<LinkDataDialogPackage> Destroy()
         {
             var packages = linkDataOptionPackages.ToList();
 
@@ -271,6 +271,8 @@ namespace DialogsCreator.Views
             canvas.Children.Remove(LeftBindingDialogComponentView);
             canvas.Children.Remove(RightBindingDialogComponentView);
             canvas.Children.Remove(this);
+
+            return packages;
         }
     }
 }

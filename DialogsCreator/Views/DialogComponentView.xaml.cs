@@ -450,13 +450,13 @@ namespace DialogsCreator.Views
             for (int i = 0; i < this.Options.Count; i++)
                 this.Options[i].SetName();
         }
-        public void Destroy()
+        public List<LinkDataDialogPackage> Destroy()
         {
             var options = Options.ToList();
-
+            var packagesInObj = linkDataPackages.ToList();
             foreach (var option in options)
             {
-                option.Destroy();
+                packagesInObj.AddRange(option.Destroy());
                 Options.Remove(option);
             }
 
@@ -490,6 +490,8 @@ namespace DialogsCreator.Views
             canvas.Children.Remove(this.LeftBindingDialogComponentView);
             canvas.Children.Remove(this.RightBindingDialogComponentView);
             canvas.Children.Remove(this);
+            
+            return packagesInObj;
         }
     }
 }

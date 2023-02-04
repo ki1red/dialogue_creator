@@ -396,7 +396,7 @@ namespace DialogsCreator
             else
                 return;
 
-            element.Destroy();
+            LinkDataDialogPackages.Except(element.Destroy());
             modelView.DeleteId((element.Source as SayingElementViewDFD).idElement);
 
             if (element != null)
@@ -704,7 +704,7 @@ namespace DialogsCreator
                 }
             }
 
-            // TODO удаление линий LinkViews
+            LinkDataDialogPackages.Clear();
         }
         private void UpdatePointsViews()
         {

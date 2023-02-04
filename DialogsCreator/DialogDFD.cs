@@ -14,6 +14,7 @@ namespace DialogsCreator
     public class DialogDFDs : IClonable
     {
         public string language;
+        public Point positionCanvas;
         public ElementDFDs[] elements;
 
         public DialogDFDs(string language, ElementDFDs[] elements)
@@ -24,6 +25,7 @@ namespace DialogsCreator
         public DialogDFDs()
         {
             this.language = null;
+            this.positionCanvas = new Point(0, 0);
             this.elements = new ElementDFDs[0];
         }
 
@@ -35,7 +37,7 @@ namespace DialogsCreator
             DialogDFD dialogDFD = obj as DialogDFD;
 
             this.language = dialogDFD.language;
-
+            this.positionCanvas = dialogDFD.positionCanvas;
             this.elements = new ElementDFDs[dialogDFD.elements.Length];
 
             for (int i = 0; i < this.elements.Length; i++)
@@ -185,6 +187,7 @@ namespace DialogsCreator
     public class DialogDFD : IClonable
     {
         public string language;
+        public Point positionCanvas;
         public ElementDFD[] elements;
 
         public DialogDFD(string language, ElementDFD[] elements)
@@ -195,6 +198,7 @@ namespace DialogsCreator
         public DialogDFD()
         {
             this.language = null;
+            this.positionCanvas = new Point(0, 0);
             this.elements = new ElementDFD[0];
         }
 
@@ -237,6 +241,7 @@ namespace DialogsCreator
             DialogDFDs dialogDFDs = obj as DialogDFDs;
 
             this.language = dialogDFDs.language;
+            this.positionCanvas = dialogDFDs.positionCanvas;
             this.elements = new ElementDFD[dialogDFDs.elements.Length];
 
             for (int i = 0; i < this.elements.Length; i++)

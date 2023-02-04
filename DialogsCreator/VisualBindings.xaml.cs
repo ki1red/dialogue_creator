@@ -297,6 +297,7 @@ namespace DialogsCreator
             }
 
             lastClick = new Point(e.GetPosition(MainCanvas).X, e.GetPosition(MainCanvas).Y);
+            
         }
         internal void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
@@ -323,24 +324,24 @@ namespace DialogsCreator
         }
         internal void MainCanvasLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if(e.Source != selectedView) 
-            { 
-                if(selectedView is DialogComponentView) 
+            if (e.Source != selectedView)
+            {
+                if (selectedView is DialogComponentView)
                 {
                     var dilogCopmponent = selectedView as DialogComponentView;
                     dilogCopmponent?.UnSelect();
                 }
 
-                if(e.Source is DialogComponentView) 
+                if (e.Source is DialogComponentView)
                 {
                     var dilogCopmponent = e.Source as DialogComponentView;
                     dilogCopmponent?.Select();
                 }
 
-                selectedView = e.Source;
-            }
 
-            SelectViewEvent(e.Source);
+                selectedView = e.Source;
+                SelectViewEvent(e.Source);
+            }
         }
 
         // ===========================================================================================================================
@@ -355,6 +356,8 @@ namespace DialogsCreator
                     return;
                 selectionObject = new SelectionObject(modelView.dialog, ref ListBox_info, ref ListBoxView);
                 SelectViewEvent += selectionObject.Select;
+
+                SetStartPositionInScrollViewer();
             }
         }
         internal void MenuItem_createFile_Click(object sender, RoutedEventArgs e)
@@ -690,7 +693,7 @@ namespace DialogsCreator
                 double x = Canvas.GetLeft(elements[i]);
                 Point point = new Point(x, y);
                 modelView.ReplaceCoords(ref element, point);
-
+                modelView.dialog.positionCanvas = new Point(ScrollViewer.HorizontalOffset, ScrollViewer.VerticalOffset);
                 elements[i].isMove = false;
             }
         }
@@ -705,8 +708,17 @@ namespace DialogsCreator
         }
         internal void SetStartPositionInScrollViewer()
         {
-            ScrollViewer.ScrollToHorizontalOffset(MainCanvas.Width / 10);
-            ScrollViewer.ScrollToVerticalOffset(MainCanvas.Height / 2);
+            Point point = modelView.dialog.positionCanvas;
+            if (point.X == 0 && point.Y == 0)
+            {
+                ScrollViewer.ScrollToHorizontalOffset(MainCanvas.Width / 10);
+                ScrollViewer.ScrollToVerticalOffset(MainCanvas.Height / 2);
+            }
+            else
+            {
+                ScrollViewer.ScrollToHorizontalOffset(point.X);
+                ScrollViewer.ScrollToVerticalOffset(point.Y);
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace DialogsCreator
     public struct FileDlag
     {
         public const string Filter = $"Game files dialogues (*.{DefaultExt})|*.{DefaultExt}";
-        public static string InitialDirectory = "";
+        public static string InitialDirectory = null;
         public const string DefaultExt = "dlag";
         public const string Title = "Создать игровой файл";
     }
@@ -21,7 +21,7 @@ namespace DialogsCreator
     public struct FileDlt
     {
         public const string Filter = $"Translate files dialogues (*.{DefaultExt})|*.{DefaultExt}";
-        public static string InitialDirectory = "";
+        public static string InitialDirectory = null;
         public const string DefaultExt = "dlt";
         public const string Title = "Создать файл перевода";
     }
@@ -30,7 +30,7 @@ namespace DialogsCreator
     public struct FileDlv
     {
         public const string Filter = $"View files dialogues (*.{DefaultExt})|*.{DefaultExt}";
-        public static string InitialDirectory = "";
+        public static string InitialDirectory = null;
         public const string DefaultExt = "dlv";
         public const string Title = "Создать мусорный файл";
     }
@@ -39,7 +39,7 @@ namespace DialogsCreator
     public struct FileImage
     {
         public const string Filter = "";
-        public static string InitialDirectory = "";
+        public static string InitialDirectory = null;
         public const string DefaultExt = "";
         public const string Title = "Открыть файл изображения";
     }
@@ -48,7 +48,7 @@ namespace DialogsCreator
     public struct FileSound
     {
         public const string Filter = "";
-        public static string InitialDirectory = "";
+        public static string InitialDirectory = null;
         public const string DefaultExt = "";
         public const string Title = "Открыть звуковой файл";
     }

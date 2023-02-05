@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +20,13 @@ namespace DialogsCreator
     {
         private DialogDFD dialog;
         private Dictionary<int, string> elements;
+        private string pathToDlag = null;
+        private string pathToDlt = null;
+        private string pathToDlv = null;
+        private string startDialog = null;
+        private string endDialog = null;
+        private string trashFile = null;
+        private string pathToNextDlag = null;
         public ExportWindow(string pathToDfdFile, string nameDfdFile, string formatDfdFile, DialogDFD dialog)
         {
             InitializeComponent();
@@ -59,16 +68,16 @@ namespace DialogsCreator
         }
         private void InitializeGroupFileDlt()
         {
-            this.TextBox_gameFile.Text = null;
-            this.TextBox_gameFile.IsEnabled = false;
+            this.TextBox_fileTranslate.Text = null;
+            this.TextBox_fileTranslate.IsEnabled = false;
 
             this.Button_createFileTranslate.IsEnabled = true;
             this.Button_createFileTranslate.Click += Button_createFileTranslate_Click;
         }
         private void InitializeGroupFileDlv()
         {
-            this.TextBox_gameFile.Text = null;
-            this.TextBox_gameFile.IsEnabled = true;
+            this.TextBox_trashFile.Text = null;
+            this.TextBox_trashFile.IsEnabled = true;
 
             this.CheckBox_addTrashFile.IsEnabled = true;
             this.CheckBox_addTrashFile.Click += CheckBox_addTrashFile_Click;
@@ -182,35 +191,112 @@ namespace DialogsCreator
 
         private void Button_createGameFile_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = FileDlag.Filter;
+            saveFileDialog.InitialDirectory = FileDlag.InitialDirectory;
+            saveFileDialog.DefaultExt = FileDlag.DefaultExt;
+            saveFileDialog.Title = FileDlag.Title;
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                Stream myStream;
+                if ((myStream = saveFileDialog.OpenFile()) != null)
+                {
+                    myStream.Close();
+                    TextBox_gameFile.Text = GetFile(saveFileDialog.FileName);
+                    pathToDlag = saveFileDialog.FileName;
+                }
+            }
         }
         private void Button_createFileTranslate_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = FileDlt.Filter;
+            saveFileDialog.InitialDirectory = FileDlt.InitialDirectory;
+            saveFileDialog.DefaultExt = FileDlt.DefaultExt;
+            saveFileDialog.Title = FileDlt.Title;
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                Stream myStream;
+                if ((myStream = saveFileDialog.OpenFile()) != null)
+                {
+                    myStream.Close();
+                    TextBox_fileTranslate.Text = GetFile(saveFileDialog.FileName);
+                    pathToDlt = saveFileDialog.FileName;
+                }
+            }
         }
         private void CheckBox_addTrashFile_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (CheckBox_addTrashFile.IsChecked == true && TextBox_trashFile.Text != null)
+            {
+                string[] trashArray = TextBox_trashFile.Text.Split('.');
+                trashFile = $"{trashArray[0]}.dlv";
+                TextBox_trashFile.IsEnabled = false;
+            }
+            else
+            {
+                endDialog = null;
+                TextBox_trashFile.IsEnabled = true;
+            }
         }
         private void CheckBox_addStartDialog_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (CheckBox_addStartDialog.IsChecked == true)
+            {
+                startDialog = ComboBox_startDialog.Items[ComboBox_startDialog.SelectedIndex].ToString();
+                ComboBox_startDialog.IsEnabled = false;
+            }
+            else
+            {
+                startDialog = null;
+                ComboBox_startDialog.IsEnabled = true;
+            }
         }
         private void CheckBox_addEndDialog_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (CheckBox_addEndDialog.IsChecked == true)
+            {
+                endDialog = ComboBox_endDialog.Items[ComboBox_endDialog.SelectedIndex].ToString();
+                ComboBox_endDialog.IsEnabled = false;
+            }
+            else
+            {
+                endDialog = null;
+                ComboBox_endDialog.IsEnabled = true;
+            }
         }
         private void Button_selectNextFile_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = FileDlag.Filter;
+            openFileDialog.DefaultExt = FileDlag.DefaultExt;
+            openFileDialog.Title = "Открыть игровой файл";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                TextBox_fileTranslate.Text = GetFile(openFileDialog.FileName);
+                pathToNextDlag = openFileDialog.FileName;
+            }
         }
 
-        public bool sr(SayingElementDFD first)
+        private bool sr(SayingElementDFD first)
         {
             if (first.text == null && first.type == TypeSayingElementDFD.none && first.idElement == -1 && (first.requests == null || first.requests.Length == 0))
                 return true;
             else
                 return false;
+        }
+        private string GetFile(string text)
+        {
+            string[] pathToFile = text.Split('\\');
+            string file = pathToFile[pathToFile.Length - 1];
+
+            Array.Resize(ref pathToFile, pathToFile.Length - 1);
+            InitializeDirectoryes(String.Join('\\', pathToFile));
+
+            return file;
         }
     }
 }

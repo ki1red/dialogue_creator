@@ -1,0 +1,48 @@
+﻿<Window x:Class="DialogsCreator.ExportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DialogsCreator"
+        mc:Ignorable="d"
+        Title="Экспорт" Height="340" Width="800">
+    <Grid>
+        <Label Content="Рабочий файл" HorizontalAlignment="Left" Margin="37,36,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="TextBox_devFile" HorizontalAlignment="Left" Margin="169,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="469"/>
+        <CheckBox Name="CheckBox_addDevFile" Content="Добавить" HorizontalAlignment="Left" Margin="657,41,0,0" VerticalAlignment="Top" Width="90"/>
+
+
+        <Label Content="Игровой файл" HorizontalAlignment="Left" Margin="37,67,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="TextBox_gameFile" HorizontalAlignment="Left" Margin="169,71,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="469"/>
+        <Button Name="Button_createGameFile" Content="Выбрать" HorizontalAlignment="Left" Margin="657,70,0,0" VerticalAlignment="Top" Width="90"/>
+
+
+        <Label Content="Файл перевода" HorizontalAlignment="Left" Margin="37,98,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="TextBox_fileTranslate" HorizontalAlignment="Left" Margin="169,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="469"/>
+        <Button Name="Button_createFileTranslate" Content="Выбрать" HorizontalAlignment="Left" Margin="657,101,0,0" VerticalAlignment="Top" Width="90"/>
+
+
+        <Label Content="Мусорный файл" HorizontalAlignment="Left" Margin="37,129,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="TextBox_trashFile" HorizontalAlignment="Left" Margin="169,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="469"/>
+        <CheckBox Name="CheckBox_addTrashFile" Content="Добавить" HorizontalAlignment="Left" Margin="657,134,0,0" VerticalAlignment="Top" Width="90"/>
+
+
+        <Label Content="Начальный диалог" HorizontalAlignment="Left" Margin="37,160,0,0" VerticalAlignment="Top"/>
+        <ComboBox Name="ComboBox_startDialog" HorizontalAlignment="Left" Margin="169,162,0,0" VerticalAlignment="Top" Width="469"/>
+        <CheckBox Name="CheckBox_addStartDialog" Content="Добавить" HorizontalAlignment="Left" Margin="657,165,0,0" VerticalAlignment="Top" Width="90"/>
+
+
+        <Label Content="Конечный диалог" HorizontalAlignment="Left" Margin="37,191,0,0" VerticalAlignment="Top"/>
+        <ComboBox Name="ComboBox_endDialog" HorizontalAlignment="Left" Margin="169,193,0,0" VerticalAlignment="Top" Width="469"/>
+        <CheckBox Name="CheckBox_addEndDialog" Content="Добавить" HorizontalAlignment="Left" Margin="657,196,0,0" VerticalAlignment="Top" Width="90"/>
+
+
+        <Label Content="Следующий файл" HorizontalAlignment="Left" Margin="37,222,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="TextBox_selectNextFile" HorizontalAlignment="Left" Margin="169,226,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="469"/>
+        <Button Name="Button_selectNextFile" Content="Выбрать" HorizontalAlignment="Left" Margin="657,225,0,0" VerticalAlignment="Top" Width="90"/>
+        
+        
+        <Button Name="Button_createFile" Content="Создать" HorizontalAlignment="Left" Margin="413,277,0,0" VerticalAlignment="Top" Width="90"/>
+        <CheckBox Name="CheckBox_cryptFile" Content="Зашифровать" HorizontalAlignment="Left" Margin="293,279,0,0" VerticalAlignment="Top"/>
+    </Grid>
+</Window>

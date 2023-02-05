@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -237,9 +238,7 @@ namespace DialogsCreator
                     }
                 }
             }
-
-
-
+ 
             else if ((startBindingDialogComponentView != null) && currentLine != null)
             {
                 var x = currentLine.X2;
@@ -395,8 +394,12 @@ namespace DialogsCreator
                 element = selectionObject.element;
             else
                 return;
-
-            LinkDataDialogPackages.Except(element.Destroy());
+           
+            foreach(var link in element.Destroy())
+            {
+                LinkDataDialogPackages.Remove(link);
+            }
+            
             modelView.DeleteId((element.Source as SayingElementViewDFD).idElement);
 
             if (element != null)
@@ -705,7 +708,10 @@ namespace DialogsCreator
                 var objInScene = elements.ToList();
                 foreach (var obj in objInScene)
                 {
-                    obj.Destroy();
+                    foreach (var link in obj.Destroy())
+                    {
+                        LinkDataDialogPackages.Remove(link);
+                    }
                     elements.Remove(obj);
                 }
             }

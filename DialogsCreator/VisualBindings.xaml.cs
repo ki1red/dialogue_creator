@@ -229,8 +229,17 @@ namespace DialogsCreator
                         currentLine.Y2 = Canvas.GetTop(endBindingDialogComponentView) + endBindingDialogComponentView.Height / 2;
 
                         linesCollection.Add(currentLine);
-                        LinkDataDialogPackages.Add(startBindingDialogComponentView.LinkWith(endBindingDialogComponentView, linesCollection));
-
+                        try{ 
+                            LinkDataDialogPackages.Add(startBindingDialogComponentView.LinkWith(endBindingDialogComponentView, linesCollection)); 
+                        }
+                        catch(Exception exp)
+                        {
+                            MessageBox.Show($"{exp.Message}","Error!");
+                            foreach(Line line in linesCollection) 
+                            {
+                                MainCanvas.Children.Remove(line);
+                            }
+                        }
                         linesCollection.Clear();
                         currentLine = null;
                         startBindingDialogComponentView = null;

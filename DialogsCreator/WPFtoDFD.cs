@@ -11,6 +11,8 @@ using System.Runtime.Serialization.Json;
 using System.Windows.Shapes;
 using System.Windows.Input;
 using Point = System.Windows.Point;
+using DialogsCreator.Views;
+using System.Collections.ObjectModel;
 
 namespace DialogsCreator
 {
@@ -74,7 +76,7 @@ namespace DialogsCreator
                 manager.SaveFile(json);
             else
                 if (manager.SaveAsFile(path, json) == false)
-                    return;
+                return;
         }
         // Добавление объекта без связей
         public void AddEmptyElement(ElementDFD element)
@@ -89,6 +91,24 @@ namespace DialogsCreator
 
             dialog.Add(element);
         }
+
+        public void UpdateLinkeds(ref ObservableCollection<DialogComponentView> views)
+        {
+            for (int i = 0; i < views.Count; i++)
+            {
+                (views[i].Source as SayingElementViewDFD).UpdateElement(dialog.elements[i].question);
+
+                for (int j = 0; j < views[i].Options.Count; j++)
+                    (views[i].Options[j].OptionSource as SayingElementViewDFD).UpdateElement(dialog.elements[i].answers[j]);
+            }
+        }
+        private ref SayingElementDFD UpdateSayingElementDFD(ref SayingElementDFD sayingElement, ElementDFD element)
+        {
+            sayingElement.idElement = element.idElement;
+            return ref sayingElement;
+        }
+
+
         // Установка координат объекту View
         public void ReplaceCoords(ref ElementDFD element, Point pointNew)
         {
@@ -111,7 +131,7 @@ namespace DialogsCreator
                 if (element.idElement > id)
                     element.idElement = element.idElement - 1; // уменьшение id
 
-                ref SayingElementDFD question = ref element.question;
+                ref SayingElementDFD question = ref UpdateSayingElementDFD(ref element.question, element);
 
                 for (int j = 0; j < question.requests.Length; j++) // если в вопросе есть связь с удаляемым элементом
                 {
@@ -138,11 +158,11 @@ namespace DialogsCreator
 
                 for (int j = 0; j < element.answers.Length; j++) // если в ответах есть связь с удаляемым элементом
                 {
-                    ref SayingElementDFD answer = ref element.answers[j];
+                    ref SayingElementDFD answer = ref UpdateSayingElementDFD(ref element.answers[j], element);
 
                     for (int g = 0; g < answer.requests.Length; g++)
                     {
-                        ref SayingElementDFD request = ref answer.requests[g];
+                        ref SayingElementDFD request = ref answer.requests[g]; 
 
                         if (request == delElement.question) // если есть связь с вопросом удаляемого элемента
                             request = null;

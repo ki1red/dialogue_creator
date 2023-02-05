@@ -402,8 +402,10 @@ namespace DialogsCreator
             
             modelView.DeleteId((element.Source as SayingElementViewDFD).idElement);
 
+
             if (element != null)
                 elements.Remove(element);
+            modelView.UpdateLinkeds(ref elements);
 
             selectionObject.Select(null);
 

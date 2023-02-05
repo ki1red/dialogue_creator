@@ -499,9 +499,15 @@ namespace DialogsCreator
             this.elementNew = sayingElement;
         }
 
-        public void UpdateElement()
+        public void UpdateElement(SayingElementDFD sayingElement)
         {
-            this.elementOld = this.elementNew;
+            this.idElement = sayingElement.idElement;
+
+            this.elementOld.idElement = this.elementNew.idElement;
+            this.elementOld.text = this.elementNew.text;
+
+            this.elementNew.idElement = sayingElement.idElement;
+            this.elementNew.text = sayingElement.text;
         }
         public override void Bounds(LinkedObject output, LinkedObject input)
         {

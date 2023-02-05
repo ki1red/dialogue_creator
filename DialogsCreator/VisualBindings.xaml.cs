@@ -212,7 +212,7 @@ namespace DialogsCreator
                     currentLine.StrokeStartLineCap = PenLineCap.Round;
                     currentLine.StrokeEndLineCap = PenLineCap.Round;
 
-                    currentLine.StrokeThickness = 5;
+                    currentLine.StrokeThickness = 2;
                     currentLine.X1 = Canvas.GetLeft(startBindingDialogComponentView) + startBindingDialogComponentView.Width / 2;
                     currentLine.Y1 = Canvas.GetTop(startBindingDialogComponentView) + startBindingDialogComponentView.Height / 2;
 
@@ -248,7 +248,7 @@ namespace DialogsCreator
 
                 currentLine = new Line();
                 currentLine.Stroke = new SolidColorBrush(Colors.Black);
-                currentLine.StrokeThickness = 5;
+                currentLine.StrokeThickness = 2;
                 currentLine.StrokeStartLineCap = PenLineCap.Round;
                 currentLine.StrokeEndLineCap = PenLineCap.Round;
                 MainCanvas.Children.Add(currentLine);
@@ -646,7 +646,7 @@ namespace DialogsCreator
                     MainCanvas.Children.Add(line);
                     
                     line.Stroke = new SolidColorBrush(Colors.Black);
-                    line.StrokeThickness = 5;
+                    line.StrokeThickness = 2;
                     line.StrokeStartLineCap = PenLineCap.Round;
                     line.StrokeEndLineCap = PenLineCap.Round;
 

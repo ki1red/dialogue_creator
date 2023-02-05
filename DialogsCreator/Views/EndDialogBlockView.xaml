@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="DialogsCreator.Views.EndDialogBlockView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DialogsCreator.Views"
+             mc:Ignorable="d" 
+             >
+    <Border CornerRadius="8" BorderThickness="2" Background="#FF1A1A1A" Padding="25,5,25,5" BorderBrush="#FF0982F1">
+        <Grid>
+            <TextBlock Text="End 1" VerticalAlignment="Center" Foreground="#FF0982F1" HorizontalAlignment="Center"/>
+            <Rectangle HorizontalAlignment="Left" Height="39" Margin="-12,-5,0,-5" Stroke="#FF0982F1" VerticalAlignment="Top" Width="4" Fill="#FF0982F1"/>
+            <Rectangle HorizontalAlignment="Right" Height="39" Margin="0,-5,-12,-5" Stroke="#FF007FF5" VerticalAlignment="Top" Width="4" Fill="#FF0982F1"/>
+        </Grid>
+    </Border>
+</UserControl>

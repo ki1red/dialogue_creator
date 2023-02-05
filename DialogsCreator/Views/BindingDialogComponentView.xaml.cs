@@ -36,6 +36,18 @@ namespace DialogsCreator.Views
             TypePointBinding = type;
             Id = id;
         }
+        private void IsPossiableLink(BindingDialogComponentView other) 
+        {
+            if (parent is DialogComponentView) 
+            {
+                if (other.parent is DialogComponentView) throw new ArgumentException("");
+            }
+            else if(parent is OptionDialogComponent) 
+            { 
+            
+            }
+
+        }
 
         public LinkDataDialogPackage LinkWith(BindingDialogComponentView other, List<Line> lines)
         {
@@ -48,6 +60,15 @@ namespace DialogsCreator.Views
             if (other.parent == this.parent)
                 throw new ArgumentException("You try link two BindingDialogComponentView with same parent");
 
+            if(this.TypePointBinding == TypePointBindingView.OutTypePoint && other.TypePointBinding == TypePointBindingView.OutTypePoint)
+                throw new ArgumentException("You don't can links Output Point with Output Point");
+
+            if (this.TypePointBinding == TypePointBindingView.InputTypePoint && other.TypePointBinding == TypePointBindingView.InputTypePoint)
+                throw new ArgumentException("You don't can links InputTypePoint with InputTypePoint");
+
+            if (this.TypePointBinding == TypePointBindingView.InputTypePoint && other.TypePointBinding == TypePointBindingView.OutTypePoint)
+                throw new ArgumentException("You don't can links InputTypePoint with OutTypePoint");
+            
 
             var nlines = new List<Line>();
             nlines.AddRange(lines);

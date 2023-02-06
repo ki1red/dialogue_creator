@@ -49,7 +49,8 @@ namespace DialogsCreator
             this.id = id;
             this.textId = textId;
             this.options = options;
-            this.nextLineId = nextLineId;            this.pathToImage = pathToImage;
+            this.nextLineId = nextLineId;
+            this.pathToImage = pathToImage;
             this.pathToSound = pathToSound;
         }
 

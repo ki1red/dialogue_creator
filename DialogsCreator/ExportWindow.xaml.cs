@@ -384,7 +384,11 @@ namespace DialogsCreator
                 dialogLine = new DialogLineDTO();
 
                 dialogLine.id = dialog.elements[i].idElement;
-                dialogLine.nextLineId = dialog.elements[i].question.nextElement.idElement;
+
+                if (dialog.elements[i].question.nextElement != null)
+                    dialogLine.nextLineId = dialog.elements[i].question.nextElement.idElement;
+                else
+                    dialogLine.nextLineId = -1;
                 if (dialog.elements[i].pathToImage != null)
                     dialogLine.pathToImage = dialog.elements[i].pathToImage.Split("\\")[dialog.elements[i].pathToImage.Split("\\").Length - 1];
                 else
@@ -407,8 +411,11 @@ namespace DialogsCreator
                     option = new OptionDTO();
 
                     option.id = j; // локальный id
-                    option.nextLineId = dialog.elements[i].answers[j].nextElement.idElement;
 
+                    if (dialog.elements[i].answers[j].nextElement != null)
+                        option.nextLineId = dialog.elements[i].answers[j].nextElement.idElement;
+                    else
+                        option.nextLineId = -1;
                     option.textId = id;
                     AddText(id, dialog.elements[i].answers[j].text);
                     id++;
@@ -435,7 +442,7 @@ namespace DialogsCreator
                         int optionId = -1;
                         ref ElementDFD el = ref dialog.Search(required.dialogLineId);
                         for (int k = 0; k < el.answers.Length; k++)
-                            if (el.answers[k] != dialog.elements[i].answers[j].requests[g])
+                            if (el.answers[k] == dialog.elements[i].answers[j].requests[g])
                                 optionId = k;
                         if (optionId != -1)
                             required.optionId = optionId;
@@ -475,7 +482,9 @@ namespace DialogsCreator
         }
         private bool sr(SayingElementDFD first)
         {
-            if (first.text == null && first.type == TypeSayingElementDFD.none && first.idElement == -1 && (first.requests == null || first.requests.Length == 0))
+            if (first == null)
+                return true;
+            else if (first.text == null && first.type == TypeSayingElementDFD.none && first.idElement == -1 && (first.requests == null || first.requests.Length == 0))
                 return true;
             else
                 return false;

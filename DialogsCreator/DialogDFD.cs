@@ -477,11 +477,15 @@ namespace DialogsCreator
             this.text = sayingElementDFDs.text;
             this.type = sayingElementDFDs.type;
 
-            this.nextElement = new SayingElementDFD(sayingElementDFDs.nextElement);
+            //this.nextElement = new SayingElementDFD(sayingElementDFDs.nextElement);
 
-            this.requests = new SayingElementDFD[sayingElementDFDs.requests.Length];
-            for (int i = 0; i < this.requests.Length; i++)
-                this.requests[i] = new SayingElementDFD(sayingElementDFDs.requests[i]);
+            //this.requests = new SayingElementDFD[sayingElementDFDs.requests.Length];
+            //for (int i = 0; i < this.requests.Length; i++)
+            //    this.requests[i] = new SayingElementDFD(sayingElementDFDs.requests[i]);
+
+            this.nextElement = null;
+
+            this.requests = new SayingElementDFD[0];
         }
     }
 

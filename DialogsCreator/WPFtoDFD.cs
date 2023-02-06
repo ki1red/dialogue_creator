@@ -50,17 +50,17 @@ namespace DialogsCreator
                 manager.language = manager.ToLanguage(dialogSecure.language);
 
             dialog.Clone(dialogSecure);// TODO проверить
-            for (int i = 0; i < dialog.elements.Length; i++)
-            {
-                ref ElementDFD element = ref dialog.elements[i];
-                element.question.SetLinkeds(dialog);
+            //for (int i = 0; i < dialog.elements.Length; i++)
+            //{
+            //    ref ElementDFD element = ref dialog.elements[i];
+            //    element.question.SetLinkeds(dialog);
 
-                for (int j = 0; j < element.answers.Length; j++)
-                {
-                    ref SayingElementDFD sayingElement = ref element.answers[j];
-                    sayingElement.SetLinkeds(dialog);
-                }
-            }
+            //    for (int j = 0; j < element.answers.Length; j++)
+            //    {
+            //        ref SayingElementDFD sayingElement = ref element.answers[j];
+            //        sayingElement.SetLinkeds(dialog);
+            //    }
+            //}
             id = GetIdLastElement();
         }
         public void SerializationDFD(string path = null)

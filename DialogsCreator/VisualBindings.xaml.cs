@@ -119,6 +119,7 @@ namespace DialogsCreator
             this.MenuItem_saveFile.Click += MenuItem_saveFile_Click;
             this.MenuItem_saveAsFile.Click += MenuItem_saveAsFile_Click;
             this.MenuItem_closeFile.Click += MenuItem_closeFile_Click;
+            this.MenuItem_exportFile.Click += MenuItem_exportFile_Click;
 
             this.MenuItem_createFile.Click += UpdateWindowElements;
             this.MenuItem_openFile.Click += UpdateWindowElements;
@@ -130,6 +131,7 @@ namespace DialogsCreator
             this.MenuItem_deleteObject.Click += MenuItem_deleteObject_Click;
             this.MenuItem_editObject.Click += MenuItem_editObject_Click;
         }
+
         internal void InitializeSubscribedMouseForCanvas()
         {
             MainCanvas.MouseLeftButtonDown += MainCanvas_MouseDown;
@@ -379,6 +381,11 @@ namespace DialogsCreator
         {
             SaveAndClose();
         }
+        internal void MenuItem_exportFile_Click(object sender, RoutedEventArgs e)
+        {
+            ExportWindow window = new ExportWindow(manager.path, manager.file, "dfd", modelView.dialog);
+            window.ShowDialog();
+        }
         internal void MenuItem_addObject_Click(object sender, RoutedEventArgs e)
         {
 
@@ -467,7 +474,12 @@ namespace DialogsCreator
                 {
                     modelView.DesirializationDFD();
                     InitializingDialogComponentsView();
+
                 }
+
+                if (modelView.dialog.elements.Length > 0)
+                    this.MenuItem_exportFile.IsEnabled = true;
+
                 this.Title = $"{windowTitle} Открыт файл {manager.file}.{FileManager.type}";
                 this.Label_informationOfLanguage.Content = $"{languageTitle}: {manager.language}";
                 this.ScrollViewer.IsEnabled = true;
@@ -480,6 +492,7 @@ namespace DialogsCreator
                 this.MenuItem_saveAsFile.IsEnabled = false;
                 this.MenuItem_saveFile.IsEnabled = false;
                 this.MenuItem_closeFile.IsEnabled = false;
+                this.MenuItem_exportFile.IsEnabled = false;
 
                 this.MenuItem_objectSettings.IsEnabled = false;
                 this.MenuItem_addObject.IsEnabled = false;

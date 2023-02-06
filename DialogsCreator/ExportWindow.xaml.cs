@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,14 +19,18 @@ namespace DialogsCreator
 {
     public partial class ExportWindow : Window
     {
+        private byte[] cryptLanguage = new byte[32] { 4, 19, 38, 29, 250, 173, 195, 136, 133, 251, 192, 37, 55, 12, 222, 210, 102, 32, 99, 10, 28, 22, 13, 49, 31, 55, 27, 29, 138, 9, 11, 93 };
+        private byte[] cryptGame = new byte[32] { 18, 39, 20, 19, 222, 19, 211, 10, 1, 255, 39, 12, 14, 155, 19, 33, 123, 176, 182, 150, 214, 13, 165, 200, 53, 164, 177, 234, 55, 155, 255, 91 };
+
+        private DialogDTO dialogDTO = new DialogDTO();
         private DialogDFD dialog;
         private Dictionary<int, string> elements;
+        private Dictionary<int, string> allTexts = new Dictionary<int, string>();
         private string pathToDlag = null;
         private string pathToDlt = null;
-        private string pathToDlv = null;
+        private string trashFile = null;
         private string startDialog = null;
         private string endDialog = null;
-        private string trashFile = null;
         private string pathToNextDlag = null;
         public ExportWindow(string pathToDfdFile, string nameDfdFile, string formatDfdFile, DialogDFD dialog)
         {
@@ -42,8 +47,43 @@ namespace DialogsCreator
             InitializeGroupStartDialog();
             InitializeGroupEndDialog();
             InitializeNextFileDlag();
+
+            this.Button_createFile.Click += Button_createFile_Click;
         }
 
+        private void Button_createFile_Click(object sender, RoutedEventArgs e)
+        {
+            string check;
+            if ((check = CheckValidation()) != null)
+            {
+                MessageBox.Show(check, "Ошибка");
+                return;
+            }
+
+            if (!Write())
+                return;
+
+            string jsonDlag = JsonConvert.SerializeObject(dialogDTO, Formatting.Indented);
+            string jsonDlt = JsonConvert.SerializeObject(allTexts, Formatting.Indented);
+
+            if (CheckBox_cryptFile.IsChecked == true)
+            {
+                var encryptDlag = EncryptJSON.Encrypt(jsonDlag, cryptGame);
+                var encryptDlt = EncryptJSON.Encrypt(jsonDlt, cryptLanguage);
+
+
+                File.WriteAllBytes(pathToDlag, encryptDlag);
+                File.WriteAllBytes(pathToDlt, encryptDlt);
+            }
+            else
+            {
+                File.WriteAllText(pathToDlag, jsonDlag);
+                File.WriteAllText(pathToDlt, jsonDlt);
+            }
+
+            MessageBox.Show("Экспорт завершён!");
+            this.Close();
+        }
         private void InitializeDirectoryes(string initialDirectory)
         {
             FileDlag.InitialDirectory = initialDirectory;
@@ -229,7 +269,7 @@ namespace DialogsCreator
         }
         private void CheckBox_addTrashFile_Click(object sender, RoutedEventArgs e)
         {
-            if (CheckBox_addTrashFile.IsChecked == true && TextBox_trashFile.Text != null)
+            if (CheckBox_addTrashFile.IsChecked == true && TextBox_trashFile.Text != null && TextBox_trashFile.Text.Length > 0)
             {
                 string[] trashArray = TextBox_trashFile.Text.Split('.');
                 trashFile = $"{trashArray[0]}.dlv";
@@ -237,8 +277,9 @@ namespace DialogsCreator
             }
             else
             {
-                endDialog = null;
+                TextBox_trashFile.Text = null;
                 TextBox_trashFile.IsEnabled = true;
+                CheckBox_addTrashFile.IsChecked = false;
             }
         }
         private void CheckBox_addStartDialog_Click(object sender, RoutedEventArgs e)
@@ -280,7 +321,158 @@ namespace DialogsCreator
                 pathToNextDlag = openFileDialog.FileName;
             }
         }
+        private string CheckValidation()
+        {
+            if (pathToDlag == null)
+                return "Отсутствует игровой файл";
+            if (pathToDlt == null)
+                return "Отсутствует файл перевода";
 
+            string[] pathDlag = pathToDlag.Split("\\");
+            string[] pathDlt = pathToDlt.Split("\\");
+
+            for (int i = 0; i < pathDlag.Length-1; i++)
+                if (pathDlag[i] != pathDlt[i])
+                    return "Диреткории игрового и файла перевода различны";
+
+            if (startDialog == null || CheckBox_addStartDialog.IsChecked == false)
+                return "Не указан начальный файл";
+
+            if (endDialog == null || CheckBox_addEndDialog.IsChecked == false)
+                return "Не указан конечной файл";
+
+            return null;
+        }
+
+        private void AddText(int idText, string text)
+        {
+            this.allTexts.Add(idText, text);
+        }
+        private bool Write()
+        {
+            dialogDTO = new DialogDTO();
+
+            dialogDTO.textPaths = new TextPathDTO[1];
+            dialogDTO.textPaths[0] = new TextPathDTO();
+            dialogDTO.textPaths[0].path = pathToDlt.Split("\\")[pathToDlt.Split("\\").Length - 1]; // файл в этой же директории
+            dialogDTO.textPaths[0].language = dialog.language;
+
+            bool start = false, end = false;
+            for (int i = 0; i < elements.Count; i++)
+            {
+                if (elements[i] == startDialog)
+                {
+                    dialogDTO.firstLineId = i;
+                    start = true;
+                }
+                if (elements[i] == endDialog)
+                {
+                    dialogDTO.lastLineId = i;
+                    end = true;
+                }
+                if (start && end)
+                    break;
+            }
+
+            dialogDTO.nextDialogPath = pathToNextDlag;
+
+            int id = 0;
+            dialogDTO.dialogLines = new DialogLineDTO[dialog.elements.Length];
+            for (int i = 0; i < dialogDTO.dialogLines.Length; i++)
+            {
+                ref DialogLineDTO dialogLine = ref dialogDTO.dialogLines[i];
+                dialogLine = new DialogLineDTO();
+
+                dialogLine.id = dialog.elements[i].idElement;
+                dialogLine.nextLineId = dialog.elements[i].question.nextElement.idElement;
+                if (dialog.elements[i].pathToImage != null)
+                    dialogLine.pathToImage = dialog.elements[i].pathToImage.Split("\\")[dialog.elements[i].pathToImage.Split("\\").Length - 1];
+                else
+                    dialogLine.pathToImage = null;
+
+                if (dialog.elements[i].pathToSound != null)
+                    dialogLine.pathToSound = dialog.elements[i].pathToSound.Split("\\")[dialog.elements[i].pathToSound.Split("\\").Length - 1];
+                else
+                    dialogLine.pathToSound = null;
+
+                dialogLine.textId = id;
+                AddText(id, dialog.elements[i].question.text);
+                id++;
+
+                dialogLine.options = new OptionDTO[dialog.elements[i].answers.Length];
+
+                for (int j = 0; j < dialogLine.options.Length; j++)
+                {
+                    ref OptionDTO option = ref dialogLine.options[j];
+                    option = new OptionDTO();
+
+                    option.id = j; // локальный id
+                    option.nextLineId = dialog.elements[i].answers[j].nextElement.idElement;
+
+                    option.textId = id;
+                    AddText(id, dialog.elements[i].answers[j].text);
+                    id++;
+                }
+            }
+
+            for (int i = 0; i < dialogDTO.dialogLines.Length; i++)
+            {
+                ref DialogLineDTO dialogLine = ref dialogDTO.dialogLines[i];
+
+                for (int j = 0; j < dialogLine.options.Length; j++)
+                {
+                    ref OptionDTO option = ref dialogLine.options[j];
+
+                    option.requiredAnswers = new RequiredAnswerDTO[dialog.elements[i].answers[j].requests.Length];
+                    for (int g = 0; g < option.requiredAnswers.Length; g++)
+                    {
+                        ref RequiredAnswerDTO required = ref option.requiredAnswers[g];
+
+                        required = new RequiredAnswerDTO();
+
+                        required.dialogLineId = dialog.elements[i].answers[j].requests[g].idElement;
+
+                        int optionId = -1;
+                        ref ElementDFD el = ref dialog.Search(required.dialogLineId);
+                        for (int k = 0; k < el.answers.Length; k++)
+                            if (el.answers[k] != dialog.elements[i].answers[j].requests[g])
+                                optionId = k;
+                        if (optionId != -1)
+                            required.optionId = optionId;
+                        else
+                        {
+                            MessageBox.Show($"У {dialogLine.id} объекта в ответе {option.id} отсутствует запрос {g}", "Ошибка");
+                            return false;
+                        }
+
+                        if (required.optionId == -1)
+                        {
+                            MessageBox.Show($"Запрос {g} элемента {i} в ответе {j} не был найден", "Ошибка");
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private int GetIdRequiredOption(string text)
+        {
+            int id = 0;
+            for (int i = 0; i < allTexts.Count; i++)
+                if (allTexts[i] == text)
+                {
+                    id = i;
+                    break;
+                }
+
+            foreach (var dialogLine in dialogDTO.dialogLines)
+                for (int i = 0; i < dialogLine.options.Length; i++)
+                    if (dialogLine.options[i].textId == id)
+                        return i;
+            return -1;
+        }
         private bool sr(SayingElementDFD first)
         {
             if (first.text == null && first.type == TypeSayingElementDFD.none && first.idElement == -1 && (first.requests == null || first.requests.Length == 0))

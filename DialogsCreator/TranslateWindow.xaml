@@ -20,6 +20,8 @@
             </MenuItem>
         </Menu>
 
-        <DataGrid Name="DataGrid_generalList" Margin="0,25,0,0" Foreground="#FF13A9F7" Background="#FF252424"/>
+        <ScrollViewer Margin="0,25,0,0" >
+            <DataGrid Name="DataGrid_generalList" RowHeight="70" MouseDoubleClick="DataGrid_generalList_MouseDoubleClick" CellEditEnding="dataGrid_CellEditEnding" CanUserSortColumns="False" SelectionMode="Single" IsReadOnly="False" CanUserResizeColumns="False" CanUserResizeRows="True" SelectionUnit="Cell" ColumnWidth="*" Foreground="#FF13A9F7" Background="#FF252424"/>
+        </ScrollViewer>
     </Grid>
 </Window>

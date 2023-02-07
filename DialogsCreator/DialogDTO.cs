@@ -38,15 +38,17 @@ namespace DialogsCreator
     public class DialogLineDTO
     {
         public int id;
+        public int characterId;
         public int textId;
         public int nextLineId;
         public string pathToImage;
         public string pathToSound;
         public OptionDTO[] options;
 
-        public DialogLineDTO(int id, int textId, OptionDTO[] options, int nextLineId, string pathToImage, string pathToSound)
+        public DialogLineDTO(int id, int characterId, int textId, OptionDTO[] options, int nextLineId, string pathToImage, string pathToSound)
         {
             this.id = id;
+            this.characterId = characterId;
             this.textId = textId;
             this.nextLineId = nextLineId;
             this.pathToImage = pathToImage;
@@ -57,6 +59,7 @@ namespace DialogsCreator
         public DialogLineDTO()
         {
             this.id = -1;
+            this.characterId = -1;
             this.textId = -1;
             this.nextLineId = -1;
             this.pathToImage = null;

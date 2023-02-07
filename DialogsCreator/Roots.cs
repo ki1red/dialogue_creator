@@ -9,7 +9,7 @@ namespace DialogsCreator
     public enum TypeUser
     {
         none = 0,
-        admin = 1,
+        painter = 1,
         scenarist = 2,
         translator = 3
     }
@@ -33,8 +33,8 @@ namespace DialogsCreator
         {
             switch (typeUser)
             {
-                case "admin":
-                    return TypeUser.admin;
+                case "painter":
+                    return TypeUser.painter;
                 case "scenarist":
                     return TypeUser.scenarist;
                 case "translator":

@@ -38,18 +38,18 @@ namespace DialogsCreator
     // Файл изображений
     public struct FileImage
     {
-        public const string Filter = "";
+        public const string Filter = "Image Files(*.jpeg;*.jpg;*.png;*.gif)|*.jpeg;*.jpg;*.png*.gif";
         public static string InitialDirectory = null;
-        public const string DefaultExt = "";
+        public const string DefaultExt = "*.png";
         public const string Title = "Открыть файл изображения";
     }
 
     // Звуковой файл
     public struct FileSound
     {
-        public const string Filter = "";
+        public const string Filter = "Audio Files(*.mp3;*.wav;*.m4a;*.aac)|*.mp3;*.wav;*.m4a;*.aac";
         public static string InitialDirectory = null;
-        public const string DefaultExt = "";
+        public const string DefaultExt = "*.mp3";
         public const string Title = "Открыть звуковой файл";
     }
 }

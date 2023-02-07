@@ -39,6 +39,9 @@ namespace DialogsCreator
         private string pathToNewDlt = null;
         private string nameNewDlt = null;
 
+        private string pathToDlag = null;
+        private string nameDlag = null;
+
         public TranslateWindow()
         {
             InitializeComponent();
@@ -119,6 +122,11 @@ namespace DialogsCreator
                     return;
                 }
 
+                string[] path = openFileDialog.FileName.Split("\\");
+                nameDlag = path[path.Length-1];
+                Array.Resize(ref path, path.Length - 1);
+                pathToDlag = String.Join("\\", path);
+
                 dlagOpen = true;
             }
             else return;
@@ -133,6 +141,9 @@ namespace DialogsCreator
             if (!open)
             {
                 MessageBox.Show("Не получилось открыть файл перевода", "Ошибка");
+
+                nameDlag = null;
+                pathToDlag = null;
 
                 dlagOpen = false;
                 dltOpen = false;
@@ -170,15 +181,88 @@ namespace DialogsCreator
         }
         private void MenuItem_saveFile_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (!SerializationDTO())
+                return;
         }
         private void MenuItem_closeFile_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            listBoxNew.Items.Clear();
+            listBoxOld.Items.Clear();
+
+            newTextLanguage = null;
+            defaultTextLanguage = null;
+            dialog = null;
+            typeOldLanguage = null;
+            typeNewLanguage = null;
+            randomIndex = null;
+            pathToNewDlt = null;
+            nameNewDlt = null;
+
+            dltOpenn = false;
+            dltOpen = false;
+            dlagOpen = false;
         }
         private void MenuItem_completeTranslate_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (newTextLanguage == null || newTextLanguage.Count != defaultTextLanguage.Count)
+            {
+                MessageBox.Show("Количество текстов в переводах не совпадает","Ошибка");
+                return;
+            }
+            ref TextPathDTO[] texts = ref dialog.textPaths;
+            for (int i = 0; i < texts.Length; i++)
+                if (texts[i].language == typeNewLanguage)
+                {
+                    MessageBoxResult res = MessageBox.Show("Такой перевод для файла уже существует. Перезаписать?", "Ошибка", MessageBoxButton.YesNo);
+                    if (res == MessageBoxResult.Yes)
+                    {
+                        texts[i].path = $"{nameNewDlt}";
+
+                        string json1 = JsonConvert.SerializeObject(dialog, Formatting.Indented);
+
+                        if (json1 == null)
+                        {
+                            MessageBox.Show("Не удалось скомпилировать", "Ошибка");
+                            return;
+                        }
+
+                        byte[] data1 = EncryptJSON.Encrypt(json1, cryptGame);
+
+                        if (data1 == null || data1.Length == 0)
+                        {
+                            MessageBox.Show("Не удалось скомпилировать", "Ошибка");
+                            return;
+                        }
+
+                        File.WriteAllBytes($"{pathToDlag}\\{nameDlag}", data1);
+                        MessageBox.Show("Игровой файл перезаписан!");
+                        return;
+                    }
+                    else
+                        return;
+                }
+            Array.Resize(ref texts, texts.Length+1);
+            texts[texts.Length - 1] = new TextPathDTO(typeNewLanguage, $"{nameNewDlt}");
+
+            string json = JsonConvert.SerializeObject(dialog, Formatting.Indented);
+
+            if (json == null)
+            {
+                MessageBox.Show("Не удалось скомпилировать", "Ошибка");
+                return;
+            }
+
+            byte[] data = EncryptJSON.Encrypt(json, cryptGame);
+
+            if (data == null || data.Length == 0)
+            {
+                MessageBox.Show("Не удалось скомпилировать", "Ошибка");
+                return;
+            }
+
+            File.WriteAllBytes($"{pathToDlag}\\{nameDlag}", data);
+
+            MessageBox.Show("Игровой файл перезаписан!");
         }
 
         // ===========================================================================================================================
@@ -237,7 +321,7 @@ namespace DialogsCreator
             }
             else
             {
-                listNew = new List<string>(listOld);
+                listNew = new List<string>(listOld.Count);
             }
 
             for (int i = 0; i < listOld.Count; i++)
@@ -312,7 +396,25 @@ namespace DialogsCreator
         }
         private bool SerializationDTO()
         {
-            return false;
+            newTextLanguage = new Dictionary<int, string>();
+            for (int i = 0; i < listBoxNew.Items.Count; i++)
+            {
+                int j = randomIndex[i];
+                newTextLanguage.Add(i, (listBoxNew.Items[j] as TextBox).Text);
+            }
+
+            string json = JsonConvert.SerializeObject(newTextLanguage, Formatting.Indented);
+
+            if (json == null)
+                return false;
+
+            byte[] data = EncryptJSON.Encrypt(json, cryptLanguage);
+            if (data == null || data.Length == 0)
+                return false;
+
+            File.WriteAllBytes($"{pathToNewDlt}\\{nameNewDlt}", data);
+
+            return true;
         }
         private bool OpenDlag(string pathToDlag)
         {
@@ -381,12 +483,13 @@ namespace DialogsCreator
                     else
                     {
                         Language language = DialogsCreator.Language.none;
-                        SelectLanguageWindow window = new SelectLanguageWindow(); // требование указать язык файла
+                        SelectLanguageWindow window; // требование указать язык файла
                         do
                         {
+                            window = new SelectLanguageWindow();
                             window.ShowDialog();
                             language = window.language;
-                        } while (language == DialogsCreator.Language.none);
+                        } while (language == DialogsCreator.Language.none || language.ToString() == typeOldLanguage);
 
                         typeNewLanguage = language.ToString();
 
@@ -423,12 +526,13 @@ namespace DialogsCreator
                 else
                 {
                     Language language = DialogsCreator.Language.none;
-                    SelectLanguageWindow window = new SelectLanguageWindow(); // требование указать язык файла
+                    SelectLanguageWindow window; // требование указать язык файла
                     do
                     {
+                        window = new SelectLanguageWindow();
                         window.ShowDialog();
                         language = window.language;
-                    } while (language == DialogsCreator.Language.none);
+                    } while (language == DialogsCreator.Language.none || language.ToString() == typeOldLanguage);
 
                     typeNewLanguage = language.ToString();
 

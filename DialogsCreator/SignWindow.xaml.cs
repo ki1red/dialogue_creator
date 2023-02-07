@@ -52,7 +52,10 @@ namespace DialogsCreator
                     MessageBox.Show("Окно пока не готово");
                     break;
                 case TypeUser.translator:
-                    MessageBox.Show("Окно пока не готово");
+                    this.Hide();
+                    TranslateWindow windowT = new TranslateWindow();
+                    windowT.ShowDialog();
+                    windowT.Closed += ThisClose(windowT, null);
                     break;
                 default:
                     MessageBox.Show("Ошибка. Отсутствует окно для данного типа пользователя");

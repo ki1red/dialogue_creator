@@ -8,7 +8,7 @@
         Title="Вход" Height="192" Width="382" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
     <Grid>
         <StackPanel Name="stackPanel" Margin="10,10,10,52">
-            <RadioButton Name="admin" GroupName="choice" Click="Choice_Click" FontSize="18">Администратор</RadioButton>
+            <RadioButton Name="painter" GroupName="choice" Click="Choice_Click" FontSize="18">Художник</RadioButton>
             <RadioButton Name="scenarist" GroupName="choice" Click="Choice_Click" FontSize="18">Сценарист</RadioButton>
             <RadioButton Name="translator" GroupName="choice" Click="Choice_Click" FontSize="18">Переводчик</RadioButton>
         </StackPanel>

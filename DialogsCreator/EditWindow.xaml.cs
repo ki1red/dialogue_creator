@@ -97,7 +97,8 @@ namespace DialogsCreator
         {
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "All files (*.*)|*.*";
+            openFileDialog.Filter = FileImage.Filter;//"All files (*.*)|*.*";
+            openFileDialog.DefaultExt = FileImage.DefaultExt;
             openFileDialog.InitialDirectory = Environment.CurrentDirectory;
             if (openFileDialog.ShowDialog() == true)
             {
@@ -109,7 +110,8 @@ namespace DialogsCreator
         private void Button_importSound_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "All files (*.*)|*.*";
+            openFileDialog.Filter = FileSound.Filter;// "All files (*.*)|*.*";
+            openFileDialog.DefaultExt = FileSound.DefaultExt;
             openFileDialog.InitialDirectory = Environment.CurrentDirectory;
             if (openFileDialog.ShowDialog() == true)
             {

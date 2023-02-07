@@ -48,7 +48,7 @@ namespace DialogsCreator
                     window.ShowDialog();
                     window.Closed += ThisClose(window, null);
                     break;
-                case TypeUser.admin:
+                case TypeUser.painter:
                     MessageBox.Show("Окно пока не готово");
                     break;
                 case TypeUser.translator:

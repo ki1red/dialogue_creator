@@ -7,6 +7,11 @@
         mc:Ignorable="d"
         Height="450" Width="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
         <Menu Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.ColumnSpan="2" Foreground="#FF13A9F7" Background="#FF252424">
             <MenuItem Header="Файл">
                 <MenuItem Header="Загрузить диалог" Name="MenuItem_loadFile"></MenuItem>
@@ -20,8 +25,7 @@
             </MenuItem>
         </Menu>
 
-        <ScrollViewer Margin="0,25,0,0" >
-            <DataGrid Name="DataGrid_generalList" RowHeight="70" MouseDoubleClick="DataGrid_generalList_MouseDoubleClick" CellEditEnding="dataGrid_CellEditEnding" CanUserSortColumns="False" SelectionMode="Single" IsReadOnly="False" CanUserResizeColumns="False" CanUserResizeRows="True" SelectionUnit="Cell" ColumnWidth="*" Foreground="#FF13A9F7" Background="#FF252424"/>
-        </ScrollViewer>
+        <ListBox Name="listBoxOld" Grid.Column="0" Margin="0,25,0,0" Background="#FF191818" BorderBrush="#FF131313" Foreground="#FF13A9F7"/>
+        <ListBox Name="listBoxNew" Grid.Column="1" Margin="0,25,0,0" Background="#FF191818" BorderBrush="#FF131313" Foreground="#FF13A9F7"/>
     </Grid>
 </Window>

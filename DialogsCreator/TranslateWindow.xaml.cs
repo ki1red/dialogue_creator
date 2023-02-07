@@ -49,8 +49,6 @@ namespace DialogsCreator
             InitializeSaveFile();
             InitializeCompleteFile();
             InitializeCloseFile();
-
-            this.DataGrid_generalList.IsEnabled = false;
         }
 
         // ===========================================================================================================================
@@ -207,64 +205,86 @@ namespace DialogsCreator
                 this.MenuItem_closeFile.IsEnabled = true;
                 this.MenuItem_saveFile.IsEnabled = true;
                 this.MenuItem_completeTranslate.IsEnabled = true;
-                this.DataGrid_generalList.IsEnabled = true;
-
-                DrawInDataGrid();
+                DrawText();
             }
             else
             {
                 this.MenuItem_closeFile.IsEnabled = false;
                 this.MenuItem_saveFile.IsEnabled = false;
                 this.MenuItem_completeTranslate.IsEnabled = false;
-                this.DataGrid_generalList.IsEnabled = false;
             }
         }
-        private void DrawInDataGrid()
+        private void DrawText()
         {
-            if (!dlagOpen || !dltOpen || !dltOpenn)
-                throw new Exception("Не открыт один или несколько файлов");
-
-            if (dialog == null || defaultTextLanguage == null || newTextLanguage == null || typeOldLanguage == null || typeNewLanguage == null)
-                throw new Exception("Ошибка с данными");
-
-            DataGrid_generalList.CanUserSortColumns = false;
+            this.listBoxNew.MouseDoubleClick += ListBoxNew_MouseDoubleClick;
+            this.listBoxOld.MouseDoubleClick += ListBoxNew_MouseDoubleClick;
 
             List<string> listOld = new List<string>();
-            for (int i = 0; i < defaultTextLanguage.Count; i++)
-            {
-                int index = randomIndex[i];
-                string value = defaultTextLanguage[index];
-                listOld.Add(value);
-            }
             List<string> listNew = new List<string>();
-            for (int i = 0; i < defaultTextLanguage.Count; i++)
+            const int size = 18;
+
+            foreach (var item in defaultTextLanguage)
             {
-                int index = randomIndex[i];
-                string value = newTextLanguage.ContainsKey(index) ? newTextLanguage[index] : "";
-                listNew.Add(value);
+                listOld.Add(item.Value);
             }
 
-            DataGridTextColumn o = new DataGridTextColumn { Header = typeOldLanguage, Binding = new Binding("Old") };
-            o.ElementStyle = new Style(typeof(TextBlock));
-            o.EditingElementStyle = new Style(typeof(TextBox));
-            DataGridTextColumn n = new DataGridTextColumn { Header = typeNewLanguage, Binding = new Binding("New") };
-            n.ElementStyle = new Style(typeof(TextBlock));
-            n.EditingElementStyle = new Style(typeof(TextBox));
+            if (newTextLanguage != null && newTextLanguage.Count > 0)
+            {
+                foreach (var item in newTextLanguage)
+                {
+                    listNew.Add(item.Value);
+                }
+            }
+            else
+            {
+                listNew = new List<string>(listOld);
+            }
 
-            DataGrid_generalList.Columns.Add(n);
-            DataGrid_generalList.Columns.Add(o);
             for (int i = 0; i < listOld.Count; i++)
             {
-                DataGrid_generalList.Items.Add(new { Old = listOld[i], New = listNew[i] });
+                int index = i;
+                if (randomIndex != null && i < randomIndex.Length)
+                {
+                    index = randomIndex[i];
+                }
+
+                TextBlock textBlock = new TextBlock();
+                textBlock.Text = listOld[index];
+                textBlock.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x19, 0x18, 0x18));
+                textBlock.Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0x13, 0xA9, 0xF7));
+                textBlock.FontSize = size;
+                textBlock.Width = listBoxOld.Width;
+                textBlock.TextWrapping = TextWrapping.Wrap;
+                textBlock.UpdateLayout();
+                listBoxOld.Items.Add(textBlock);
+
+                TextBox textBox = new TextBox();
+                textBox.KeyDown += TextBox_KeyDown;
+                textBox.Text = (i < listNew.Count) ? listNew[index] : "";
+                textBox.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x19, 0x18, 0x18));
+                textBox.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x19, 0x18, 0x18));
+                textBox.Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0x13, 0xA9, 0xF7));
+                textBox.FontSize = size;
+                textBox.Width = listBoxNew.Width;
+                textBox.TextWrapping = TextWrapping.Wrap;
+                textBox.UpdateLayout();
+                listBoxNew.Items.Add(textBox);
             }
+            listBoxNew.UpdateLayout();
+            listBoxOld.UpdateLayout();
         }
-        private void dataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+
+        private void ListBoxNew_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            
-            DataGrid_generalList.CancelEdit();
-            DataGrid_generalList.CancelEdit();
-            DataGrid_generalList.Items.Refresh();
+            ListBox listBox = sender as ListBox;
+            int select = listBox.SelectedIndex;
+
+            if (listBox.Name == "listBoxNew")
+                listBoxOld.SelectedIndex = select;
+            else if (listBox.Name == "listBoxOld")
+                listBoxNew.SelectedIndex = select;
         }
+
         private bool DeserializationDTO()
         {
             byte[] data = File.ReadAllBytes($"{pathToNewDlt}\\{nameNewDlt}");
@@ -435,11 +455,30 @@ namespace DialogsCreator
             }
             return num1;
         }
-
-        private void DataGrid_generalList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            MessageBox.Show(sender as string);
+            TextBox textBox = sender as TextBox;
+            int caretIndex = textBox.CaretIndex;
+            string currentText = textBox.Text;
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    caretIndex = textBox.CaretIndex;
+                    currentText = textBox.Text;
+                    textBox.Text = currentText.Insert(caretIndex, Environment.NewLine);
+                    textBox.CaretIndex = caretIndex + Environment.NewLine.Length;
+                    e.Handled = true;
+                    break;
+                case Key.Tab:
+                    caretIndex = textBox.CaretIndex;
+                    currentText = textBox.Text;
+                    textBox.Text = currentText.Insert(caretIndex, "\t");
+                    textBox.CaretIndex = caretIndex + "\t".Length;
+                    e.Handled = true;
+                    break;
+            }
         }
+
     }
 
 }

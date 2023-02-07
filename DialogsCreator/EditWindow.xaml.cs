@@ -76,6 +76,8 @@ namespace DialogsCreator
         {
             TextBox_author.Text = element.author;
             TextBox_question.Text = element.question.text;
+
+            TextBox_question.KeyDown += TextBox_question_KeyDown;
         }
         public void InitializeAnswers()
         {
@@ -84,6 +86,7 @@ namespace DialogsCreator
             {
                 TextBox tb = new TextBox();
                 tb.Text = answer.text;
+                tb.KeyDown += TextBox_question_KeyDown;
                 ListBox_answers.Children.Add(tb);
             }
 
@@ -160,6 +163,30 @@ namespace DialogsCreator
                 Border_addImage.IsEnabled = true;
             else
                 Border_addImage.IsEnabled = false;
+        }
+
+        private void TextBox_question_KeyDown(object sender, KeyEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            int caretIndex = textBox.CaretIndex;
+            string currentText = textBox.Text;
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    caretIndex = textBox.CaretIndex;
+                    currentText = textBox.Text;
+                    textBox.Text = currentText.Insert(caretIndex, Environment.NewLine);
+                    textBox.CaretIndex = caretIndex + Environment.NewLine.Length;
+                    e.Handled = true;
+                    break;
+                case Key.Tab:
+                    caretIndex = textBox.CaretIndex;
+                    currentText = textBox.Text;
+                    textBox.Text = currentText.Insert(caretIndex, "\t");
+                    textBox.CaretIndex = caretIndex + "\t".Length;
+                    e.Handled = true;
+                    break;
+            }
         }
 
         private void Filling(ref SayingElementDFD sayingElement, string text)

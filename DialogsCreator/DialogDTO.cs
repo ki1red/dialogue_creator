@@ -38,30 +38,33 @@ namespace DialogsCreator
     public class DialogLineDTO
     {
         public int id;
+        public int characterId;
         public int textId;
-        public OptionDTO[] options;
         public int nextLineId;
         public string pathToImage;
         public string pathToSound;
+        public OptionDTO[] options;
 
-        public DialogLineDTO(int id, int textId, OptionDTO[] options, int nextLineId, string pathToImage, string pathToSound)
+        public DialogLineDTO(int id, int characterId, int textId, OptionDTO[] options, int nextLineId, string pathToImage, string pathToSound)
         {
             this.id = id;
+            this.characterId = characterId;
             this.textId = textId;
-            this.options = options;
             this.nextLineId = nextLineId;
             this.pathToImage = pathToImage;
             this.pathToSound = pathToSound;
+            this.options = options;
         }
 
         public DialogLineDTO()
         {
             this.id = -1;
+            this.characterId = -1;
             this.textId = -1;
-            this.options = new OptionDTO[0];
             this.nextLineId = -1;
             this.pathToImage = null;
             this.pathToSound = null;
+            this.options = new OptionDTO[0];
         }
     }
 
@@ -70,23 +73,23 @@ namespace DialogsCreator
     {
         public int id;
         public int textId;
-        public RequiredAnswerDTO[] requiredAnswers;
         public int nextLineId;
+        public RequiredAnswerDTO[] requiredAnswers;
 
         public OptionDTO(int id, int textId, RequiredAnswerDTO[] requiredAnswers, int nextLineId)
         {
             this.id = id;
             this.textId = textId;
-            this.requiredAnswers = requiredAnswers;
             this.nextLineId = nextLineId;
+            this.requiredAnswers = requiredAnswers;
         }
 
         public OptionDTO()
         {
             this.id = -1;
             this.textId = -1;
-            this.requiredAnswers = new RequiredAnswerDTO[0];
             this.nextLineId = -1;
+            this.requiredAnswers = new RequiredAnswerDTO[0];
         }
     }
 

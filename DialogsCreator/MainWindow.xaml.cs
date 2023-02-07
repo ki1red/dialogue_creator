@@ -43,6 +43,9 @@ namespace DialogsCreator
             Button_importImage.Click += Button_importImage_Click;
             Button_addAnswer.Click += Button_addAnswer_Click;
             Button_delAnswer.Click += Button_delAnswer_Click;
+
+            TextBox_question.KeyDown += TextBox_question_KeyDown;
+            TextBox_answer.KeyDown += TextBox_question_KeyDown;
         }
 
         // ===========================================================================================================================
@@ -170,6 +173,32 @@ namespace DialogsCreator
 
             ComboBox_answers.Items.Remove(ComboBox_answers.SelectedItem);
             ComboBox_answers.SelectedIndex = ComboBox_answers.Items.Count - 1;
+        }
+
+
+
+        private void TextBox_question_KeyDown(object sender, KeyEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            int caretIndex = textBox.CaretIndex;
+            string currentText = textBox.Text;
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    caretIndex = textBox.CaretIndex;
+                    currentText = textBox.Text;
+                    textBox.Text = currentText.Insert(caretIndex, Environment.NewLine);
+                    textBox.CaretIndex = caretIndex + Environment.NewLine.Length;
+                    e.Handled = true;
+                    break;
+                case Key.Tab:
+                    caretIndex = textBox.CaretIndex;
+                    currentText = textBox.Text;
+                    textBox.Text = currentText.Insert(caretIndex, "\t");
+                    textBox.CaretIndex = caretIndex + "\t".Length;
+                    e.Handled = true;
+                    break;
+            }
         }
 
         // ===========================================================================================================================

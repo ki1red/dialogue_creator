@@ -221,9 +221,9 @@ namespace DialogsCreator
         }
         private void InitializeElements()
         {
-            this.elements = new Dictionary<int, string>(this.dialog.elements.Length);
+            this.elements = new Dictionary<int, string>();
 
-            for (int i = 0; i < this.elements.Count; i++)
+            for (int i = 0; i < this.dialog.elements.Length; i++)
             {
                 this.elements[i] = this.dialog.elements[i].question.text;
             }
@@ -352,6 +352,7 @@ namespace DialogsCreator
         {
             dialogDTO = new DialogDTO();
 
+
             dialogDTO.textPaths = new TextPathDTO[1];
             dialogDTO.textPaths[0] = new TextPathDTO();
             dialogDTO.textPaths[0].path = pathToDlt.Split("\\")[pathToDlt.Split("\\").Length - 1]; // файл в этой же директории
@@ -384,6 +385,10 @@ namespace DialogsCreator
                 dialogLine = new DialogLineDTO();
 
                 dialogLine.id = dialog.elements[i].idElement;
+
+                dialogLine.characterId = id;
+                AddText(id, dialog.elements[i].author);
+                id++;
 
                 if (dialog.elements[i].question.nextElement != null)
                     dialogLine.nextLineId = dialog.elements[i].question.nextElement.idElement;

@@ -109,6 +109,7 @@ namespace DialogsCreator
             this.MenuItem_closeFile.IsEnabled = false;
             this.MenuItem_objectSettings.IsEnabled = false;
             this.MenuItem_addObject.IsEnabled = false;
+            this.MenuItem_cloneObject.IsEnabled = false;
             this.MenuItem_editObject.IsEnabled = false;
             this.MenuItem_deleteObject.IsEnabled = false;
         }
@@ -128,6 +129,7 @@ namespace DialogsCreator
             this.MenuItem_closeFile.Click += UpdateWindowElements;
 
             this.MenuItem_addObject.Click += MenuItem_addObject_Click;
+            this.MenuItem_cloneObject.Click += MenuItem_cloneObject_Click;
             this.MenuItem_deleteObject.Click += MenuItem_deleteObject_Click;
             this.MenuItem_editObject.Click += MenuItem_editObject_Click;
         }
@@ -403,6 +405,28 @@ namespace DialogsCreator
             isEdit = true;
             this.MenuItem_addObject.IsEnabled = false;
         }
+        private void MenuItem_cloneObject_Click(object sender, RoutedEventArgs e)
+        {
+            int id = (selectionObject.element.Source as SayingElementViewDFD).idElement;
+            ElementDFD element = modelView.dialog.Search(id);
+
+            SayingElementDFD question = new SayingElementDFD(0, element.question.text, TypeSayingElementDFD.question, new SayingElementDFD(), new SayingElementDFD[0]);
+            SayingElementDFD[] answers = new SayingElementDFD[element.answers.Length];
+            int i = 0;
+            foreach (var a in element.answers)
+            {
+                answers[i] = new SayingElementDFD(0, a.text, TypeSayingElementDFD.answer, new SayingElementDFD(), new SayingElementDFD[0]);
+                    i++;
+            }
+
+            ElementDFD clone = new ElementDFD(0, element.pathToSound, element.pathToImage, element.author, question, answers, new Point(0,0));
+            modelView.AddEmptyElement(clone);
+            modelView.ReplaceCoords(ref modelView.dialog.elements[modelView.dialog.elements.Length - 1], lastClick);
+            AddObjectToView(clone);
+
+            isEdit = true;
+            this.MenuItem_cloneObject.IsEnabled = false;
+        }
         internal void MenuItem_deleteObject_Click(object sender, RoutedEventArgs e)
         {
             DialogComponentView element;
@@ -467,6 +491,7 @@ namespace DialogsCreator
 
                 this.MenuItem_objectSettings.IsEnabled = true;
                 this.MenuItem_addObject.IsEnabled = false;
+                this.MenuItem_cloneObject.IsEnabled = false;
                 this.MenuItem_deleteObject.IsEnabled = false;
                 this.MenuItem_editObject.IsEnabled = false;
 
@@ -496,6 +521,7 @@ namespace DialogsCreator
 
                 this.MenuItem_objectSettings.IsEnabled = false;
                 this.MenuItem_addObject.IsEnabled = false;
+                this.MenuItem_cloneObject.IsEnabled = false;
                 this.MenuItem_deleteObject.IsEnabled = false;
                 this.MenuItem_editObject.IsEnabled = false;
 
@@ -715,12 +741,14 @@ namespace DialogsCreator
             if (selectionObject.selected == TypeObject.element)
             {
                 this.MenuItem_addObject.IsEnabled = false;
+                this.MenuItem_cloneObject.IsEnabled = true;
                 this.MenuItem_deleteObject.IsEnabled = true;
                 this.MenuItem_editObject.IsEnabled = true;
             }
             else
             {
                 this.MenuItem_addObject.IsEnabled = true;
+                this.MenuItem_cloneObject.IsEnabled = false;
                 this.MenuItem_deleteObject.IsEnabled = false;
                 this.MenuItem_editObject.IsEnabled = false;
             }

@@ -23,6 +23,7 @@
             <MenuItem Header="Объект" Name="MenuItem_objectSettings">
                 <MenuItem Header="Добавить" Name="MenuItem_addObject"></MenuItem>
                 <MenuItem Header="Редактировать" Name="MenuItem_editObject"></MenuItem>
+                <MenuItem Header="Клонировать" Name="MenuItem_cloneObject"></MenuItem>
                 <MenuItem Header="Удалить" Name="MenuItem_deleteObject"></MenuItem>
             </MenuItem>
         </Menu>

@@ -38,7 +38,7 @@ namespace DialogsCreator
     // Файл изображений
     public struct FileImage
     {
-        public const string Filter = "Image Files(*.jpeg;*.jpg;*.png;*.gif)|*.jpeg;*.jpg;*.png*.gif";
+        public const string Filter = "Image Files(*.jpeg;*.jpg;*.png;*.gif)|*.jpeg;*.jpg;*.png*;.gif";
         public static string InitialDirectory = null;
         public const string DefaultExt = "*.png";
         public const string Title = "Открыть файл изображения";

@@ -103,12 +103,6 @@ namespace DialogsCreator
             if (!isOpen)
                 throw new Exception("File not loaded");
 
-            //bool oldIsSave = isSave;
-            //if (data == null || data == "")
-            //    isEmpty = true;
-            //else
-            //    isEmpty = false;
-
             File.WriteAllText($"{path}{file}.{type}", data);
             isSave = true;
         }

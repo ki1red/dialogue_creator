@@ -24,6 +24,9 @@ namespace DialogsCreator
         public SignWindow()
         {
             InitializeComponent();
+
+            painter.IsEnabled = false;
+            translator.IsEnabled = false;
         }
 
         private void Choice_Click(object sender, RoutedEventArgs e)
@@ -49,7 +52,9 @@ namespace DialogsCreator
                     window.Closed += ThisClose(window, null);
                     break;
                 case TypeUser.painter:
-                    MessageBox.Show("Окно пока не готово");
+                    WebWindow windowW = new WebWindow();
+                    windowW.ShowDialog();
+                    windowW.Closed += ThisClose(windowW, null);
                     break;
                 case TypeUser.translator:
                     this.Hide();
